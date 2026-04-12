@@ -1,0 +1,1551 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Design Token System Demo</title>
+		<link rel="stylesheet" href="root.css" />
+		<style>
+			body {
+				background: var(--surface-1);
+				margin: 0;
+				padding: 0;
+			}
+
+			/* Top Bar */
+			.top-bar {
+				position: sticky;
+				top: 0;
+				z-index: var(--z-sticky);
+
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: var(--space-md);
+
+				border-bottom: var(--border-width) solid var(--border-default);
+				background: var(--surface-2);
+				padding: var(--space-md) var(--space-lg);
+
+				h1 {
+					font-size: var(--text-lg);
+					font-weight: var(--font-bold);
+					color: var(--text-primary);
+				}
+
+				.top-bar-controls {
+					display: flex;
+					gap: var(--space-sm);
+				}
+			}
+
+			/* Buttons */
+			.btn {
+				display: inline-flex;
+				align-items: center;
+				gap: var(--space-xs);
+
+				cursor: pointer;
+
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-md);
+				background: var(--surface-3);
+				padding: var(--space-sm) var(--space-md);
+
+				font-size: var(--text-sm);
+				font-weight: var(--font-medium);
+				color: var(--text-primary);
+
+				transition: var(--transition-colors);
+
+				&:hover {
+					background: var(--surface-4);
+				}
+
+				&:focus {
+					outline: var(--focus-ring);
+				}
+
+				&.btn-primary {
+					border-color: var(--accent);
+					background: var(--accent);
+					color: var(--surface-1);
+
+					&:hover {
+						background: var(--accent-hover);
+					}
+				}
+			}
+
+			/* Layout */
+			.container {
+				display: flex;
+
+				min-height: calc(100vh - 60px);
+			}
+
+			.sidebar {
+				position: sticky;
+				top: 60px;
+
+				flex-shrink: 0;
+
+				width: 320px;
+				height: calc(100vh - 60px);
+				overflow-y: auto;
+
+				border-right: var(--border-width) solid var(--border-default);
+				background: var(--surface-2);
+				padding: var(--space-lg);
+
+				&.collapsed {
+					display: none;
+				}
+
+				h2 {
+					font-size: var(--text-md);
+					font-weight: var(--font-semibold);
+					color: var(--text-primary);
+				}
+
+				.control-group {
+					margin-top: var(--space-lg);
+
+					h3 {
+						margin-bottom: var(--space-md);
+
+						font-size: var(--text-sm);
+						font-weight: var(--font-semibold);
+						color: var(--text-secondary);
+						text-transform: uppercase;
+						letter-spacing: var(--tracking-wide);
+					}
+				}
+
+				.control {
+					margin-bottom: var(--space-md);
+
+					label {
+						display: block;
+						margin-bottom: var(--space-xs);
+
+						font-size: var(--text-sm);
+						color: var(--text-secondary);
+					}
+
+					input[type='range'] {
+						width: 100%;
+					}
+
+					.control-value {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+
+						margin-top: var(--space-xs);
+
+						span {
+							font-size: var(--text-xs);
+							font-family: var(--font-mono);
+							color: var(--text-tertiary);
+						}
+
+						.color-preview {
+							width: 24px;
+							height: 24px;
+
+							border: var(--border-width) solid var(--border-default);
+							border-radius: var(--radius-sm);
+						}
+					}
+				}
+			}
+
+			.main-content {
+				flex: 1;
+
+				overflow-y: auto;
+
+				padding: var(--space-2xl);
+			}
+
+			/* Sections */
+			.section {
+				margin-bottom: var(--space-4xl);
+
+				h2 {
+					margin-bottom: var(--space-md);
+
+					font-size: var(--text-xl);
+					font-weight: var(--font-bold);
+					color: var(--text-primary);
+				}
+
+				h3 {
+					margin-bottom: var(--space-md);
+
+					font-size: var(--text-lg);
+					font-weight: var(--font-semibold);
+					color: var(--text-primary);
+				}
+
+				p {
+					margin-bottom: var(--space-md);
+
+					font-size: var(--text-base);
+					line-height: var(--leading-relaxed);
+				}
+			}
+
+			/* Grid Layouts */
+			.token-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+				gap: var(--space-md);
+			}
+
+			.token-card {
+				cursor: pointer;
+
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-md);
+				background: var(--surface-2);
+				padding: var(--space-md);
+
+				transition: var(--transition-colors);
+
+				&:hover {
+					border-color: var(--accent);
+					background: var(--surface-3);
+				}
+
+				.token-label {
+					margin-bottom: var(--space-sm);
+
+					font-size: var(--text-xs);
+					font-family: var(--font-mono);
+					color: var(--text-tertiary);
+				}
+
+				.token-value {
+					font-size: var(--text-xs);
+					font-family: var(--font-mono);
+					color: var(--text-secondary);
+				}
+
+				.token-preview {
+					margin-bottom: var(--space-sm);
+
+					border: var(--border-width) solid var(--border-default);
+					border-radius: var(--radius-sm);
+				}
+			}
+
+			/* Surface Swatches */
+			.surface-swatch {
+				.token-preview {
+					height: 80px;
+				}
+
+				.token-label,
+				.token-value {
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+			}
+
+			/* Text Samples */
+			.text-sample {
+				margin-bottom: var(--space-md);
+				padding: var(--space-lg);
+
+				border-radius: var(--radius-md);
+				background: var(--surface-2);
+			}
+
+			/* Color Swatches */
+			.color-swatch {
+				.token-preview {
+					height: 60px;
+				}
+			}
+
+			/* State Alerts */
+			.state-demo {
+				display: flex;
+				align-items: center;
+				gap: var(--space-md);
+
+				margin-bottom: var(--space-md);
+				border-radius: var(--radius-md);
+				padding: var(--space-md);
+
+				font-size: var(--text-sm);
+
+				&.success {
+					border: var(--border-width) solid var(--success);
+					background: var(--success-bg);
+					color: var(--success);
+				}
+
+				&.warning {
+					border: var(--border-width) solid var(--warning);
+					background: var(--warning-bg);
+					color: var(--warning);
+				}
+
+				&.error {
+					border: var(--border-width) solid var(--error);
+					background: var(--error-bg);
+					color: var(--error);
+				}
+
+				&.info {
+					border: var(--border-width) solid var(--info);
+					background: var(--info-bg);
+					color: var(--info);
+				}
+			}
+
+			/* Border Samples */
+			.border-sample {
+				border-radius: var(--radius-md);
+				padding: var(--space-md);
+				background: var(--surface-2);
+
+				.border-line {
+					margin: var(--space-md) 0;
+				}
+			}
+
+			/* Typography Samples */
+			.type-sample {
+				border-radius: var(--radius-md);
+				margin-bottom: var(--space-md);
+				padding: var(--space-md);
+				background: var(--surface-2);
+
+				P {
+					margin: 0;
+				}
+			}
+
+			/* Spacing Bars */
+			.spacing-demo {
+				display: flex;
+				align-items: center;
+				gap: var(--space-md);
+
+				.spacing-bar {
+					height: 24px;
+
+					background: var(--accent);
+				}
+
+				.spacing-label {
+					font-size: var(--text-sm);
+					font-family: var(--font-mono);
+				}
+			}
+
+			/* Radius Boxes */
+			.radius-demo {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+				gap: var(--space-md);
+
+				.radius-box {
+					height: 80px;
+
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					border: var(--border-width) solid var(--border-default);
+					background: var(--surface-3);
+
+					font-size: var(--text-xs);
+					font-family: var(--font-mono);
+					color: var(--text-secondary);
+				}
+			}
+
+			/* Shadow Boxes */
+			.shadow-demo {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+				gap: var(--space-xl);
+
+				.shadow-box {
+					height: 120px;
+
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					border-radius: var(--radius-md);
+					background: var(--surface-3);
+
+					font-size: var(--text-sm);
+					font-family: var(--font-mono);
+					color: var(--text-secondary);
+				}
+			}
+
+			/* Overlay Demo */
+			.overlay-demo {
+				position: relative;
+
+				height: 200px;
+
+				border-radius: var(--radius-md);
+				background: linear-gradient(135deg, var(--accent), var(--accent-muted));
+
+				.overlay-layer {
+					position: absolute;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					left: 0;
+
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					border-radius: var(--radius-md);
+
+					font-size: var(--text-base);
+					font-weight: var(--font-semibold);
+					color: var(--text-primary);
+				}
+			}
+
+			/* Focus Demo */
+			.focus-demo {
+				display: flex;
+				flex-direction: column;
+				gap: var(--space-md);
+
+				input,
+				textarea,
+				select {
+					width: 100%;
+
+					border: var(--border-width) solid var(--border-default);
+					border-radius: var(--radius-md);
+					background: var(--surface-2);
+					padding: var(--space-sm) var(--space-md);
+
+					font-size: var(--text-base);
+					color: var(--text-primary);
+
+					&:focus {
+						outline: var(--focus-ring);
+						outline-offset: var(--focus-ring-offset);
+					}
+				}
+
+				textarea {
+					min-height: 100px;
+				}
+			}
+
+			/* Transition Demo */
+			.transition-demo {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+				gap: var(--space-lg);
+
+				.transition-box {
+					position: relative;
+
+					height: 120px;
+
+					border: var(--border-width) solid var(--border-default);
+					border-radius: var(--radius-md);
+					background: var(--surface-2);
+					padding: var(--space-md);
+
+					.transition-label {
+						margin-bottom: var(--space-sm);
+
+						font-size: var(--text-sm);
+						font-family: var(--font-mono);
+						color: var(--text-secondary);
+					}
+
+					.moving-box {
+						position: absolute;
+						left: var(--space-md);
+
+						width: 40px;
+						height: 40px;
+
+						border-radius: var(--radius-sm);
+						background: var(--accent);
+					}
+
+					&:hover .moving-box {
+						left: calc(100% - 40px - var(--space-md));
+					}
+				}
+			}
+
+			/* Z-Index Demo */
+			.zindex-demo {
+				position: relative;
+
+				height: 400px;
+
+				border-radius: var(--radius-md);
+				background: var(--surface-2);
+				padding: var(--space-lg);
+
+				.layer {
+					position: absolute;
+
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					border: var(--border-width) solid var(--border-default);
+					border-radius: var(--radius-md);
+					background: var(--surface-3);
+					padding: var(--space-md);
+
+					font-size: var(--text-sm);
+					font-family: var(--font-mono);
+					color: var(--text-secondary);
+				}
+			}
+
+			/* Container Demo */
+			.container-demo {
+				margin-bottom: var(--space-lg);
+
+				.container-box {
+					margin: 0 auto;
+					margin-bottom: var(--space-sm);
+
+					border: var(--border-width) solid var(--border-default);
+					border-radius: var(--radius-md);
+					background: var(--surface-3);
+					padding: var(--space-md);
+
+					font-size: var(--text-sm);
+					text-align: center;
+					color: var(--text-secondary);
+				}
+			}
+
+			/* Component Gallery */
+			.component-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+				gap: var(--space-xl);
+			}
+
+			.card {
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-lg);
+				background: var(--surface-2);
+				padding: var(--space-lg);
+
+				.card-title {
+					margin-bottom: var(--space-sm);
+
+					font-size: var(--text-md);
+					font-weight: var(--font-semibold);
+					color: var(--text-primary);
+				}
+
+				.card-body {
+					margin-bottom: var(--space-md);
+
+					font-size: var(--text-sm);
+					line-height: var(--leading-relaxed);
+					color: var(--text-secondary);
+				}
+
+				.card-footer {
+					display: flex;
+					gap: var(--space-sm);
+				}
+			}
+
+			.badge {
+				display: inline-flex;
+
+				border-radius: var(--radius-full);
+				padding: var(--space-xs) var(--space-sm);
+
+				font-size: var(--text-xs);
+				font-weight: var(--font-medium);
+
+				&.badge-accent {
+					background: var(--accent-alpha);
+					color: var(--accent);
+				}
+
+				&.badge-success {
+					background: var(--success-bg);
+					color: var(--success);
+				}
+
+				&.badge-warning {
+					background: var(--warning-bg);
+					color: var(--warning);
+				}
+
+				&.badge-error {
+					background: var(--error-bg);
+					color: var(--error);
+				}
+			}
+
+			/* Range Input Styling */
+			input[type='range'] {
+				height: 4px;
+
+				cursor: pointer;
+
+				border-radius: var(--radius-full);
+				background: var(--surface-4);
+
+				&::-webkit-slider-thumb {
+					width: 16px;
+					height: 16px;
+
+					cursor: pointer;
+
+					border: 2px solid var(--accent);
+					border-radius: var(--radius-full);
+					background: var(--surface-1);
+				}
+
+				&::-moz-range-thumb {
+					width: 16px;
+					height: 16px;
+
+					cursor: pointer;
+
+					border: 2px solid var(--accent);
+					border-radius: var(--radius-full);
+					background: var(--surface-1);
+				}
+			}
+
+			/* Toast Notification */
+			.toast {
+				position: fixed;
+				bottom: var(--space-lg);
+				right: var(--space-lg);
+				z-index: var(--z-toast);
+
+				display: none;
+
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-md);
+				background: var(--surface-3);
+				padding: var(--space-md) var(--space-lg);
+				box-shadow: var(--shadow-lg);
+
+				font-size: var(--text-sm);
+				color: var(--text-primary);
+
+				&.show {
+					display: block;
+					animation: slideIn var(--duration-normal) var(--ease-out);
+				}
+			}
+
+			@keyframes slideIn {
+				from {
+					opacity: 0;
+					transform: translateY(var(--space-lg));
+				}
+
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- Top Bar -->
+		<header class="top-bar">
+			<h1>Design Token System Demo</h1>
+			<div class="top-bar-controls">
+				<button class="btn" id="toggleSidebar">Toggle Controls</button>
+				<button class="btn" id="toggleTheme">Switch Theme</button>
+				<button class="btn" id="resetDefaults">Reset Defaults</button>
+			</div>
+		</header>
+
+		<!-- Container -->
+		<div class="container">
+			<!-- Sidebar -->
+			<aside class="sidebar" id="sidebar">
+				<h2>Theme Controls</h2>
+
+				<!-- Color Controls -->
+				<div class="control-group">
+					<h3>Color</h3>
+					<div class="control">
+						<label for="accentHue">Accent Hue (0-360)</label>
+						<input type="range" id="accentHue" min="0" max="360" value="200" step="1" />
+						<div class="control-value">
+							<span id="accentHueValue">200</span>
+							<div class="color-preview" id="accentHuePreview"></div>
+						</div>
+					</div>
+					<div class="control">
+						<label for="accentChroma">Accent Chroma (0-1)</label>
+						<input type="range" id="accentChroma" min="0" max="1" value="0.3" step="0.01" />
+						<div class="control-value">
+							<span id="accentChromaValue">0.3</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Dark Theme Controls -->
+				<div class="control-group">
+					<h3>Dark Theme</h3>
+					<div class="control">
+						<label for="darkSurface">Surface Base (0-1)</label>
+						<input type="range" id="darkSurface" min="0" max="1" value="0.15" step="0.01" />
+						<div class="control-value">
+							<span id="darkSurfaceValue">0.15</span>
+						</div>
+					</div>
+					<div class="control">
+						<label for="darkText">Text Lightness (0-1)</label>
+						<input type="range" id="darkText" min="0" max="1" value="0.9" step="0.01" />
+						<div class="control-value">
+							<span id="darkTextValue">0.9</span>
+						</div>
+					</div>
+					<div class="control">
+						<label for="darkAccent">Accent Lightness (0-1)</label>
+						<input type="range" id="darkAccent" min="0" max="1" value="0.65" step="0.01" />
+						<div class="control-value">
+							<span id="darkAccentValue">0.65</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Light Theme Controls -->
+				<div class="control-group">
+					<h3>Light Theme</h3>
+					<div class="control">
+						<label for="lightSurface">Surface Base (0-1)</label>
+						<input type="range" id="lightSurface" min="0" max="1" value="0.97" step="0.01" />
+						<div class="control-value">
+							<span id="lightSurfaceValue">0.97</span>
+						</div>
+					</div>
+					<div class="control">
+						<label for="lightText">Text Lightness (0-1)</label>
+						<input type="range" id="lightText" min="0" max="1" value="0.18" step="0.01" />
+						<div class="control-value">
+							<span id="lightTextValue">0.18</span>
+						</div>
+					</div>
+					<div class="control">
+						<label for="lightAccent">Accent Lightness (0-1)</label>
+						<input type="range" id="lightAccent" min="0" max="1" value="0.45" step="0.01" />
+						<div class="control-value">
+							<span id="lightAccentValue">0.45</span>
+						</div>
+					</div>
+				</div>
+			</aside>
+
+			<!-- Main Content -->
+			<main class="main-content">
+				<!-- Surfaces Section -->
+				<section class="section">
+					<h2>Surfaces</h2>
+					<p>10-step elevation scale using OKLCH color space</p>
+					<div class="token-grid">
+						<div class="token-card surface-swatch" data-token="--surface-1">
+							<div class="token-preview" style="background: var(--surface-1)"></div>
+							<div class="token-label">--surface-1</div>
+							<div class="token-value" id="surface-1-value"></div>
+						</div>
+						<div class="token-card surface-swatch" data-token="--surface-2">
+							<div class="token-preview" style="background: var(--surface-2)"></div>
+							<div class="token-label">--surface-2</div>
+							<div class="token-value" id="surface-2-value"></div>
+						</div>
+						<div class="token-card surface-swatch" data-token="--surface-3">
+							<div class="token-preview" style="background: var(--surface-3)"></div>
+							<div class="token-label">--surface-3</div>
+							<div class="token-value" id="surface-3-value"></div>
+						</div>
+						<div class="token-card surface-swatch" data-token="--surface-4">
+							<div class="token-preview" style="background: var(--surface-4)"></div>
+							<div class="token-label">--surface-4</div>
+							<div class="token-value" id="surface-4-value"></div>
+						</div>
+						<div class="token-card surface-swatch" data-token="--surface-5">
+							<div class="token-preview" style="background: var(--surface-5)"></div>
+							<div class="token-label">--surface-5</div>
+							<div class="token-value" id="surface-5-value"></div>
+						</div>
+						<div class="token-card surface-swatch" data-token="--surface-6">
+							<div class="token-preview" style="background: var(--surface-6)"></div>
+							<div class="token-label">--surface-6</div>
+							<div class="token-value" id="surface-6-value"></div>
+						</div>
+						<div class="token-card surface-swatch" data-token="--surface-7">
+							<div class="token-preview" style="background: var(--surface-7)"></div>
+							<div class="token-label">--surface-7</div>
+							<div class="token-value" id="surface-7-value"></div>
+						</div>
+						<div class="token-card surface-swatch" data-token="--surface-8">
+							<div class="token-preview" style="background: var(--surface-8)"></div>
+							<div class="token-label">--surface-8</div>
+							<div class="token-value" id="surface-8-value"></div>
+						</div>
+						<div class="token-card surface-swatch" data-token="--surface-9">
+							<div class="token-preview" style="background: var(--surface-9)"></div>
+							<div class="token-label">--surface-9</div>
+							<div class="token-value" id="surface-9-value"></div>
+						</div>
+						<div class="token-card surface-swatch" data-token="--surface-10">
+							<div class="token-preview" style="background: var(--surface-10)"></div>
+							<div class="token-label">--surface-10</div>
+							<div class="token-value" id="surface-10-value"></div>
+						</div>
+					</div>
+				</section>
+
+				<!-- Text Hierarchy Section -->
+				<section class="section">
+					<h2>Text Hierarchy</h2>
+					<p>Four levels of text emphasis</p>
+					<div class="text-sample" style="color: var(--text-primary)">
+						<div class="sample-text">Primary text — main content and headings</div>
+					</div>
+					<div class="text-sample" style="color: var(--text-secondary)">
+						<div class="sample-text">Secondary text — supporting information</div>
+					</div>
+					<div class="text-sample" style="color: var(--text-tertiary)">
+						<div class="sample-text">Tertiary text — labels and metadata</div>
+					</div>
+					<div class="text-sample" style="color: var(--text-disabled)">
+						<div class="sample-text">Disabled text — inactive UI elements</div>
+					</div>
+				</section>
+
+				<!-- Accent Colors Section -->
+				<section class="section">
+					<h2>Accent Colors</h2>
+					<p>Click any swatch to copy the token name to clipboard</p>
+					<div class="token-grid">
+						<div class="token-card color-swatch" data-token="--accent">
+							<div class="token-preview" style="background: var(--accent)"></div>
+							<div class="token-label">--accent</div>
+							<div class="token-value" id="accent-value"></div>
+						</div>
+						<div class="token-card color-swatch" data-token="--accent-hover">
+							<div class="token-preview" style="background: var(--accent-hover)"></div>
+							<div class="token-label">--accent-hover</div>
+							<div class="token-value" id="accent-hover-value"></div>
+						</div>
+						<div class="token-card color-swatch" data-token="--accent-muted">
+							<div class="token-preview" style="background: var(--accent-muted)"></div>
+							<div class="token-label">--accent-muted</div>
+							<div class="token-value" id="accent-muted-value"></div>
+						</div>
+						<div class="token-card color-swatch" data-token="--accent-alpha">
+							<div class="token-preview" style="background: var(--accent-alpha)"></div>
+							<div class="token-label">--accent-alpha</div>
+							<div class="token-value" id="accent-alpha-value"></div>
+						</div>
+						<div class="token-card color-swatch" data-token="--accent-alpha-hover">
+							<div class="token-preview" style="background: var(--accent-alpha-hover)"></div>
+							<div class="token-label">--accent-alpha-hover</div>
+							<div class="token-value" id="accent-alpha-hover-value"></div>
+						</div>
+					</div>
+				</section>
+
+				<!-- Semantic States Section -->
+				<section class="section">
+					<h2>Semantic States</h2>
+					<p>Success, warning, error, and info color variants</p>
+					<div class="state-demo success">
+						<strong>Success:</strong> Operation completed successfully
+					</div>
+					<div class="state-demo warning"><strong>Warning:</strong> Proceed with caution</div>
+					<div class="state-demo error"><strong>Error:</strong> Something went wrong</div>
+					<div class="state-demo info"><strong>Info:</strong> Helpful information for users</div>
+				</section>
+
+				<!-- Borders & Dividers Section -->
+				<section class="section">
+					<h2>Borders & Dividers</h2>
+					<p>Four levels of border emphasis and three width variants</p>
+					<div class="border-sample">
+						<div class="border-line" style="border-top: var(--border-width) solid var(--divider)">
+							divider
+						</div>
+						<div
+							class="border-line"
+							style="border-top: var(--border-width) solid var(--border-subtle)"
+						>
+							border-subtle
+						</div>
+						<div
+							class="border-line"
+							style="border-top: var(--border-width) solid var(--border-default)"
+						>
+							border-default
+						</div>
+						<div
+							class="border-line"
+							style="border-top: var(--border-width) solid var(--border-strong)"
+						>
+							border-strong
+						</div>
+						<div
+							class="border-line"
+							style="border-top: var(--border-width) solid var(--border-default)"
+						>
+							border-width (1px)
+						</div>
+						<div
+							class="border-line"
+							style="border-top: var(--border-width-md) solid var(--border-default)"
+						>
+							border-width-md (4px)
+						</div>
+						<div
+							class="border-line"
+							style="border-top: var(--border-width-lg) solid var(--border-default)"
+						>
+							border-width-lg (8px)
+						</div>
+					</div>
+				</section>
+
+				<!-- Typography Scale Section -->
+				<section class="section">
+					<h2>Typography Scale</h2>
+					<p>Modular scale with 1.25 ratio</p>
+					<div class="type-sample" style="font-size: var(--text-xs)">
+						<p>--text-xs: The quick brown fox jumps over the lazy dog</p>
+					</div>
+					<div class="type-sample" style="font-size: var(--text-sm)">
+						<p>--text-sm: The quick brown fox jumps over the lazy dog</p>
+					</div>
+					<div class="type-sample" style="font-size: var(--text-base)">
+						<p>--text-base: The quick brown fox jumps over the lazy dog</p>
+					</div>
+					<div class="type-sample" style="font-size: var(--text-md)">
+						<p>--text-md: The quick brown fox jumps over the lazy dog</p>
+					</div>
+					<div class="type-sample" style="font-size: var(--text-lg)">
+						<p>--text-lg: The quick brown fox jumps over the lazy dog</p>
+					</div>
+					<div class="type-sample" style="font-size: var(--text-xl)">
+						<p>--text-xl: The quick brown fox jumps over the lazy dog</p>
+					</div>
+					<div class="type-sample" style="font-size: var(--text-2xl)">
+						<p>--text-2xl: The quick brown fox</p>
+					</div>
+					<div class="type-sample" style="font-size: var(--text-3xl)">
+						<p>--text-3xl: Quick Fox</p>
+					</div>
+
+					<h3>Font Weights</h3>
+					<div class="type-sample" style="font-weight: var(--font-light)">--font-light (300)</div>
+					<div class="type-sample" style="font-weight: var(--font-normal)">--font-normal (400)</div>
+					<div class="type-sample" style="font-weight: var(--font-medium)">--font-medium (500)</div>
+					<div class="type-sample" style="font-weight: var(--font-semibold)">
+						--font-semibold (600)
+					</div>
+					<div class="type-sample" style="font-weight: var(--font-bold)">--font-bold (700)</div>
+
+					<h3>Line Heights</h3>
+					<div class="type-sample" style="line-height: var(--leading-tight)">
+						--leading-tight (1.25): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+						eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					</div>
+					<div class="type-sample" style="line-height: var(--leading-snug)">
+						--leading-snug (1.375): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+						eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					</div>
+					<div class="type-sample" style="line-height: var(--leading-normal)">
+						--leading-normal (1.5): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+						eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					</div>
+					<div class="type-sample" style="line-height: var(--leading-relaxed)">
+						--leading-relaxed (1.625): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+						do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					</div>
+					<div class="type-sample" style="line-height: var(--leading-loose)">
+						--leading-loose (2): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+						eiusmod tempor incididunt ut labore et dolore magna aliqua.
+					</div>
+
+					<h3>Letter Spacing</h3>
+					<div class="type-sample" style="letter-spacing: var(--tracking-tighter)">
+						--tracking-tighter: The quick brown fox
+					</div>
+					<div class="type-sample" style="letter-spacing: var(--tracking-tight)">
+						--tracking-tight: The quick brown fox
+					</div>
+					<div class="type-sample" style="letter-spacing: var(--tracking-normal)">
+						--tracking-normal: The quick brown fox
+					</div>
+					<div class="type-sample" style="letter-spacing: var(--tracking-wide)">
+						--tracking-wide: The quick brown fox
+					</div>
+					<div class="type-sample" style="letter-spacing: var(--tracking-wider)">
+						--tracking-wider: The quick brown fox
+					</div>
+					<div class="type-sample" style="letter-spacing: var(--tracking-widest)">
+						--tracking-widest: The quick brown fox
+					</div>
+				</section>
+
+				<!-- Font Families Section -->
+				<section class="section">
+					<h2>Font Families</h2>
+					<div class="type-sample" style="font-family: var(--font-sans)">
+						<strong>--font-sans:</strong> system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+						Roboto, 'Helvetica Neue', Arial, sans-serif
+					</div>
+					<div class="type-sample" style="font-family: var(--font-serif)">
+						<strong>--font-serif:</strong> Georgia, Cambria, 'Times New Roman', Times, serif
+					</div>
+					<div class="type-sample" style="font-family: var(--font-mono)">
+						<strong>--font-mono:</strong> 'Fira Code', 'Cascadia Code', Consolas, Monaco, 'Courier
+						New', monospace
+					</div>
+				</section>
+
+				<!-- Spacing Scale Section -->
+				<section class="section">
+					<h2>Spacing Scale</h2>
+					<p>Based on 0.25rem (4px) unit</p>
+					<div class="spacing-demo">
+						<div class="spacing-bar" style="width: var(--space-px)"></div>
+						<span class="spacing-label">--space-px (1px)</span>
+					</div>
+					<div class="spacing-demo">
+						<div class="spacing-bar" style="width: var(--space-xs)"></div>
+						<span class="spacing-label">--space-xs (4px)</span>
+					</div>
+					<div class="spacing-demo">
+						<div class="spacing-bar" style="width: var(--space-sm)"></div>
+						<span class="spacing-label">--space-sm (8px)</span>
+					</div>
+					<div class="spacing-demo">
+						<div class="spacing-bar" style="width: var(--space-md)"></div>
+						<span class="spacing-label">--space-md (12px)</span>
+					</div>
+					<div class="spacing-demo">
+						<div class="spacing-bar" style="width: var(--space-lg)"></div>
+						<span class="spacing-label">--space-lg (16px)</span>
+					</div>
+					<div class="spacing-demo">
+						<div class="spacing-bar" style="width: var(--space-xl)"></div>
+						<span class="spacing-label">--space-xl (24px)</span>
+					</div>
+					<div class="spacing-demo">
+						<div class="spacing-bar" style="width: var(--space-2xl)"></div>
+						<span class="spacing-label">--space-2xl (32px)</span>
+					</div>
+					<div class="spacing-demo">
+						<div class="spacing-bar" style="width: var(--space-3xl)"></div>
+						<span class="spacing-label">--space-3xl (48px)</span>
+					</div>
+					<div class="spacing-demo">
+						<div class="spacing-bar" style="width: var(--space-4xl)"></div>
+						<span class="spacing-label">--space-4xl (64px)</span>
+					</div>
+				</section>
+
+				<!-- Border Radius Section -->
+				<section class="section">
+					<h2>Border Radius</h2>
+					<div class="radius-demo">
+						<div class="radius-box" style="border-radius: var(--radius-none)">none</div>
+						<div class="radius-box" style="border-radius: var(--radius-sm)">sm</div>
+						<div class="radius-box" style="border-radius: var(--radius-md)">md</div>
+						<div class="radius-box" style="border-radius: var(--radius-lg)">lg</div>
+						<div class="radius-box" style="border-radius: var(--radius-xl)">xl</div>
+						<div class="radius-box" style="border-radius: var(--radius-2xl)">2xl</div>
+						<div class="radius-box" style="border-radius: var(--radius-3xl)">3xl</div>
+						<div class="radius-box" style="border-radius: var(--radius-full)">full</div>
+					</div>
+				</section>
+
+				<!-- Shadows Section -->
+				<section class="section">
+					<h2>Shadows & Elevation</h2>
+					<div class="shadow-demo">
+						<div class="shadow-box" style="box-shadow: var(--shadow-none)">none</div>
+						<div class="shadow-box" style="box-shadow: var(--shadow-xs)">xs</div>
+						<div class="shadow-box" style="box-shadow: var(--shadow-sm)">sm</div>
+						<div class="shadow-box" style="box-shadow: var(--shadow-md)">md</div>
+						<div class="shadow-box" style="box-shadow: var(--shadow-lg)">lg</div>
+						<div class="shadow-box" style="box-shadow: var(--shadow-xl)">xl</div>
+						<div class="shadow-box" style="box-shadow: var(--shadow-2xl)">2xl</div>
+						<div class="shadow-box" style="box-shadow: var(--shadow-inner)">inner</div>
+					</div>
+				</section>
+
+				<!-- Alpha & Overlays Section -->
+				<section class="section">
+					<h2>Alpha & Overlays</h2>
+					<p>Transparent surface and overlay variants</p>
+					<h3>Surface Alpha (Frosted Glass)</h3>
+					<div class="overlay-demo">
+						<div class="overlay-layer" style="background: var(--surface-alpha-light)">
+							surface-alpha-light
+						</div>
+					</div>
+					<div class="overlay-demo">
+						<div class="overlay-layer" style="background: var(--surface-alpha)">surface-alpha</div>
+					</div>
+					<div class="overlay-demo">
+						<div class="overlay-layer" style="background: var(--surface-alpha-strong)">
+							surface-alpha-strong
+						</div>
+					</div>
+
+					<h3>Overlays (Pure Black)</h3>
+					<div class="overlay-demo">
+						<div class="overlay-layer" style="background: var(--overlay-light)">overlay-light</div>
+					</div>
+					<div class="overlay-demo">
+						<div class="overlay-layer" style="background: var(--overlay)">overlay</div>
+					</div>
+					<div class="overlay-demo">
+						<div class="overlay-layer" style="background: var(--overlay-strong)">
+							overlay-strong
+						</div>
+					</div>
+				</section>
+
+				<!-- Focus States Section -->
+				<section class="section">
+					<h2>Focus States</h2>
+					<p>Interactive elements with focus ring styles</p>
+					<div class="focus-demo">
+						<input type="text" placeholder="Text input - click to focus" />
+						<textarea placeholder="Textarea - click to focus"></textarea>
+						<select>
+							<option>Select - click to focus</option>
+							<option>Option 1</option>
+							<option>Option 2</option>
+						</select>
+					</div>
+				</section>
+
+				<!-- Transitions Section -->
+				<section class="section">
+					<h2>Transitions & Easing</h2>
+					<p>Hover over boxes to see easing curves in action</p>
+					<div class="transition-demo">
+						<div class="transition-box">
+							<div class="transition-label">linear</div>
+							<div
+								class="moving-box"
+								style="transition: left var(--duration-slow) var(--ease-linear)"
+							></div>
+						</div>
+						<div class="transition-box">
+							<div class="transition-label">ease-in</div>
+							<div
+								class="moving-box"
+								style="transition: left var(--duration-slow) var(--ease-in)"
+							></div>
+						</div>
+						<div class="transition-box">
+							<div class="transition-label">ease-out</div>
+							<div
+								class="moving-box"
+								style="transition: left var(--duration-slow) var(--ease-out)"
+							></div>
+						</div>
+						<div class="transition-box">
+							<div class="transition-label">ease-in-out</div>
+							<div
+								class="moving-box"
+								style="transition: left var(--duration-slow) var(--ease-in-out)"
+							></div>
+						</div>
+						<div class="transition-box">
+							<div class="transition-label">bounce</div>
+							<div
+								class="moving-box"
+								style="transition: left var(--duration-slow) var(--ease-bounce)"
+							></div>
+						</div>
+					</div>
+				</section>
+
+				<!-- Z-Index Section -->
+				<section class="section">
+					<h2>Z-Index Layers</h2>
+					<p>Stacking order for UI elements</p>
+					<div class="zindex-demo">
+						<div
+							class="layer"
+							style="z-index: var(--z-base); top: 20px; left: 20px; width: 180px; height: 60px"
+						>
+							z-base (0)
+						</div>
+						<div
+							class="layer"
+							style="z-index: var(--z-dropdown); top: 40px; left: 40px; width: 180px; height: 60px"
+						>
+							z-dropdown (1000)
+						</div>
+						<div
+							class="layer"
+							style="z-index: var(--z-sticky); top: 60px; left: 60px; width: 180px; height: 60px"
+						>
+							z-sticky (1100)
+						</div>
+						<div
+							class="layer"
+							style="z-index: var(--z-fixed); top: 80px; left: 80px; width: 180px; height: 60px"
+						>
+							z-fixed (1200)
+						</div>
+						<div
+							class="layer"
+							style="
+								z-index: var(--z-modal-backdrop);
+								top: 100px;
+								left: 100px;
+								width: 180px;
+								height: 60px;
+							"
+						>
+							z-modal-backdrop (1300)
+						</div>
+						<div
+							class="layer"
+							style="z-index: var(--z-modal); top: 120px; left: 120px; width: 180px; height: 60px"
+						>
+							z-modal (1400)
+						</div>
+						<div
+							class="layer"
+							style="z-index: var(--z-popover); top: 140px; left: 140px; width: 180px; height: 60px"
+						>
+							z-popover (1500)
+						</div>
+						<div
+							class="layer"
+							style="z-index: var(--z-tooltip); top: 160px; left: 160px; width: 180px; height: 60px"
+						>
+							z-tooltip (1600)
+						</div>
+						<div
+							class="layer"
+							style="z-index: var(--z-toast); top: 180px; left: 180px; width: 180px; height: 60px"
+						>
+							z-toast (1700)
+						</div>
+					</div>
+				</section>
+
+				<!-- Container Widths Section -->
+				<section class="section">
+					<h2>Container Widths</h2>
+					<p>Fixed and fluid container sizes</p>
+					<h3>Fixed Containers</h3>
+					<div class="container-demo">
+						<div class="container-box" style="max-width: var(--container-sm)">
+							container-sm (40rem)
+						</div>
+						<div class="container-box" style="max-width: var(--container-md)">
+							container-md (48rem)
+						</div>
+						<div class="container-box" style="max-width: var(--container-lg)">
+							container-lg (64rem)
+						</div>
+						<div class="container-box" style="max-width: var(--container-xl)">
+							container-xl (80rem)
+						</div>
+						<div class="container-box" style="max-width: var(--container-2xl)">
+							container-2xl (96rem)
+						</div>
+					</div>
+
+					<h3>Fluid Containers (using clamp)</h3>
+					<div class="container-demo">
+						<div class="container-box" style="max-width: var(--container-fluid-sm)">
+							container-fluid-sm
+						</div>
+						<div class="container-box" style="max-width: var(--container-fluid-md)">
+							container-fluid-md
+						</div>
+						<div class="container-box" style="max-width: var(--container-fluid-lg)">
+							container-fluid-lg
+						</div>
+						<div class="container-box" style="max-width: var(--container-fluid-xl)">
+							container-fluid-xl
+						</div>
+						<div class="container-box" style="max-width: var(--container-fluid-2xl)">
+							container-fluid-2xl
+						</div>
+					</div>
+				</section>
+			</main>
+		</div>
+
+		<!-- Toast Notification -->
+		<div class="toast" id="toast">Copied to clipboard!</div>
+
+		<!-- JavaScript -->
+		<script>
+			// ===========================
+			// STATE
+			// ===========================
+			const defaults = {
+				accentHue: 200,
+				accentChroma: 0.3,
+				darkSurface: 0.15,
+				darkText: 0.9,
+				darkAccent: 0.65,
+				lightSurface: 0.97,
+				lightText: 0.18,
+				lightAccent: 0.45
+			};
+
+			let currentTheme = 'dark';
+
+			// ===========================
+			// THEME CONTROLS
+			// ===========================
+			const controls = {
+				accentHue: document.getElementById('accentHue'),
+				accentChroma: document.getElementById('accentChroma'),
+				darkSurface: document.getElementById('darkSurface'),
+				darkText: document.getElementById('darkText'),
+				darkAccent: document.getElementById('darkAccent'),
+				lightSurface: document.getElementById('lightSurface'),
+				lightText: document.getElementById('lightText'),
+				lightAccent: document.getElementById('lightAccent')
+			};
+
+			const valueDisplays = {
+				accentHue: document.getElementById('accentHueValue'),
+				accentChroma: document.getElementById('accentChromaValue'),
+				darkSurface: document.getElementById('darkSurfaceValue'),
+				darkText: document.getElementById('darkTextValue'),
+				darkAccent: document.getElementById('darkAccentValue'),
+				lightSurface: document.getElementById('lightSurfaceValue'),
+				lightText: document.getElementById('lightTextValue'),
+				lightAccent: document.getElementById('lightAccentValue')
+			};
+
+			// ===========================
+			// UPDATE FUNCTIONS
+			// ===========================
+			function updateCSSVariable(name, value) {
+				document.documentElement.style.setProperty(name, value);
+			}
+
+			function updateControl(controlName, variable, value) {
+				updateCSSVariable(variable, value);
+				if (valueDisplays[controlName]) {
+					valueDisplays[controlName].textContent = value;
+				}
+			}
+
+			function updateAccentPreview() {
+				const hue = controls.accentHue.value;
+				const chroma = controls.accentChroma.value;
+				const preview = document.getElementById('accentHuePreview');
+				preview.style.background = `oklch(0.6 ${chroma} ${hue})`;
+			}
+
+			function syncIntermediateVariables() {
+				// Sync intermediate variables to match current theme
+				if (currentTheme === 'dark') {
+					updateCSSVariable('--surface-base', controls.darkSurface.value);
+					updateCSSVariable('--text-base-l', controls.darkText.value);
+					updateCSSVariable('--accent-base-l', controls.darkAccent.value);
+				} else {
+					updateCSSVariable('--surface-base', controls.lightSurface.value);
+					updateCSSVariable('--text-base-l', controls.lightText.value);
+					updateCSSVariable('--accent-base-l', controls.lightAccent.value);
+				}
+			}
+
+			function updateComputedValues() {
+				// Use requestAnimationFrame to ensure CSS has been recalculated
+				requestAnimationFrame(() => {
+					const style = getComputedStyle(document.documentElement);
+
+					// Update surface values
+					for (let i = 1; i <= 10; i++) {
+						const el = document.getElementById(`surface-${i}-value`);
+						if (el) {
+							el.textContent = style.getPropertyValue(`--surface-${i}`).trim();
+						}
+					}
+
+					// Update accent values
+					const accentTokens = [
+						'accent',
+						'accent-hover',
+						'accent-muted',
+						'accent-alpha',
+						'accent-alpha-hover'
+					];
+					accentTokens.forEach(token => {
+						const el = document.getElementById(`${token}-value`);
+						if (el) {
+							el.textContent = style.getPropertyValue(`--${token}`).trim();
+						}
+					});
+				});
+			}
+
+			// ===========================
+			// EVENT LISTENERS
+			// ===========================
+			controls.accentHue.addEventListener('input', e => {
+				updateControl('accentHue', '--theme-accent-hue', e.target.value);
+				updateAccentPreview();
+				updateComputedValues();
+			});
+
+			controls.accentChroma.addEventListener('input', e => {
+				updateControl('accentChroma', '--theme-accent-chroma', e.target.value);
+				updateAccentPreview();
+				updateComputedValues();
+			});
+
+			controls.darkSurface.addEventListener('input', e => {
+				updateControl('darkSurface', '--dark-surface-base', e.target.value);
+				if (currentTheme === 'dark') {
+					updateCSSVariable('--surface-base', e.target.value);
+				}
+				updateComputedValues();
+			});
+
+			controls.darkText.addEventListener('input', e => {
+				updateControl('darkText', '--dark-text-base-lightness', e.target.value);
+				if (currentTheme === 'dark') {
+					updateCSSVariable('--text-base-l', e.target.value);
+				}
+				updateComputedValues();
+			});
+
+			controls.darkAccent.addEventListener('input', e => {
+				updateControl('darkAccent', '--dark-accent-base-lightness', e.target.value);
+				if (currentTheme === 'dark') {
+					updateCSSVariable('--accent-base-l', e.target.value);
+				}
+				updateComputedValues();
+			});
+
+			controls.lightSurface.addEventListener('input', e => {
+				updateControl('lightSurface', '--light-surface-base', e.target.value);
+				if (currentTheme === 'light') {
+					updateCSSVariable('--surface-base', e.target.value);
+				}
+				updateComputedValues();
+			});
+
+			controls.lightText.addEventListener('input', e => {
+				updateControl('lightText', '--light-text-base-lightness', e.target.value);
+				if (currentTheme === 'light') {
+					updateCSSVariable('--text-base-l', e.target.value);
+				}
+				updateComputedValues();
+			});
+
+			controls.lightAccent.addEventListener('input', e => {
+				updateControl('lightAccent', '--light-accent-base-lightness', e.target.value);
+				if (currentTheme === 'light') {
+					updateCSSVariable('--accent-base-l', e.target.value);
+				}
+				updateComputedValues();
+			});
+
+			// ===========================
+			// BUTTON ACTIONS
+			// ===========================
+			document.getElementById('toggleSidebar').addEventListener('click', () => {
+				document.getElementById('sidebar').classList.toggle('collapsed');
+			});
+
+			document.getElementById('toggleTheme').addEventListener('click', () => {
+				const html = document.documentElement;
+				if (currentTheme === 'dark') {
+					html.setAttribute('data-theme', 'light');
+					currentTheme = 'light';
+				} else {
+					html.setAttribute('data-theme', 'dark');
+					currentTheme = 'dark';
+				}
+				syncIntermediateVariables();
+				updateComputedValues();
+			});
+
+			document.getElementById('resetDefaults').addEventListener('click', () => {
+				Object.keys(defaults).forEach(key => {
+					controls[key].value = defaults[key];
+					const varName = `--theme-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+					updateCSSVariable(varName, defaults[key]);
+					if (valueDisplays[key]) {
+						valueDisplays[key].textContent = defaults[key];
+					}
+				});
+				syncIntermediateVariables();
+				updateAccentPreview();
+				updateComputedValues();
+			});
+
+			// ===========================
+			// COPY TO CLIPBOARD
+			// ===========================
+			document.querySelectorAll('.token-card').forEach(card => {
+				card.addEventListener('click', () => {
+					const token = card.getAttribute('data-token');
+					if (token) {
+						navigator.clipboard.writeText(token).then(() => {
+							showToast();
+						});
+					}
+				});
+			});
+
+			function showToast() {
+				const toast = document.getElementById('toast');
+				toast.classList.add('show');
+				setTimeout(() => {
+					toast.classList.remove('show');
+				}, 2000);
+			}
+
+			// ===========================
+			// INITIALIZATION
+			// ===========================
+			function init() {
+				syncIntermediateVariables();
+				updateAccentPreview();
+				updateComputedValues();
+			}
+
+			init();
+		</script>
+	</body>
+</html>

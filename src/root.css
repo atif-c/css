@@ -1,0 +1,449 @@
+/**
+ * Comprehensive Design Token System
+ * 
+ * A portable, parametric CSS design-token stylesheet providing:
+ * - OKLCH color system (dark/light modes with auto-detection)
+ * - Typography scale & font stacks
+ * - Spacing, radius, shadow, and elevation tokens
+ * - Transition & animation utilities
+ * - Z-index layers & container widths
+ * 
+ * BROWSER SUPPORT:
+ * - Chrome 111+ (March 2023)
+ * - Safari 16.4+ (March 2023)
+ * - Firefox 113+ (May 2023)
+ * 
+ * USAGE:
+ * - Dark mode: default, or add data-theme="dark" to <html>
+ * - Light mode: auto via prefers-color-scheme, or add data-theme="light" to <html>
+ * 
+ * All sizes use rem units for accessibility.
+ * Adjust root font-size to scale the entire system.
+ */
+:root {
+	/*
+    
+    Theme Configuration
+
+        COLOR
+        | What                | Variable                           | Range    | Default |
+        |---------------------|------------------------------------|----------|---------|
+        | Hue                 | --theme-accent-hue                 | 0 to 360 | 200     |
+        | Chroma (Saturation) | --theme-accent-chroma              | 0+       | 0.3     |
+
+        DARK THEME (default)
+        | What                | Variable                           | Range    | Default |
+        |---------------------|------------------------------------|----------|---------|
+        | Background          | --dark-surface-base          | 0 to 1   | 0.15    |
+        | Text lightness      | --dark-text-base-lightness   | 0 to 1   | 0.9     |
+        | Accent lightness    | --dark-accent-base-lightness | 0 to 1   | 0.65    |
+
+        LIGHT THEME (-light suffix)
+        | What             | Variable                              | Range    | Default |
+        |------------------|---------------------------------------|----------|---------|
+        | Background       | --light-surface-base-lightness  | 0 to 1   | 0.97    |
+        | Text lightness   | --light-text-base-lightness     | 0 to 1   | 0.18    |
+        | Accent lightness | --light-accent-base-lightness   | 0 to 1   | 0.45    |
+
+        ACCENT HUE EXAMPLES (OKLCH)
+        | Color            | Hue   | Chroma    | Notes                                    |
+        |------------------|-------|-----------|------------------------------------------|
+        |                  |       |           | Reds/blues show color even at low chroma |
+        | Pink             | 0     | any       |                                          |
+        | Red              | 10    | 0.5+      |  Needs 0.2+ or looks                     |
+        | Orange           | 40    | 0.2+      |                                          |
+        | Yellow           | 100   | 0.2+      | Needs 0.2+ or looks gray                 |
+        | Green            | 140   | 0.2+      | Needs 0.2+ or looks gray                 |
+        | Blue             | 220   | any       |                                          |
+
+        CHROMA RANGES
+        | Range   | Effect                      |
+        |---------|-----------------------------|
+        | 0       | Gray (no color)             |
+        | 0.1     | Muted/pastel                |
+        | 0.2+    | Vibrant (recommended)       |
+        | 0.5-1.0 | Neon/bright (use sparingly) |
+        | 1.0+    | Extreme (may clip to gamut) |
+
+    */
+
+	/* Color */
+	--theme-accent-hue: 200;
+	--theme-accent-chroma: 0.3;
+
+	/* Dark Theme */
+	--dark-surface-base: 0.15;
+	--dark-text-base-lightness: 0.9;
+	--dark-accent-base-lightness: 0.65;
+
+	/* Light Theme */
+	--light-surface-base: 0.97;
+	--light-text-base-lightness: 0.18;
+	--light-accent-base-lightness: 0.45;
+
+	/* Dark mode */
+	--dark-surface-step: 0.1;
+	--dark-text-step: 0.15;
+	--dark-divider-offset: 0.06;
+	--dark-border-subtle-offset: 0.08;
+	--dark-border-default-offset: 0.16;
+	--dark-border-strong-offset: 0.24;
+	--dark-state-l: 0.62;
+	--dark-state-bg-l: 0.22;
+	--dark-state-bg-chroma-mult: 0.3;
+
+	/* Light mode */
+	--light-surface-step: -0.075;
+	--light-text-step: -0.15;
+	--light-divider-offset: -0.18;
+	--light-border-subtle-offset: -0.08;
+	--light-border-default-offset: -0.14;
+	--light-border-strong-offset: -0.22;
+	--light-state-l: 0.45;
+	--light-state-bg-l: 0.92;
+	--light-state-bg-chroma-mult: 0.25;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+
+	background: transparent;
+}
+
+:root {
+	color: var(--text-secondary);
+
+	/* --- DARK MODE DEFAULT --- */
+	--surface-base: var(--dark-surface-base);
+	--surface-step: var(--dark-surface-step);
+
+	/* Text system */
+	--text-base-l: var(--dark-text-base-lightness);
+	--text-step: var(--dark-text-step);
+
+	/* Accent */
+	--accent-hue: var(--theme-accent-hue);
+	--accent-chroma: var(--theme-accent-chroma);
+	--accent-base-l: var(--dark-accent-base-lightness);
+
+	/* Semantic hues and lightness */
+	--state-chroma: 0.14;
+	--state-l: var(--dark-state-l);
+	--state-bg-l: var(--dark-state-bg-l);
+	--state-bg-chroma-mult: var(--dark-state-bg-chroma-mult);
+	--success-hue: 140;
+	--warning-hue: 45;
+	--error-hue: 25;
+	--info-hue: 210;
+
+	/* Border/divider offsets from surface-base */
+	--divider-offset: var(--dark-divider-offset);
+	--border-subtle-offset: var(--dark-border-subtle-offset);
+	--border-default-offset: var(--dark-border-default-offset);
+	--border-strong-offset: var(--dark-border-strong-offset);
+	/* --- Typography --- */
+	/* Font families */
+	--font-sans:
+		system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+		sans-serif;
+	--font-serif: Georgia, Cambria, 'Times New Roman', Times, serif;
+	--font-mono: 'Fira Code', 'Cascadia Code', Consolas, Monaco, 'Courier New', monospace;
+
+	/* Font sizes (modular scale with 1.25 ratio) */
+	--text-xs: 0.64rem;
+	--text-sm: 0.8rem;
+	--text-base: 1rem;
+	--text-md: 1.25rem;
+	--text-lg: 1.563rem;
+	--text-xl: 1.953rem;
+	--text-2xl: 2.441rem;
+	--text-3xl: 3.052rem;
+
+	/* Font weights */
+	--font-light: 300;
+	--font-normal: 400;
+	--font-medium: 500;
+	--font-semibold: 600;
+	--font-bold: 700;
+
+	/* Line heights */
+	--leading-tight: 1.25;
+	--leading-snug: 1.375;
+	--leading-normal: 1.5;
+	--leading-relaxed: 1.625;
+	--leading-loose: 2;
+
+	/* Letter spacing */
+	--tracking-tighter: -0.05em;
+	--tracking-tight: -0.025em;
+	--tracking-normal: 0;
+	--tracking-wide: 0.025em;
+	--tracking-wider: 0.05em;
+	--tracking-widest: 0.1em;
+
+	/* --- Spacing --- */
+	--space-unit: 0.25rem;
+	--space-px: 0.0625rem;
+	--space-0: 0;
+	--space-xs: calc(var(--space-unit) * 1);
+	--space-sm: calc(var(--space-unit) * 2);
+	--space-md: calc(var(--space-unit) * 3);
+	--space-lg: calc(var(--space-unit) * 4);
+	--space-xl: calc(var(--space-unit) * 6);
+	--space-2xl: calc(var(--space-unit) * 8);
+	--space-3xl: calc(var(--space-unit) * 12);
+	--space-4xl: calc(var(--space-unit) * 16);
+
+	/* --- Surfaces --- */
+	--surface-1: oklch(calc(var(--surface-base) + var(--surface-step) * 0) 0 0);
+	--surface-2: oklch(calc(var(--surface-base) + var(--surface-step) * 1) 0 0);
+	--surface-3: oklch(calc(var(--surface-base) + var(--surface-step) * 2) 0 0);
+	--surface-4: oklch(calc(var(--surface-base) + var(--surface-step) * 3) 0 0);
+	--surface-5: oklch(calc(var(--surface-base) + var(--surface-step) * 4) 0 0);
+	--surface-6: oklch(calc(var(--surface-base) + var(--surface-step) * 5) 0 0);
+	--surface-7: oklch(calc(var(--surface-base) + var(--surface-step) * 6) 0 0);
+	--surface-8: oklch(calc(var(--surface-base) + var(--surface-step) * 7) 0 0);
+	--surface-9: oklch(calc(var(--surface-base) + var(--surface-step) * 8) 0 0);
+	--surface-10: oklch(calc(var(--surface-base) + var(--surface-step) * 9) 0 0);
+
+	/*--- Text --- */
+	--text-primary: oklch(var(--text-base-l) 0 0);
+	--text-secondary: oklch(calc(var(--text-base-l) - var(--text-step)) 0 0);
+	--text-tertiary: oklch(calc(var(--text-base-l) - var(--text-step) * 2) 0 0);
+	--text-disabled: oklch(calc(var(--text-base-l) - var(--text-step) * 4) 0 0);
+
+	/* --- Border/Dividers --- */
+	--divider: oklch(calc(var(--surface-base) + var(--divider-offset)) 0 0);
+	--border-subtle: oklch(calc(var(--surface-base) + var(--border-subtle-offset)) 0 0);
+	--border-default: oklch(calc(var(--surface-base) + var(--border-default-offset)) 0 0);
+	--border-strong: oklch(calc(var(--surface-base) + var(--border-strong-offset)) 0 0);
+
+	/* Border widths */
+	--border-width: var(--space-px);
+	--border-width-md: var(--space-unit);
+	--border-width-lg: calc(var(--space-unit) * 2);
+
+	/* ===========================
+	   BORDER RADIUS
+	   =========================== */
+	--radius-none: 0;
+	--radius-sm: var(--space-unit);
+	--radius-md: calc(var(--space-unit) * 2);
+	--radius-lg: calc(var(--space-unit) * 4);
+	--radius-xl: calc(var(--space-unit) * 6);
+	--radius-2xl: calc(var(--space-unit) * 8);
+	--radius-3xl: calc(var(--space-unit) * 12);
+	--radius-full: 9999px;
+
+	/* ===========================
+	   ACCENT
+	   =========================== */
+	--accent: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue));
+	--accent-hover: oklch(calc(var(--accent-base-l) + 0.05) var(--accent-chroma) var(--accent-hue));
+	--accent-muted: oklch(
+		calc(var(--accent-base-l) - 0.08) calc(var(--accent-chroma) * 0.6) var(--accent-hue)
+	);
+
+	/* Accent alpha variants */
+	--accent-alpha: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue) / 0.1);
+	--accent-alpha-hover: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue) / 0.15);
+
+	/* ===========================
+	   ALPHA / OVERLAY VARIANTS
+	   =========================== */
+	/* Surface alpha for glass/frosted effects */
+	--surface-alpha: oklch(var(--surface-base) 0 0 / 0.8);
+	--surface-alpha-light: oklch(var(--surface-base) 0 0 / 0.5);
+	--surface-alpha-strong: oklch(var(--surface-base) 0 0 / 0.95);
+
+	/* Overlay for modals/dialogs */
+	--overlay: oklch(0 0 0 / 0.5);
+	--overlay-light: oklch(0 0 0 / 0.3);
+	--overlay-strong: oklch(0 0 0 / 0.7);
+
+	/* ===========================
+	   FOCUS
+	   =========================== */
+	--focus: var(--accent);
+	--focus-ring: var(--border-width) solid var(--accent);
+	--focus-ring-offset: var(--border-width-md);
+
+	/* ===========================
+	   SEMANTIC STATES
+	   =========================== */
+	--success: oklch(var(--state-l) var(--state-chroma) var(--success-hue));
+	--warning: oklch(var(--state-l) var(--state-chroma) var(--warning-hue));
+	--error: oklch(var(--state-l) var(--state-chroma) var(--error-hue));
+	--info: oklch(var(--state-l) var(--state-chroma) var(--info-hue));
+
+	--success-bg: oklch(
+		var(--state-bg-l) calc(var(--state-chroma) * var(--state-bg-chroma-mult)) var(--success-hue)
+	);
+	--warning-bg: oklch(
+		var(--state-bg-l) calc(var(--state-chroma) * var(--state-bg-chroma-mult)) var(--warning-hue)
+	);
+	--error-bg: oklch(
+		var(--state-bg-l) calc(var(--state-chroma) * var(--state-bg-chroma-mult)) var(--error-hue)
+	);
+	--info-bg: oklch(
+		var(--state-bg-l) calc(var(--state-chroma) * var(--state-bg-chroma-mult)) var(--info-hue)
+	);
+
+	/* ===========================
+	   SHADOWS / ELEVATION
+	   =========================== */
+	/* Shadow color (theme-aware) */
+	--shadow-color: oklch(0 0 0 / 0.1);
+	--shadow-color-md: oklch(0 0 0 / 0.15);
+	--shadow-color-lg: oklch(0 0 0 / 0.2);
+
+	/* Shadow tokens */
+	--shadow-xs: 0 var(--space-px) var(--space-unit) var(--shadow-color);
+	--shadow-sm:
+		0 var(--space-px) calc(var(--space-unit) * 0.75) var(--shadow-color),
+		0 var(--space-px) var(--space-unit) var(--shadow-color);
+	--shadow-md:
+		0 var(--space-unit) calc(var(--space-unit) * 1.5) calc(var(--space-px) * -1)
+			var(--shadow-color-md),
+		0 var(--space-unit) calc(var(--space-unit) * 0.75) calc(var(--space-px) * -1)
+			var(--shadow-color);
+	--shadow-lg:
+		0 calc(var(--space-unit) * 2.5) calc(var(--space-unit) * 3.75) calc(var(--space-unit) * -0.75)
+			var(--shadow-color-md),
+		0 var(--space-unit) calc(var(--space-unit) * 1.5) calc(var(--space-px) * -2) var(--shadow-color);
+	--shadow-xl:
+		0 calc(var(--space-unit) * 5) calc(var(--space-unit) * 6.25) calc(var(--space-unit) * -0.75)
+			var(--shadow-color-lg),
+		0 calc(var(--space-unit) * 2) calc(var(--space-unit) * 2.5) calc(var(--space-unit) * -0.75)
+			var(--shadow-color-md);
+	--shadow-2xl: 0 calc(var(--space-unit) * 6.25) calc(var(--space-unit) * 12.5)
+		calc(var(--space-unit) * -3) var(--shadow-color-lg);
+	--shadow-inner: inset 0 var(--space-unit) var(--space-unit) var(--shadow-color);
+	--shadow-none: none;
+
+	/* ===========================
+	   TRANSITIONS
+	   =========================== */
+	/* Durations */
+	--duration-instant: 0ms;
+	--duration-fast: 150ms;
+	--duration-normal: 250ms;
+	--duration-slow: 350ms;
+	--duration-slower: 500ms;
+
+	/* Easing functions */
+	--ease-linear: linear;
+	--ease-in: cubic-bezier(0.4, 0, 1, 1);
+	--ease-out: cubic-bezier(0, 0, 0.2, 1);
+	--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+	--ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+	/* Common transition shorthand */
+	--transition: all var(--duration-normal) var(--ease-out);
+	--transition-colors:
+		color var(--duration-fast) var(--ease-out),
+		background-color var(--duration-fast) var(--ease-out),
+		border-color var(--duration-fast) var(--ease-out);
+
+	/* ===========================
+	   Z-INDEX LAYERS
+	   =========================== */
+	--z-base: 0;
+	--z-dropdown: 1000;
+	--z-sticky: 1100;
+	--z-fixed: 1200;
+	--z-modal-backdrop: 1300;
+	--z-modal: 1400;
+	--z-popover: 1500;
+	--z-tooltip: 1600;
+	--z-toast: 1700;
+
+	/* ===========================
+ 	   CONTAINER / BREAKPOINTS
+ 	   =========================== */
+	/* Fixed containers (default) */
+	--container-sm: 40rem;
+	--container-md: 48rem;
+	--container-lg: 64rem;
+	--container-xl: 80rem;
+	--container-2xl: 96rem;
+
+	/* Fluid containers using clamp() - scales with viewport, constrained by min/max */
+	--container-fluid-sm: clamp(20rem, 90vw, 40rem);
+	--container-fluid-md: clamp(24rem, 90vw, 48rem);
+	--container-fluid-lg: clamp(32rem, 90vw, 64rem);
+	--container-fluid-xl: clamp(40rem, 90vw, 80rem);
+	--container-fluid-2xl: clamp(48rem, 90vw, 96rem);
+}
+
+/* ===========================
+   AUTOMATIC THEME DETECTION
+   =========================== */
+/* Auto-switch to light mode if system preference is light */
+@media (prefers-color-scheme: light) {
+	:root:not([data-theme]) {
+		--surface-base: var(--light-surface-base);
+		--surface-step: var(--light-surface-step);
+
+		--text-base-l: var(--light-text-base-lightness);
+		--text-step: var(--light-text-step);
+
+		--accent-base-l: var(--light-accent-base-lightness);
+
+		--divider-offset: var(--light-divider-offset);
+		--border-subtle-offset: var(--light-border-subtle-offset);
+		--border-default-offset: var(--light-border-default-offset);
+		--border-strong-offset: var(--light-border-strong-offset);
+
+		--state-l: var(--light-state-l);
+		--state-bg-l: var(--light-state-bg-l);
+		--state-bg-chroma-mult: var(--light-state-bg-chroma-mult);
+	}
+}
+
+/* ===========================
+   MANUAL THEME OVERRIDES
+   =========================== */
+/* These take priority over system preferences */
+:root[data-theme='dark'] {
+	--surface-base: var(--dark-surface-base);
+	--surface-step: var(--dark-surface-step);
+
+	--text-base-l: var(--dark-text-base-lightness);
+	--text-step: var(--dark-text-step);
+
+	--accent-base-l: var(--dark-accent-base-lightness);
+
+	--divider-offset: var(--dark-divider-offset);
+	--border-subtle-offset: var(--dark-border-subtle-offset);
+	--border-default-offset: var(--dark-border-default-offset);
+	--border-strong-offset: var(--dark-border-strong-offset);
+
+	--state-l: var(--dark-state-l);
+	--state-bg-l: var(--dark-state-bg-l);
+	--state-bg-chroma-mult: var(--dark-state-bg-chroma-mult);
+}
+
+:root[data-theme='light'] {
+	--surface-base: var(--light-surface-base);
+	--surface-step: var(--light-surface-step);
+
+	--text-base-l: var(--light-text-base-lightness);
+	--text-step: var(--light-text-step);
+
+	--accent-base-l: var(--light-accent-base-lightness);
+
+	--divider-offset: var(--light-divider-offset);
+	--border-subtle-offset: var(--light-border-subtle-offset);
+	--border-default-offset: var(--light-border-default-offset);
+	--border-strong-offset: var(--light-border-strong-offset);
+
+	--state-l: var(--light-state-l);
+	--state-bg-l: var(--light-state-bg-l);
+	--state-bg-chroma-mult: var(--light-state-bg-chroma-mult);
+}
