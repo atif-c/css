@@ -1,6 +1,6 @@
 {
 	"name": "@atifc/css",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Parametric CSS design token system built on OKLCH with dark/light theming and zero dependencies.",
 	"author": "Atif C <atifcdev@gmail.com>",
 	"license": "MIT",
