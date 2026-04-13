@@ -28,14 +28,14 @@
 		"theming"
 	],
 	"scripts": {
-		"build": "cleancss -o dist/root.css src/root.css",
+		"build": "lightningcss --minify --bundle --targets '>= 0.25%' src/root.css -o dist/root.css",
 		"prettier:check": "prettier --check .",
 		"prettier:write": "prettier --write .",
 		"format": "prettier --write .",
 		"prepublishOnly": "npm run build"
 	},
 	"devDependencies": {
-		"clean-css-cli": "^5.6.3",
+		"lightningcss-cli": "^1.32.0",
 		"prettier": "^3.8.2"
 	}
 }
