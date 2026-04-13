@@ -1,7 +1,8 @@
 # @atifc/css
 
-[![GitHub Repo](https://img.shields.io/badge/GitHub-css-black?style=for-the-badge&logo=github)](https://github.com/atif-c/css)
-[![npm Package](https://img.shields.io/badge/npm-%40atifc%2Fcss-red?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/@atifc/css)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-css-blue?&logo=github)](https://github.com/atif-c/css)
+[![npm Package](https://img.shields.io/npm/v/@atifc/css?logo=npm)](https://npmjs.com/package/@atifc/css)
+
 
 A parametric CSS design token system built on OKLCH. Drop it into any project to get a complete, mathematically consistent set of color, typography, spacing, and layout tokens with automatic dark/light theming.
 
