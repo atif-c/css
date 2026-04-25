@@ -2,7 +2,7 @@
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-css-blue?&logo=github)](https://github.com/atif-c/css)
 [![npm Package](https://img.shields.io/npm/v/@atifc/css?logo=npm)](https://npmjs.com/package/@atifc/css)
-
+[![Demo](https://img.shields.io/badge/Demo-blue)](https://atif-c.github.io/css/demo)
 
 A parametric CSS design token system built on OKLCH. Drop it into any project to get a complete, mathematically consistent set of color, typography, spacing, and layout tokens with automatic dark/light theming.
 
