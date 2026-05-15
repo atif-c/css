@@ -1,6 +1,6 @@
 {
 	"name": "@atifc/css",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Parametric CSS design token system built on OKLCH with dark/light theming and zero dependencies.",
 	"author": "Atif C <atifcdev@gmail.com>",
 	"license": "MIT",
@@ -14,10 +14,17 @@
 	"homepage": "https://github.com/atif-c/css#readme",
 	"main": "dist/root.css",
 	"style": "dist/root.css",
-	"exports": "./dist/root.css",
-	"sideEffects": false,
+	"types": "./index.d.ts",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"default": "./dist/root.css"
+		}
+	},
+	"sideEffects": true,
 	"files": [
-		"dist"
+		"dist",
+		"index.d.ts"
 	],
 	"keywords": [
 		"css",
@@ -36,6 +43,6 @@
 	},
 	"devDependencies": {
 		"lightningcss-cli": "^1.32.0",
-		"prettier": "^3.8.2"
+		"prettier": "^3.8.3"
 	}
 }
