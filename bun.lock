@@ -6,7 +6,7 @@
       "name": "atifc-css",
       "devDependencies": {
         "lightningcss-cli": "^1.32.0",
-        "prettier": "^3.8.2",
+        "prettier": "^3.8.3",
       },
     },
   },
@@ -37,6 +37,6 @@
 
     "lightningcss-cli-win32-x64-msvc": ["lightningcss-cli-win32-x64-msvc@1.32.0", "", { "os": "win32", "cpu": "x64" }, "sha512-nOBHLPeePXZpGR4Ptp+gkOIkr9pxlq2dFmO954ol5zBi/iOKxuD1hUTIQ7aG+ldKIx4eH9jwoTfZ6owUkm1paA=="],
 
-    "prettier": ["prettier@3.8.2", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-8c3mgTe0ASwWAJK+78dpviD+A8EqhndQPUBpNUIPt6+xWlIigCwfN01lWr9MAede4uqXGTEKeQWTvzb3vjia0Q=="],
+    "prettier": ["prettier@3.8.3", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw=="],
   }
 }
