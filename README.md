@@ -116,7 +116,7 @@ All tokens are CSS custom properties available globally after import.
 | Shadows         | `--shadow-none`, `--shadow-xs` through `--shadow-2xl`, `--shadow-inner`                                                                             |
 | Transitions     | `--duration-instant` through `--duration-slower`, `--ease-*`, `--transition`, `--transition-colors`                                                 |
 | Z-index         | `--z-base` through `--z-toast`                                                                                                                      |
-| Containers      | `--container-sm` through `--container-2xl`, `--container-fluid-sm` through `--container-fluid-2xl`                                                  |
+| Containers      | `--container-s` through `--container-2xl`, `--container-fluid-s` through `--container-fluid-2xl`                                                    |
 
 ## License
 

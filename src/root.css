@@ -156,10 +156,10 @@
 
 	/* Font sizes (modular scale with 1.25 ratio) */
 	--text-xs: 0.64rem;
-	--text-sm: 0.8rem;
+	--text-s: 0.8rem;
 	--text-base: 1rem;
-	--text-md: 1.25rem;
-	--text-lg: 1.563rem;
+	--text-m: 1.25rem;
+	--text-l: 1.563rem;
 	--text-xl: 1.953rem;
 	--text-2xl: 2.441rem;
 	--text-3xl: 3.052rem;
@@ -191,9 +191,9 @@
 	--space-px: 0.0625rem;
 	--space-0: 0;
 	--space-xs: calc(var(--space-unit) * 1);
-	--space-sm: calc(var(--space-unit) * 2);
-	--space-md: calc(var(--space-unit) * 3);
-	--space-lg: calc(var(--space-unit) * 4);
+	--space-s: calc(var(--space-unit) * 2);
+	--space-m: calc(var(--space-unit) * 3);
+	--space-l: calc(var(--space-unit) * 4);
 	--space-xl: calc(var(--space-unit) * 6);
 	--space-2xl: calc(var(--space-unit) * 8);
 	--space-3xl: calc(var(--space-unit) * 12);
@@ -225,16 +225,16 @@
 
 	/* Border widths */
 	--border-width: var(--space-px);
-	--border-width-md: var(--space-unit);
-	--border-width-lg: calc(var(--space-unit) * 2);
+	--border-width-m: var(--space-unit);
+	--border-width-l: calc(var(--space-unit) * 2);
 
 	/* ===========================
 	   BORDER RADIUS
 	   =========================== */
 	--radius-none: 0;
-	--radius-sm: var(--space-unit);
-	--radius-md: calc(var(--space-unit) * 2);
-	--radius-lg: calc(var(--space-unit) * 4);
+	--radius-s: var(--space-unit);
+	--radius-m: calc(var(--space-unit) * 2);
+	--radius-l: calc(var(--space-unit) * 4);
 	--radius-xl: calc(var(--space-unit) * 6);
 	--radius-2xl: calc(var(--space-unit) * 8);
 	--radius-3xl: calc(var(--space-unit) * 12);
@@ -271,7 +271,7 @@
 	   =========================== */
 	--focus: var(--accent);
 	--focus-ring: var(--border-width) solid var(--accent);
-	--focus-ring-offset: var(--border-width-md);
+	--focus-ring-offset: var(--border-width-m);
 
 	/* ===========================
 	   SEMANTIC STATES
@@ -299,30 +299,30 @@
 	   =========================== */
 	/* Shadow color (theme-aware) */
 	--shadow-color: oklch(0 0 0 / 0.1);
-	--shadow-color-md: oklch(0 0 0 / 0.15);
-	--shadow-color-lg: oklch(0 0 0 / 0.2);
+	--shadow-color-m: oklch(0 0 0 / 0.15);
+	--shadow-color-l: oklch(0 0 0 / 0.2);
 
 	/* Shadow tokens */
 	--shadow-xs: 0 var(--space-px) var(--space-unit) var(--shadow-color);
-	--shadow-sm:
+	--shadow-s:
 		0 var(--space-px) calc(var(--space-unit) * 0.75) var(--shadow-color),
 		0 var(--space-px) var(--space-unit) var(--shadow-color);
-	--shadow-md:
+	--shadow-m:
 		0 var(--space-unit) calc(var(--space-unit) * 1.5) calc(var(--space-px) * -1)
-			var(--shadow-color-md),
+			var(--shadow-color-m),
 		0 var(--space-unit) calc(var(--space-unit) * 0.75) calc(var(--space-px) * -1)
 			var(--shadow-color);
-	--shadow-lg:
+	--shadow-l:
 		0 calc(var(--space-unit) * 2.5) calc(var(--space-unit) * 3.75) calc(var(--space-unit) * -0.75)
-			var(--shadow-color-md),
+			var(--shadow-color-m),
 		0 var(--space-unit) calc(var(--space-unit) * 1.5) calc(var(--space-px) * -2) var(--shadow-color);
 	--shadow-xl:
 		0 calc(var(--space-unit) * 5) calc(var(--space-unit) * 6.25) calc(var(--space-unit) * -0.75)
-			var(--shadow-color-lg),
+			var(--shadow-color-l),
 		0 calc(var(--space-unit) * 2) calc(var(--space-unit) * 2.5) calc(var(--space-unit) * -0.75)
-			var(--shadow-color-md);
+			var(--shadow-color-m);
 	--shadow-2xl: 0 calc(var(--space-unit) * 6.25) calc(var(--space-unit) * 12.5)
-		calc(var(--space-unit) * -3) var(--shadow-color-lg);
+		calc(var(--space-unit) * -3) var(--shadow-color-l);
 	--shadow-inner: inset 0 var(--space-unit) var(--space-unit) var(--shadow-color);
 	--shadow-none: none;
 
@@ -367,16 +367,16 @@
  	   CONTAINER / BREAKPOINTS
  	   =========================== */
 	/* Fixed containers (default) */
-	--container-sm: 40rem;
-	--container-md: 48rem;
-	--container-lg: 64rem;
+	--container-s: 40rem;
+	--container-m: 48rem;
+	--container-l: 64rem;
 	--container-xl: 80rem;
 	--container-2xl: 96rem;
 
 	/* Fluid containers using clamp() - scales with viewport, constrained by min/max */
-	--container-fluid-sm: clamp(20rem, 90vw, 40rem);
-	--container-fluid-md: clamp(24rem, 90vw, 48rem);
-	--container-fluid-lg: clamp(32rem, 90vw, 64rem);
+	--container-fluid-s: clamp(20rem, 90vw, 40rem);
+	--container-fluid-m: clamp(24rem, 90vw, 48rem);
+	--container-fluid-l: clamp(32rem, 90vw, 64rem);
 	--container-fluid-xl: clamp(40rem, 90vw, 80rem);
 	--container-fluid-2xl: clamp(48rem, 90vw, 96rem);
 }
