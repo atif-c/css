@@ -116,7 +116,7 @@
 }
 
 :root {
-	color: var(--text-secondary);
+	color: var(--text-primary);
 
 	/* --- DARK MODE DEFAULT --- */
 	--surface-base: var(--dark-surface-base);
