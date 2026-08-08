@@ -35,7 +35,7 @@
 		"theming"
 	],
 	"scripts": {
-		"build": "lightningcss --minify --bundle --targets '>= 0.25%' src/root.css -o dist/root.css",
+		"build": "lightningcss --minify --bundle --targets \">= 0.25%\" src/root.css -o dist/root.css",
 		"prettier:check": "prettier --check .",
 		"prettier:write": "prettier --write .",
 		"format": "prettier --write .",
