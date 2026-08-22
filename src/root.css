@@ -288,31 +288,15 @@
 	   SHADOWS / ELEVATION
 	   =========================== */
 	/* Shadow color (theme-aware) */
-	--shadow-color: oklch(0 0 0 / 0.1);
-	--shadow-color-m: oklch(0 0 0 / 0.15);
-	--shadow-color-l: oklch(0 0 0 / 0.2);
+	--shadow-color: oklch(0 0 0 / 0.12);
 
-	/* Shadow tokens */
-	--shadow-xs: 0 var(--space-px) var(--space-unit) var(--shadow-color);
-	--shadow-s:
-		0 var(--space-px) calc(var(--space-unit) * 0.75) var(--shadow-color),
-		0 var(--space-px) var(--space-unit) var(--shadow-color);
-	--shadow-m:
-		0 var(--space-unit) calc(var(--space-unit) * 1.5) calc(var(--space-px) * -1)
-			var(--shadow-color-m),
-		0 var(--space-unit) calc(var(--space-unit) * 0.75) calc(var(--space-px) * -1)
-			var(--shadow-color);
-	--shadow-l:
-		0 calc(var(--space-unit) * 2.5) calc(var(--space-unit) * 3.75) calc(var(--space-unit) * -0.75)
-			var(--shadow-color-m),
-		0 var(--space-unit) calc(var(--space-unit) * 1.5) calc(var(--space-px) * -2) var(--shadow-color);
-	--shadow-xl:
-		0 calc(var(--space-unit) * 5) calc(var(--space-unit) * 6.25) calc(var(--space-unit) * -0.75)
-			var(--shadow-color-l),
-		0 calc(var(--space-unit) * 2) calc(var(--space-unit) * 2.5) calc(var(--space-unit) * -0.75)
-			var(--shadow-color-m);
-	--shadow-2xl: 0 calc(var(--space-unit) * 6.25) calc(var(--space-unit) * 12.5)
-		calc(var(--space-unit) * -3) var(--shadow-color-l);
+	/* Shadow tokens: each step doubles both the y-offset and blur radius */
+	--shadow-xs: 0 var(--space-px) calc(var(--space-unit) * 0.5) var(--shadow-color);
+	--shadow-s: 0 calc(var(--space-px) * 2) var(--space-unit) var(--shadow-color);
+	--shadow-m: 0 var(--space-unit) calc(var(--space-unit) * 2) var(--shadow-color);
+	--shadow-l: 0 calc(var(--space-unit) * 2) calc(var(--space-unit) * 4) var(--shadow-color);
+	--shadow-xl: 0 calc(var(--space-unit) * 4) calc(var(--space-unit) * 8) var(--shadow-color);
+	--shadow-2xl: 0 calc(var(--space-unit) * 8) calc(var(--space-unit) * 16) var(--shadow-color);
 	--shadow-inner: inset 0 var(--space-unit) var(--space-unit) var(--shadow-color);
 	--shadow-none: none;
 
