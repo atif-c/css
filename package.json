@@ -18,6 +18,8 @@
 	"exports": {
 		".": {
 			"types": "./index.d.ts",
+			"style": "./dist/root.css",
+			"css": "./dist/root.css",
 			"default": "./dist/root.css"
 		}
 	},
