@@ -64,7 +64,11 @@ Override any of the theme parameters on `:root` after importing to reshape the e
 :root {
 	/* Accent color */
 	--theme-accent-hue: 140; /* 0–360 — see hue table below */
-	--theme-accent-chroma: 0.25; /* 0+ — 0 = gray, 0.2+ = vibrant */
+	--theme-accent-chroma: 0.2; /* 0+ — clamped to a safe ceiling, see below */
+
+	/* Update chroma ceilings when changing hue */
+	--dark-accent-chroma-max: 0.21;
+	--light-accent-chroma-max: 0.15;
 
 	/* Dark theme base values */
 	--dark-surface-base: 0.15;
@@ -78,25 +82,32 @@ Override any of the theme parameters on `:root` after importing to reshape the e
 }
 ```
 
-**Hue reference:**
+### Chroma & gamut safety
 
-| Color  | Hue | Notes             |
-| ------ | --- | ----------------- |
-| Pink   | 0   |                   |
-| Red    | 10  | Needs chroma 0.2+ |
-| Orange | 40  | Needs chroma 0.2+ |
-| Yellow | 100 | Needs chroma 0.2+ |
-| Green  | 140 | Needs chroma 0.2+ |
-| Blue   | 220 |                   |
+Not every (hue, lightness, chroma) combination is displayable in sRGB. The safe
+chroma ceiling depends on **both hue and lightness**.
 
-**Chroma reference:**
+Chroma is clamped against per-hue `*-chroma-max` variables. If you change accent
+hue or state hues, update the matching `*-chroma-max` variable(s) (see table below).
 
-| Range   | Effect                        |
-| ------- | ----------------------------- |
-| 0       | Gray (no color)               |
-| 0.1     | Muted / pastel                |
-| 0.2+    | Vibrant (recommended)         |
-| 0.5–1.0 | Neon / bright (use sparingly) |
+**Hue reference** (includes the safe chroma ceiling at each theme's default accent lightness):
+
+| Color  | Hue | Max chroma (dark, L 0.65) | Max chroma (light, L 0.45) |
+| ------ | --- | ------------------------- | -------------------------- |
+| Pink   | 0   | 0.26                      | 0.18                       |
+| Red    | 10  | 0.24                      | 0.18                       |
+| Orange | 40  | 0.20                      | 0.14                       |
+| Yellow | 100 | 0.14                      | 0.09                       |
+| Green  | 140 | 0.21                      | 0.15                       |
+| Blue   | 220 | 0.12                      | 0.08                       |
+
+**Chroma reference** (once within the safe ceiling above):
+
+| Range | Effect                |
+| ----- | --------------------- |
+| 0     | Gray (no color)       |
+| 0.1   | Muted / pastel        |
+| 0.2+  | Vibrant (recommended) |
 
 ## Tokens
 

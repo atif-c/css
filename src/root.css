@@ -29,7 +29,10 @@
         | What                | Variable                           | Range    | Default |
         |---------------------|------------------------------------|----------|---------|
         | Hue                 | --theme-accent-hue                 | 0 to 360 | 200     |
-        | Chroma (Saturation) | --theme-accent-chroma              | 0+       | 0.3     |
+        | Chroma (Saturation) | --theme-accent-chroma              | 0+       | 0.11    |
+
+        Chroma above the sRGB-safe ceiling is clamped automatically.
+        See CHROMA & GAMUT SAFETY below.
 
         DARK THEME (default)
         | What                | Variable                           | Range    | Default |
@@ -46,41 +49,50 @@
         | Text lightness   | --light-text-base-lightness     | 0 to 1   | 0.18    |
         | Accent lightness | --light-accent-base-lightness   | 0 to 1   | 0.45    |
 
-        ACCENT HUE EXAMPLES (OKLCH)
-        | Color            | Hue   | Chroma    | Notes                                    |
-        |------------------|-------|-----------|------------------------------------------|
-        |                  |       |           | Reds/blues show color even at low chroma |
-        | Pink             | 0     | any       |                                          |
-        | Red              | 10    | 0.5+      |  Needs 0.2+ or looks                     |
-        | Orange           | 40    | 0.2+      |                                          |
-        | Yellow           | 100   | 0.2+      | Needs 0.2+ or looks gray                 |
-        | Green            | 140   | 0.2+      | Needs 0.2+ or looks gray                 |
-        | Blue             | 220   | any       |                                          |
+        ACCENT HUE EXAMPLES (OKLCH) - max sRGB-safe chroma at default base lightness
+        | Color   | Hue | Max C (dark, L .65) | Max C (light, L .45) |
+        |---------|-----|----------------------|-----------------------|
+        | Pink    | 0   | 0.26                 | 0.18                  |
+        | Red     | 10  | 0.24                 | 0.18                  |
+        | Orange  | 40  | 0.20                 | 0.14                  |
+        | Yellow  | 100 | 0.14                 | 0.09                  |
+        | Green   | 140 | 0.21                 | 0.15                  |
+        | Blue    | 220 | 0.12                 | 0.08                  |
 
-        CHROMA RANGES
+        CHROMA & GAMUT SAFETY
+        The sRGB-safe chroma ceiling depends on both hue and lightness.
+        Values above the ceiling get silently desaturated by browsers.
+        
+        Chroma is clamped against per-hue/lightness *-chroma-max variables.
+        If you change accent hue or base lightness, update the matching
+        *-chroma-max variables too (see table above).
+
+        Rough qualitative effect (once within the safe ceiling):
         | Range   | Effect                      |
         |---------|-----------------------------|
         | 0       | Gray (no color)             |
         | 0.1     | Muted/pastel                |
         | 0.2+    | Vibrant (recommended)       |
-        | 0.5-1.0 | Neon/bright (use sparingly) |
-        | 1.0+    | Extreme (may clip to gamut) |
 
     */
 
 	/* Color */
 	--theme-accent-hue: 200;
-	--theme-accent-chroma: 0.3;
+	--theme-accent-chroma: 0.11;
 
 	/* Dark Theme */
 	--dark-surface-base: 0.15;
 	--dark-text-base-lightness: 0.9;
 	--dark-accent-base-lightness: 0.65;
+	/* sRGB-safe chroma ceiling for hue 200 @ L 0.65 */
+	--dark-accent-chroma-max: 0.108;
 
 	/* Light Theme */
 	--light-surface-base: 0.97;
 	--light-text-base-lightness: 0.18;
 	--light-accent-base-lightness: 0.45;
+	/* sRGB-safe chroma ceiling for hue 200 @ L 0.45 */
+	--light-accent-chroma-max: 0.075;
 
 	/* Dark mode */
 	--dark-surface-step: 0.09;
@@ -92,6 +104,11 @@
 	--dark-state-l: 0.62;
 	--dark-state-bg-l: 0.22;
 	--dark-state-bg-chroma-mult: 0.3;
+	/* sRGB-safe chroma ceilings for the default state hues @ dark state-l 0.62 */
+	--dark-success-chroma-max: 0.195; /* hue 140 */
+	--dark-warning-chroma-max: 0.172; /* hue 45 */
+	--dark-error-chroma-max: 0.245; /* hue 25 */
+	--dark-info-chroma-max: 0.104; /* hue 210 */
 
 	/* Light mode */
 	--light-surface-step: -0.075;
@@ -103,12 +120,17 @@
 	--light-state-l: 0.45;
 	--light-state-bg-l: 0.92;
 	--light-state-bg-chroma-mult: 0.25;
+	/* sRGB-safe chroma ceilings for the default state hues @ light state-l 0.45 */
+	--light-success-chroma-max: 0.14; /* hue 140 */
+	--light-warning-chroma-max: 0.125; /* hue 45 */
+	--light-error-chroma-max: 0.178; /* hue 25 */
+	--light-info-chroma-max: 0.075; /* hue 210 */
 }
 
 :root {
 	color: var(--text-primary);
 
-	/* --- DARK MODE DEFAULT --- */
+	/* DARK MODE DEFAULT */
 	--surface-base: var(--dark-surface-base);
 	--surface-step: var(--dark-surface-step);
 
@@ -118,11 +140,12 @@
 
 	/* Accent */
 	--accent-hue: var(--theme-accent-hue);
-	--accent-chroma: var(--theme-accent-chroma);
+	--accent-chroma-max: var(--dark-accent-chroma-max);
+	--accent-chroma: clamp(0, var(--theme-accent-chroma), var(--accent-chroma-max));
 	--accent-base-l: var(--dark-accent-base-lightness);
 
 	/* Semantic hues and lightness */
-	--state-chroma: 0.14;
+	--state-chroma: 0.104;
 	--state-l: var(--dark-state-l);
 	--state-bg-l: var(--dark-state-bg-l);
 	--state-bg-chroma-mult: var(--dark-state-bg-chroma-mult);
@@ -130,13 +153,17 @@
 	--warning-hue: 45;
 	--error-hue: 25;
 	--info-hue: 210;
+	--success-chroma-max: var(--dark-success-chroma-max);
+	--warning-chroma-max: var(--dark-warning-chroma-max);
+	--error-chroma-max: var(--dark-error-chroma-max);
+	--info-chroma-max: var(--dark-info-chroma-max);
 
 	/* Border/divider offsets from surface-base */
 	--divider-offset: var(--dark-divider-offset);
 	--border-subtle-offset: var(--dark-border-subtle-offset);
 	--border-default-offset: var(--dark-border-default-offset);
 	--border-strong-offset: var(--dark-border-strong-offset);
-	/* --- Typography --- */
+	/* Typography */
 	/* Font families */
 	--font-sans:
 		system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
@@ -176,7 +203,7 @@
 	--tracking-wider: 0.05em;
 	--tracking-widest: 0.1em;
 
-	/* --- Spacing --- */
+	/* Spacing */
 	--space-unit: 0.25rem;
 	--space-px: 0.0625rem;
 	--space-0: 0;
@@ -189,7 +216,7 @@
 	--space-3xl: calc(var(--space-unit) * 12);
 	--space-4xl: calc(var(--space-unit) * 16);
 
-	/* --- Surfaces (clamped to 0-1 so extreme base/step values don't clip) --- */
+	/* Surfaces */
 	--surface-1: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 0), 1) 0 0);
 	--surface-2: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 1), 1) 0 0);
 	--surface-3: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 2), 1) 0 0);
@@ -201,13 +228,13 @@
 	--surface-9: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 8), 1) 0 0);
 	--surface-10: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 9), 1) 0 0);
 
-	/*--- Text --- */
+	/* Text */
 	--text-primary: oklch(var(--text-base-l) 0 0);
 	--text-secondary: oklch(calc(var(--text-base-l) - var(--text-step)) 0 0);
 	--text-tertiary: oklch(calc(var(--text-base-l) - var(--text-step) * 2) 0 0);
 	--text-disabled: oklch(calc(var(--text-base-l) - var(--text-step) * 4) 0 0);
 
-	/* --- Border/Dividers --- */
+	/* Border/Dividers */
 	--divider: oklch(calc(var(--surface-base) + var(--divider-offset)) 0 0);
 	--border-subtle: oklch(calc(var(--surface-base) + var(--border-subtle-offset)) 0 0);
 	--border-default: oklch(calc(var(--surface-base) + var(--border-default-offset)) 0 0);
@@ -266,22 +293,29 @@
 	/* ===========================
 	   SEMANTIC STATES
 	   =========================== */
-	--success: oklch(var(--state-l) var(--state-chroma) var(--success-hue));
-	--warning: oklch(var(--state-l) var(--state-chroma) var(--warning-hue));
-	--error: oklch(var(--state-l) var(--state-chroma) var(--error-hue));
-	--info: oklch(var(--state-l) var(--state-chroma) var(--info-hue));
+	/* Each state's chroma is clamped against its own hue-paired ceiling -
+	   see "CHROMA & GAMUT SAFETY" above. */
+	--success-chroma: clamp(0, var(--state-chroma), var(--success-chroma-max));
+	--warning-chroma: clamp(0, var(--state-chroma), var(--warning-chroma-max));
+	--error-chroma: clamp(0, var(--state-chroma), var(--error-chroma-max));
+	--info-chroma: clamp(0, var(--state-chroma), var(--info-chroma-max));
+
+	--success: oklch(var(--state-l) var(--success-chroma) var(--success-hue));
+	--warning: oklch(var(--state-l) var(--warning-chroma) var(--warning-hue));
+	--error: oklch(var(--state-l) var(--error-chroma) var(--error-hue));
+	--info: oklch(var(--state-l) var(--info-chroma) var(--info-hue));
 
 	--success-bg: oklch(
-		var(--state-bg-l) calc(var(--state-chroma) * var(--state-bg-chroma-mult)) var(--success-hue)
+		var(--state-bg-l) calc(var(--success-chroma) * var(--state-bg-chroma-mult)) var(--success-hue)
 	);
 	--warning-bg: oklch(
-		var(--state-bg-l) calc(var(--state-chroma) * var(--state-bg-chroma-mult)) var(--warning-hue)
+		var(--state-bg-l) calc(var(--warning-chroma) * var(--state-bg-chroma-mult)) var(--warning-hue)
 	);
 	--error-bg: oklch(
-		var(--state-bg-l) calc(var(--state-chroma) * var(--state-bg-chroma-mult)) var(--error-hue)
+		var(--state-bg-l) calc(var(--error-chroma) * var(--state-bg-chroma-mult)) var(--error-hue)
 	);
 	--info-bg: oklch(
-		var(--state-bg-l) calc(var(--state-chroma) * var(--state-bg-chroma-mult)) var(--info-hue)
+		var(--state-bg-l) calc(var(--info-chroma) * var(--state-bg-chroma-mult)) var(--info-hue)
 	);
 
 	/* ===========================
@@ -368,6 +402,7 @@
 		--text-step: var(--light-text-step);
 
 		--accent-base-l: var(--light-accent-base-lightness);
+		--accent-chroma-max: var(--light-accent-chroma-max);
 
 		--divider-offset: var(--light-divider-offset);
 		--border-subtle-offset: var(--light-border-subtle-offset);
@@ -377,6 +412,10 @@
 		--state-l: var(--light-state-l);
 		--state-bg-l: var(--light-state-bg-l);
 		--state-bg-chroma-mult: var(--light-state-bg-chroma-mult);
+		--success-chroma-max: var(--light-success-chroma-max);
+		--warning-chroma-max: var(--light-warning-chroma-max);
+		--error-chroma-max: var(--light-error-chroma-max);
+		--info-chroma-max: var(--light-info-chroma-max);
 	}
 }
 
@@ -392,6 +431,7 @@
 	--text-step: var(--dark-text-step);
 
 	--accent-base-l: var(--dark-accent-base-lightness);
+	--accent-chroma-max: var(--dark-accent-chroma-max);
 
 	--divider-offset: var(--dark-divider-offset);
 	--border-subtle-offset: var(--dark-border-subtle-offset);
@@ -401,6 +441,10 @@
 	--state-l: var(--dark-state-l);
 	--state-bg-l: var(--dark-state-bg-l);
 	--state-bg-chroma-mult: var(--dark-state-bg-chroma-mult);
+	--success-chroma-max: var(--dark-success-chroma-max);
+	--warning-chroma-max: var(--dark-warning-chroma-max);
+	--error-chroma-max: var(--dark-error-chroma-max);
+	--info-chroma-max: var(--dark-info-chroma-max);
 }
 
 :root[data-theme='light'] {
@@ -411,6 +455,7 @@
 	--text-step: var(--light-text-step);
 
 	--accent-base-l: var(--light-accent-base-lightness);
+	--accent-chroma-max: var(--light-accent-chroma-max);
 
 	--divider-offset: var(--light-divider-offset);
 	--border-subtle-offset: var(--light-border-subtle-offset);
@@ -420,4 +465,8 @@
 	--state-l: var(--light-state-l);
 	--state-bg-l: var(--light-state-bg-l);
 	--state-bg-chroma-mult: var(--light-state-bg-chroma-mult);
+	--success-chroma-max: var(--light-success-chroma-max);
+	--warning-chroma-max: var(--light-warning-chroma-max);
+	--error-chroma-max: var(--light-error-chroma-max);
+	--info-chroma-max: var(--light-info-chroma-max);
 }
