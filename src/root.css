@@ -35,6 +35,7 @@
         | What                | Variable                           | Range    | Default |
         |---------------------|------------------------------------|----------|---------|
         | Background          | --dark-surface-base          | 0 to 1   | 0.15    |
+        | Surface step        | --dark-surface-step          | -1 to 1  | 0.09    |
         | Text lightness      | --dark-text-base-lightness   | 0 to 1   | 0.9     |
         | Accent lightness    | --dark-accent-base-lightness | 0 to 1   | 0.65    |
 
@@ -82,7 +83,7 @@
 	--light-accent-base-lightness: 0.45;
 
 	/* Dark mode */
-	--dark-surface-step: 0.1;
+	--dark-surface-step: 0.09;
 	--dark-text-step: 0.15;
 	--dark-divider-offset: 0.06;
 	--dark-border-subtle-offset: 0.08;
@@ -188,17 +189,17 @@
 	--space-3xl: calc(var(--space-unit) * 12);
 	--space-4xl: calc(var(--space-unit) * 16);
 
-	/* --- Surfaces --- */
-	--surface-1: oklch(calc(var(--surface-base) + var(--surface-step) * 0) 0 0);
-	--surface-2: oklch(calc(var(--surface-base) + var(--surface-step) * 1) 0 0);
-	--surface-3: oklch(calc(var(--surface-base) + var(--surface-step) * 2) 0 0);
-	--surface-4: oklch(calc(var(--surface-base) + var(--surface-step) * 3) 0 0);
-	--surface-5: oklch(calc(var(--surface-base) + var(--surface-step) * 4) 0 0);
-	--surface-6: oklch(calc(var(--surface-base) + var(--surface-step) * 5) 0 0);
-	--surface-7: oklch(calc(var(--surface-base) + var(--surface-step) * 6) 0 0);
-	--surface-8: oklch(calc(var(--surface-base) + var(--surface-step) * 7) 0 0);
-	--surface-9: oklch(calc(var(--surface-base) + var(--surface-step) * 8) 0 0);
-	--surface-10: oklch(calc(var(--surface-base) + var(--surface-step) * 9) 0 0);
+	/* --- Surfaces (clamped to 0-1 so extreme base/step values don't clip) --- */
+	--surface-1: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 0), 1) 0 0);
+	--surface-2: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 1), 1) 0 0);
+	--surface-3: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 2), 1) 0 0);
+	--surface-4: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 3), 1) 0 0);
+	--surface-5: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 4), 1) 0 0);
+	--surface-6: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 5), 1) 0 0);
+	--surface-7: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 6), 1) 0 0);
+	--surface-8: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 7), 1) 0 0);
+	--surface-9: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 8), 1) 0 0);
+	--surface-10: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 9), 1) 0 0);
 
 	/*--- Text --- */
 	--text-primary: oklch(var(--text-base-l) 0 0);
