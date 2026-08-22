@@ -6,15 +6,13 @@
  * - Dark/light theme with automatic detection
  * - Typography, spacing, shadows, and layout tokens
  *
- * Import this module for its side effects (injects CSS into the page).
+ * This is a side-effect-only import: it has no exports. The bundler
+ * (or plain <link>) is responsible for injecting/loading the CSS;
+ * do not rely on a default or named export from this module.
  *
  * @example
  * ```typescript
- * // Side-effect import (recommended)
  * import '@atifc/css';
  * ```
  */
-declare module '@atifc/css' {
-	const css: string;
-	export default css;
-}
+export {};
