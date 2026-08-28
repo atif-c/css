@@ -3,7 +3,7 @@
 	"version": "1.0.3",
 	"description": "Parametric CSS design token system built on OKLCH with dark/light theming and zero dependencies.",
 	"author": "Atif C <atifcdev@gmail.com>",
-	"license": "MIT",
+	"license": "Unlicense",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/atif-c/css.git"

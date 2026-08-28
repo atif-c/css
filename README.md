@@ -151,4 +151,6 @@ All tokens are CSS custom properties available globally after import.
 
 ## License
 
-MIT
+Unlicense — public domain. See [LICENSE](./LICENSE). Versions 1.0.0–1.0.3, already
+published to npm under MIT, remain available under those original MIT terms;
+this change applies from the next published version onward.
