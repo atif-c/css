@@ -45,7 +45,7 @@
 				gap: var(--space-xs);
 
 				cursor: pointer;
-				border: var(--border-width) solid var(--border-default);
+				border: var(--border-width) solid var(--border-interactive);
 				border-radius: var(--radius-m);
 				background: var(--surface-3);
 				padding: var(--space-s) var(--space-m);
@@ -65,7 +65,7 @@
 				&.btn-primary {
 					border-color: var(--accent);
 					background: var(--accent);
-					color: var(--surface-1);
+					color: var(--accent-foreground);
 
 					&:hover {
 						background: var(--accent-hover);
@@ -402,7 +402,7 @@
 				textarea,
 				select {
 					width: 100%;
-					border: var(--border-width) solid var(--border-default);
+					border: var(--border-width) solid var(--border-interactive);
 					border-radius: var(--radius-m);
 					background: var(--surface-2);
 					padding: var(--space-s) var(--space-m);
@@ -819,6 +819,22 @@
 							<div class="token-label">--accent-alpha-hover</div>
 							<div class="token-value" id="accent-alpha-hover-value"></div>
 						</div>
+						<div class="token-card color-swatch" data-token="--accent-foreground">
+							<div
+								class="token-preview"
+								style="
+									background: var(--accent);
+									color: var(--accent-foreground);
+									display: flex;
+									align-items: center;
+									justify-content: center;
+								"
+							>
+								Aa
+							</div>
+							<div class="token-label">--accent-foreground</div>
+							<div class="token-value" id="accent-foreground-value"></div>
+						</div>
 					</div>
 				</section>
 
@@ -837,7 +853,7 @@
 				<!-- Borders & Dividers Section -->
 				<section class="section">
 					<h2>Borders & Dividers</h2>
-					<p>Four levels of border emphasis and three width variants</p>
+					<p>Five levels of border emphasis and three width variants</p>
 					<div class="border-sample">
 						<div class="border-line" style="border-top: var(--border-width) solid var(--divider)">
 							divider
@@ -859,6 +875,12 @@
 							style="border-top: var(--border-width) solid var(--border-strong)"
 						>
 							border-strong
+						</div>
+						<div
+							class="border-line"
+							style="border-top: var(--border-width) solid var(--border-interactive)"
+						>
+							border-interactive (WCAG 1.4.11, 3:1+)
 						</div>
 						<div
 							class="border-line"
@@ -1353,7 +1375,8 @@
 						'accent-hover',
 						'accent-muted',
 						'accent-alpha',
-						'accent-alpha-hover'
+						'accent-alpha-hover',
+						'accent-foreground'
 					];
 					accentTokens.forEach(token => {
 						const el = document.getElementById(`${token}-value`);

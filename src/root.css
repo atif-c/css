@@ -101,6 +101,10 @@
 	--dark-border-subtle-offset: 0.08;
 	--dark-border-default-offset: 0.16;
 	--dark-border-strong-offset: 0.24;
+	/* Tuned to clear WCAG 1.4.11 (3:1) against --dark-surface-base.
+	   Use for interactive-component boundaries, not decorative dividers.
+	   Re-check if --dark-surface-base is customized. */
+	--dark-border-interactive-offset: 0.35;
 	--dark-state-l: 0.62;
 	--dark-state-bg-l: 0.22;
 	--dark-state-bg-chroma-mult: 0.3;
@@ -117,6 +121,9 @@
 	--light-border-subtle-offset: -0.08;
 	--light-border-default-offset: -0.14;
 	--light-border-strong-offset: -0.22;
+	/* Tuned to clear WCAG 1.4.11 (3:1) against --light-surface-base.
+	   See --dark-border-interactive-offset above. */
+	--light-border-interactive-offset: -0.34;
 	--light-state-l: 0.45;
 	--light-state-bg-l: 0.92;
 	--light-state-bg-chroma-mult: 0.25;
@@ -163,6 +170,7 @@
 	--border-subtle-offset: var(--dark-border-subtle-offset);
 	--border-default-offset: var(--dark-border-default-offset);
 	--border-strong-offset: var(--dark-border-strong-offset);
+	--border-interactive-offset: var(--dark-border-interactive-offset);
 	/* Typography */
 	/* Font families */
 	--font-sans:
@@ -239,6 +247,10 @@
 	--border-subtle: oklch(calc(var(--surface-base) + var(--border-subtle-offset)) 0 0);
 	--border-default: oklch(calc(var(--surface-base) + var(--border-default-offset)) 0 0);
 	--border-strong: oklch(calc(var(--surface-base) + var(--border-strong-offset)) 0 0);
+	/* Meets WCAG 1.4.11 (3:1) against --surface-base in both themes.
+	   Use for interactive-component boundaries. The other border tokens are
+	   intentionally low-contrast for decorative dividers only. */
+	--border-interactive: oklch(calc(var(--surface-base) + var(--border-interactive-offset)) 0 0);
 
 	/* Border widths */
 	--border-width: var(--space-px);
@@ -265,6 +277,12 @@
 	--accent-muted: oklch(
 		calc(var(--accent-base-l) - 0.08) calc(var(--accent-chroma) * 0.6) var(--accent-hue)
 	);
+
+	/* Safe default text color on top of --accent.
+	   Sits at opposite lightness extreme from accent lightness in both themes.
+	   Do not use --text-primary on accent backgrounds (insufficient contrast).
+	   Re-check if --accent-base-l is customized. */
+	--accent-foreground: var(--surface-1);
 
 	/* Accent alpha variants */
 	--accent-alpha: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue) / 0.1);
@@ -408,6 +426,7 @@
 		--border-subtle-offset: var(--light-border-subtle-offset);
 		--border-default-offset: var(--light-border-default-offset);
 		--border-strong-offset: var(--light-border-strong-offset);
+		--border-interactive-offset: var(--light-border-interactive-offset);
 
 		--state-l: var(--light-state-l);
 		--state-bg-l: var(--light-state-bg-l);
@@ -437,6 +456,7 @@
 	--border-subtle-offset: var(--dark-border-subtle-offset);
 	--border-default-offset: var(--dark-border-default-offset);
 	--border-strong-offset: var(--dark-border-strong-offset);
+	--border-interactive-offset: var(--dark-border-interactive-offset);
 
 	--state-l: var(--dark-state-l);
 	--state-bg-l: var(--dark-state-bg-l);
@@ -461,6 +481,7 @@
 	--border-subtle-offset: var(--light-border-subtle-offset);
 	--border-default-offset: var(--light-border-default-offset);
 	--border-strong-offset: var(--light-border-strong-offset);
+	--border-interactive-offset: var(--light-border-interactive-offset);
 
 	--state-l: var(--light-state-l);
 	--state-bg-l: var(--light-state-bg-l);

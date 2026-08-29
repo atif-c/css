@@ -109,6 +109,26 @@ hue or state hues, update the matching `*-chroma-max` variable(s) (see table bel
 | 0.1   | Muted / pastel        |
 | 0.2+  | Vibrant (recommended) |
 
+### Contrast & accessibility
+
+#### Border contrast
+
+`--border-subtle`, `--border-default`, and `--border-strong` are intentionally
+low-contrast for decorative dividers and non-interactive edges (cards, section
+separators, etc.). They do not meet WCAG 1.4.11 ("Non-text Contrast") requirements
+for interactive controls.
+
+For interactive components (inputs, buttons), use `--border-interactive` instead.
+It meets 3:1 contrast against `--surface-base` in both themes. Re-check contrast
+if you customize `--dark-surface-base` or `--light-surface-base`.
+
+#### Text on accent backgrounds
+
+`--text-primary` may not have sufficient contrast against `--accent`. Use
+`--accent-foreground` instead, which defaults to `--surface-1` for safe contrast
+in both themes. Re-check if you customize `--dark-accent-base-lightness` or
+`--light-accent-base-lightness` significantly.
+
 ## Tokens
 
 All tokens are CSS custom properties available globally after import.
@@ -117,9 +137,9 @@ All tokens are CSS custom properties available globally after import.
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Surfaces        | `--surface-1` through `--surface-10`                                                                                                                |
 | Text            | `--text-primary`, `--text-secondary`, `--text-tertiary`, `--text-disabled`                                                                          |
-| Accent          | `--accent`, `--accent-hover`, `--accent-muted`, `--accent-alpha`, `--accent-alpha-hover`                                                            |
+| Accent          | `--accent`, `--accent-hover`, `--accent-muted`, `--accent-alpha`, `--accent-alpha-hover`, `--accent-foreground`                                     |
 | Semantic states | `--success`, `--warning`, `--error`, `--info` (each with a `--*-bg` variant)                                                                        |
-| Borders         | `--border-subtle`, `--border-default`, `--border-strong`, `--divider`                                                                               |
+| Borders         | `--border-subtle`, `--border-default`, `--border-strong`, `--border-interactive`, `--divider`                                                       |
 | Overlays        | `--overlay`, `--overlay-light`, `--overlay-strong`, `--surface-alpha`, `--surface-alpha-light`, `--surface-alpha-strong`                            |
 | Typography      | `--font-sans`, `--font-serif`, `--font-mono`, `--text-xs` through `--text-3xl`, `--font-light` through `--font-bold`, `--leading-*`, `--tracking-*` |
 | Spacing         | `--space-px`, `--space-xs` through `--space-4xl`                                                                                                    |
