@@ -67,12 +67,15 @@
         If you change accent hue or base lightness, update the matching
         *-chroma-max variables too (see table above).
 
-        Rough qualitative effect (once within the safe ceiling):
-        | Range   | Effect                      |
-        |---------|-----------------------------|
-        | 0       | Gray (no color)             |
-        | 0.1     | Muted/pastel                |
-        | 0.2+    | Vibrant (recommended)       |
+        Rough qualitative effect (relative to each hue's own ceiling above. 
+        There's no single chroma value that's "vibrant" for all hues. For 
+        example, 0.2 exceeds the sRGB ceiling for Yellow and Blue, but is 
+        safe for Pink/Red/Green)
+        | Range        | Effect          |
+        |--------------|-----------------|
+        | 0            | Gray (no color) |
+        | ~1/3 ceiling | Muted/pastel    |
+        | ~ceiling     | Vibrant         |
 
     */
 
@@ -110,7 +113,7 @@
 	--dark-state-bg-chroma-mult: 0.3;
 	/* sRGB-safe chroma ceilings for the default state hues @ dark state-l 0.62 */
 	--dark-success-chroma-max: 0.195; /* hue 140 */
-	--dark-warning-chroma-max: 0.172; /* hue 45 */
+	--dark-warning-chroma-max: 0.128; /* hue 100 */
 	--dark-error-chroma-max: 0.245; /* hue 25 */
 	--dark-info-chroma-max: 0.104; /* hue 210 */
 
@@ -129,7 +132,7 @@
 	--light-state-bg-chroma-mult: 0.25;
 	/* sRGB-safe chroma ceilings for the default state hues @ light state-l 0.45 */
 	--light-success-chroma-max: 0.14; /* hue 140 */
-	--light-warning-chroma-max: 0.125; /* hue 45 */
+	--light-warning-chroma-max: 0.093; /* hue 100 */
 	--light-error-chroma-max: 0.178; /* hue 25 */
 	--light-info-chroma-max: 0.075; /* hue 210 */
 }
@@ -157,7 +160,7 @@
 	--state-bg-l: var(--dark-state-bg-l);
 	--state-bg-chroma-mult: var(--dark-state-bg-chroma-mult);
 	--success-hue: 140;
-	--warning-hue: 45;
+	--warning-hue: 100;
 	--error-hue: 25;
 	--info-hue: 210;
 	--success-chroma-max: var(--dark-success-chroma-max);
