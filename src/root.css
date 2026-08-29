@@ -117,6 +117,11 @@
 	--dark-error-chroma-max: 0.245; /* hue 25 */
 	--dark-info-chroma-max: 0.104; /* hue 210 */
 
+	/* Shadow color (darker/higher-alpha in dark mode, lighter in light mode).
+	   See --dark-shadow-color and --light-shadow-color below. */
+	--dark-shadow-color: oklch(0 0 0 / 0.55);
+	--light-shadow-color: oklch(0 0 0 / 0.12);
+
 	/* Light mode */
 	--light-surface-step: -0.075;
 	--light-text-step: -0.15;
@@ -139,6 +144,7 @@
 
 :root {
 	color: var(--text-primary);
+	color-scheme: dark;
 
 	/* DARK MODE DEFAULT */
 	--surface-base: var(--dark-surface-base);
@@ -342,8 +348,8 @@
 	/* ===========================
 	   SHADOWS / ELEVATION
 	   =========================== */
-	/* Shadow color (theme-aware) */
-	--shadow-color: oklch(0 0 0 / 0.12);
+	/* Shadow color (theme-aware, overridden per theme below) */
+	--shadow-color: var(--dark-shadow-color);
 
 	/* Shadow tokens: each step doubles both the y-offset and blur radius */
 	--shadow-xs: 0 var(--space-px) calc(var(--space-unit) * 0.5) var(--shadow-color);
@@ -416,6 +422,7 @@
 /* Auto-switch to light mode if system preference is light */
 @media (prefers-color-scheme: light) {
 	:root:not([data-theme]) {
+		color-scheme: light;
 		--surface-base: var(--light-surface-base);
 		--surface-step: var(--light-surface-step);
 
@@ -438,6 +445,8 @@
 		--warning-chroma-max: var(--light-warning-chroma-max);
 		--error-chroma-max: var(--light-error-chroma-max);
 		--info-chroma-max: var(--light-info-chroma-max);
+
+		--shadow-color: var(--light-shadow-color);
 	}
 }
 
@@ -446,6 +455,7 @@
    =========================== */
 /* These take priority over system preferences */
 :root[data-theme='dark'] {
+	color-scheme: dark;
 	--surface-base: var(--dark-surface-base);
 	--surface-step: var(--dark-surface-step);
 
@@ -468,9 +478,12 @@
 	--warning-chroma-max: var(--dark-warning-chroma-max);
 	--error-chroma-max: var(--dark-error-chroma-max);
 	--info-chroma-max: var(--dark-info-chroma-max);
+
+	--shadow-color: var(--dark-shadow-color);
 }
 
 :root[data-theme='light'] {
+	color-scheme: light;
 	--surface-base: var(--light-surface-base);
 	--surface-step: var(--light-surface-step);
 
@@ -493,4 +506,6 @@
 	--warning-chroma-max: var(--light-warning-chroma-max);
 	--error-chroma-max: var(--light-error-chroma-max);
 	--info-chroma-max: var(--light-info-chroma-max);
+
+	--shadow-color: var(--light-shadow-color);
 }
