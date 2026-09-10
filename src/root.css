@@ -87,14 +87,12 @@
 	--dark-surface-base: 0.15;
 	--dark-text-base-lightness: 0.9;
 	--dark-accent-base-lightness: 0.65;
-	/* sRGB-safe chroma ceiling for hue 200 @ L 0.65 */
 	--dark-accent-chroma-max: 0.108;
 
 	/* Light Theme */
 	--light-surface-base: 0.97;
 	--light-text-base-lightness: 0.18;
 	--light-accent-base-lightness: 0.45;
-	/* sRGB-safe chroma ceiling for hue 200 @ L 0.45 */
 	--light-accent-chroma-max: 0.075;
 
 	/* Dark mode */
@@ -104,21 +102,17 @@
 	--dark-border-subtle-offset: 0.08;
 	--dark-border-default-offset: 0.16;
 	--dark-border-strong-offset: 0.24;
-	/* Tuned to clear WCAG 1.4.11 (3:1) against --dark-surface-base.
-	   Use for interactive-component boundaries, not decorative dividers.
-	   Re-check if --dark-surface-base is customized. */
+
 	--dark-border-interactive-offset: 0.35;
 	--dark-state-l: 0.62;
 	--dark-state-bg-l: 0.22;
+
 	--dark-state-bg-chroma-mult: 0.3;
-	/* sRGB-safe chroma ceilings for the default state hues @ dark state-l 0.62 */
 	--dark-success-chroma-max: 0.195; /* hue 140 */
 	--dark-warning-chroma-max: 0.128; /* hue 100 */
 	--dark-error-chroma-max: 0.245; /* hue 25 */
 	--dark-info-chroma-max: 0.104; /* hue 210 */
 
-	/* Shadow color (darker/higher-alpha in dark mode, lighter in light mode).
-	   See --dark-shadow-color and --light-shadow-color below. */
 	--dark-shadow-color: oklch(0 0 0 / 0.55);
 	--light-shadow-color: oklch(0 0 0 / 0.12);
 
@@ -129,13 +123,12 @@
 	--light-border-subtle-offset: -0.08;
 	--light-border-default-offset: -0.14;
 	--light-border-strong-offset: -0.22;
-	/* Tuned to clear WCAG 1.4.11 (3:1) against --light-surface-base.
-	   See --dark-border-interactive-offset above. */
 	--light-border-interactive-offset: -0.34;
+
 	--light-state-l: 0.45;
 	--light-state-bg-l: 0.92;
 	--light-state-bg-chroma-mult: 0.25;
-	/* sRGB-safe chroma ceilings for the default state hues @ light state-l 0.45 */
+
 	--light-success-chroma-max: 0.14; /* hue 140 */
 	--light-warning-chroma-max: 0.093; /* hue 100 */
 	--light-error-chroma-max: 0.178; /* hue 25 */
@@ -256,9 +249,6 @@
 	--border-subtle: oklch(calc(var(--surface-base) + var(--border-subtle-offset)) 0 0);
 	--border-default: oklch(calc(var(--surface-base) + var(--border-default-offset)) 0 0);
 	--border-strong: oklch(calc(var(--surface-base) + var(--border-strong-offset)) 0 0);
-	/* Meets WCAG 1.4.11 (3:1) against --surface-base in both themes.
-	   Use for interactive-component boundaries. The other border tokens are
-	   intentionally low-contrast for decorative dividers only. */
 	--border-interactive: oklch(calc(var(--surface-base) + var(--border-interactive-offset)) 0 0);
 
 	/* Border widths */
@@ -287,13 +277,7 @@
 		calc(var(--accent-base-l) - 0.08) calc(var(--accent-chroma) * 0.6) var(--accent-hue)
 	);
 
-	/* Safe default text color on top of --accent.
-	   Sits at opposite lightness extreme from accent lightness in both themes.
-	   Do not use --text-primary on accent backgrounds (insufficient contrast).
-	   Re-check if --accent-base-l is customized. */
 	--accent-foreground: var(--surface-1);
-
-	/* Accent alpha variants */
 	--accent-alpha: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue) / 0.1);
 	--accent-alpha-hover: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue) / 0.15);
 
