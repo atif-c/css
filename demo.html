@@ -6,6 +6,10 @@
 		<title>Design Token System Demo</title>
 		<link rel="stylesheet" href="src/root.css" />
 		<style>
+			:root {
+				--demo-state-step: 8;
+			}
+
 			body {
 				margin: 0;
 				background: var(--surface-1);
@@ -264,27 +268,27 @@
 				font-size: var(--text-s);
 
 				&.success {
-					border: var(--border-width) solid var(--success);
-					background: var(--success-bg);
-					color: var(--success);
+					border: var(--border-width) solid var(--success-text);
+					background: var(--success-bg-demo);
+					color: var(--success-text);
 				}
 
 				&.warning {
-					border: var(--border-width) solid var(--warning);
-					background: var(--warning-bg);
-					color: var(--warning);
+					border: var(--border-width) solid var(--warning-text);
+					background: var(--warning-bg-demo);
+					color: var(--warning-text);
 				}
 
 				&.error {
-					border: var(--border-width) solid var(--error);
-					background: var(--error-bg);
-					color: var(--error);
+					border: var(--border-width) solid var(--error-text);
+					background: var(--error-bg-demo);
+					color: var(--error-text);
 				}
 
 				&.info {
-					border: var(--border-width) solid var(--info);
-					background: var(--info-bg);
-					color: var(--info);
+					border: var(--border-width) solid var(--info-text);
+					background: var(--info-bg-demo);
+					color: var(--info-text);
 				}
 			}
 
@@ -841,7 +845,88 @@
 				<!-- Semantic States Section -->
 				<section class="section">
 					<h2>Semantic States</h2>
-					<p>Success, warning, error, and info color variants</p>
+					<p>
+						Adjust bg/text/border steps independently for each state (step 1 = lightest, step 10 =
+						darkest)
+					</p>
+
+					<!-- Success Controls -->
+					<div class="control-group">
+						<h3>Success</h3>
+						<div class="control">
+							<label for="successBg">Background Step (1-10)</label>
+							<input type="range" id="successBg" min="1" max="10" value="2" step="1" />
+							<div class="control-value">
+								<span id="successBgValue">2</span>
+							</div>
+						</div>
+						<div class="control">
+							<label for="successText">Text/Border Step (1-10)</label>
+							<input type="range" id="successText" min="1" max="10" value="8" step="1" />
+							<div class="control-value">
+								<span id="successTextValue">8</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- Warning Controls -->
+					<div class="control-group">
+						<h3>Warning</h3>
+						<div class="control">
+							<label for="warningBg">Background Step (1-10)</label>
+							<input type="range" id="warningBg" min="1" max="10" value="2" step="1" />
+							<div class="control-value">
+								<span id="warningBgValue">2</span>
+							</div>
+						</div>
+						<div class="control">
+							<label for="warningText">Text/Border Step (1-10)</label>
+							<input type="range" id="warningText" min="1" max="10" value="8" step="1" />
+							<div class="control-value">
+								<span id="warningTextValue">8</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- Error Controls -->
+					<div class="control-group">
+						<h3>Error</h3>
+						<div class="control">
+							<label for="errorBg">Background Step (1-10)</label>
+							<input type="range" id="errorBg" min="1" max="10" value="2" step="1" />
+							<div class="control-value">
+								<span id="errorBgValue">2</span>
+							</div>
+						</div>
+						<div class="control">
+							<label for="errorText">Text/Border Step (1-10)</label>
+							<input type="range" id="errorText" min="1" max="10" value="8" step="1" />
+							<div class="control-value">
+								<span id="errorTextValue">8</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- Info Controls -->
+					<div class="control-group">
+						<h3>Info</h3>
+						<div class="control">
+							<label for="infoBg">Background Step (1-10)</label>
+							<input type="range" id="infoBg" min="1" max="10" value="2" step="1" />
+							<div class="control-value">
+								<span id="infoBgValue">2</span>
+							</div>
+						</div>
+						<div class="control">
+							<label for="infoText">Text/Border Step (1-10)</label>
+							<input type="range" id="infoText" min="1" max="10" value="8" step="1" />
+							<div class="control-value">
+								<span id="infoTextValue">8</span>
+							</div>
+						</div>
+					</div>
+
+					<h3 style="margin-top: var(--space-2xl)">Preview</h3>
 					<div class="state-demo success">
 						<strong>Success:</strong> Operation completed successfully
 					</div>
@@ -1384,6 +1469,17 @@
 							el.textContent = style.getPropertyValue(`--${token}`).trim();
 						}
 					});
+
+					// Update semantic state values (success, warning, error, info 1-10)
+					const states = ['success', 'warning', 'error', 'info'];
+					states.forEach(state => {
+						for (let i = 1; i <= 10; i++) {
+							const el = document.getElementById(`${state}-${i}-value`);
+							if (el) {
+								el.textContent = style.getPropertyValue(`--${state}-${i}`).trim();
+							}
+						}
+					});
 				});
 			}
 
@@ -1451,6 +1547,63 @@
 			});
 
 			// ===========================
+			// STATE STEP SELECTORS (independent controls)
+			// ===========================
+			const stateControls = {
+				success: {
+					bg: document.getElementById('successBg'),
+					text: document.getElementById('successText'),
+					bgValue: document.getElementById('successBgValue'),
+					textValue: document.getElementById('successTextValue')
+				},
+				warning: {
+					bg: document.getElementById('warningBg'),
+					text: document.getElementById('warningText'),
+					bgValue: document.getElementById('warningBgValue'),
+					textValue: document.getElementById('warningTextValue')
+				},
+				error: {
+					bg: document.getElementById('errorBg'),
+					text: document.getElementById('errorText'),
+					bgValue: document.getElementById('errorBgValue'),
+					textValue: document.getElementById('errorTextValue')
+				},
+				info: {
+					bg: document.getElementById('infoBg'),
+					text: document.getElementById('infoText'),
+					bgValue: document.getElementById('infoBgValue'),
+					textValue: document.getElementById('infoTextValue')
+				}
+			};
+
+			function updateStateDemo() {
+				Object.keys(stateControls).forEach(state => {
+					const bgStep = stateControls[state].bg.value;
+					const textStep = stateControls[state].text.value;
+
+					// Update display values
+					stateControls[state].bgValue.textContent = bgStep;
+					stateControls[state].textValue.textContent = textStep;
+
+					// Set CSS variables for demo
+					document.documentElement.style.setProperty(
+						`--${state}-text`,
+						`var(--${state}-${textStep})`
+					);
+					document.documentElement.style.setProperty(
+						`--${state}-bg-demo`,
+						`var(--${state}-${bgStep})`
+					);
+				});
+			}
+
+			// Add event listeners to all controls
+			Object.keys(stateControls).forEach(state => {
+				stateControls[state].bg.addEventListener('input', updateStateDemo);
+				stateControls[state].text.addEventListener('input', updateStateDemo);
+			});
+
+			// ===========================
 			// BUTTON ACTIONS
 			// ===========================
 			document.getElementById('toggleSidebar').addEventListener('click', () => {
@@ -1513,6 +1666,7 @@
 				syncIntermediateVariables();
 				updateAccentPreview();
 				updateComputedValues();
+				updateStateDemo();
 			}
 
 			init();
