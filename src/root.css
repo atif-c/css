@@ -14,70 +14,15 @@
  * - Firefox 113+ (May 2023)
  * 
  * USAGE:
- * - Dark mode: default, or add data-theme="dark" to <html>
- * - Light mode: auto via prefers-color-scheme, or add data-theme="light" to <html>
+ * - base dark -> auto light if no data-theme -> data-theme wins
  * 
  * All sizes use rem units for accessibility.
  * Adjust root font-size to scale the entire system.
  */
 :root {
-	/*
-    
-    Theme Configuration
-
-        COLOR
-        | What                | Variable                           | Range    | Default |
-        |---------------------|------------------------------------|----------|---------|
-        | Hue                 | --theme-accent-hue                 | 0 to 360 | 200     |
-        | Chroma (Saturation) | --theme-accent-chroma              | 0+       | 0.11    |
-
-        Chroma above the sRGB-safe ceiling is clamped automatically.
-        See CHROMA & GAMUT SAFETY below.
-
-        DARK THEME (default)
-        | What                | Variable                           | Range    | Default |
-        |---------------------|------------------------------------|----------|---------|
-        | Background          | --dark-surface-base          | 0 to 1   | 0.15    |
-        | Surface step        | --dark-surface-step          | -1 to 1  | 0.09    |
-        | Text lightness      | --dark-text-base-lightness   | 0 to 1   | 0.9     |
-        | Accent lightness    | --dark-accent-base-lightness | 0 to 1   | 0.65    |
-
-        LIGHT THEME (-light suffix)
-        | What             | Variable                              | Range    | Default |
-        |------------------|---------------------------------------|----------|---------|
-        | Background       | --light-surface-base-lightness  | 0 to 1   | 0.97    |
-        | Text lightness   | --light-text-base-lightness     | 0 to 1   | 0.18    |
-        | Accent lightness | --light-accent-base-lightness   | 0 to 1   | 0.45    |
-
-        ACCENT HUE EXAMPLES (OKLCH) - max sRGB-safe chroma at default base lightness
-        | Color   | Hue | Max C (dark, L .65) | Max C (light, L .45) |
-        |---------|-----|----------------------|-----------------------|
-        | Pink    | 0   | 0.26                 | 0.18                  |
-        | Red     | 10  | 0.24                 | 0.18                  |
-        | Orange  | 40  | 0.20                 | 0.14                  |
-        | Yellow  | 100 | 0.14                 | 0.09                  |
-        | Green   | 140 | 0.21                 | 0.15                  |
-        | Blue    | 220 | 0.12                 | 0.08                  |
-
-        CHROMA & GAMUT SAFETY
-        The sRGB-safe chroma ceiling depends on both hue and lightness.
-        Values above the ceiling get silently desaturated by browsers.
-        
-        Chroma is clamped against per-hue/lightness *-chroma-max variables.
-        If you change accent hue or base lightness, update the matching
-        *-chroma-max variables too (see table above).
-
-        Rough qualitative effect (relative to each hue's own ceiling above. 
-        There's no single chroma value that's "vibrant" for all hues. For 
-        example, 0.2 exceeds the sRGB ceiling for Yellow and Blue, but is 
-        safe for Pink/Red/Green)
-        | Range        | Effect          |
-        |--------------|-----------------|
-        | 0            | Gray (no color) |
-        | ~1/3 ceiling | Muted/pastel    |
-        | ~ceiling     | Vibrant         |
-
-    */
+	/* SECTION 1/5 — THEME INPUTS
+	   (set once, dark+light pairs)
+	   Applies: always. Edit here to retune. Keep dark/light pairs in sync. */
 
 	/* Color */
 	--theme-accent-hue: 200;
@@ -139,7 +84,9 @@
 	color: var(--text-primary);
 	color-scheme: dark;
 
-	/* DARK MODE DEFAULT */
+	/* SECTION 2/5 — DARK DEFAULT + SHARED TOKENS
+	   (fallback for no media support)
+	   Applies: always unless overridden below. Aliases -> dark; derived once. */
 	--surface-base: var(--dark-surface-base);
 	--surface-step: var(--dark-surface-step);
 
@@ -400,10 +347,10 @@
 	--container-fluid-2xl: clamp(48rem, 90vw, 96rem);
 }
 
-/* ===========================
-   AUTOMATIC THEME DETECTION
-   =========================== */
-/* Auto-switch to light mode if system preference is light */
+/* SECTION 3/5 — AUTO LIGHT
+   (OS preference, only if no data-theme)
+   Applies: @media (prefers-color-scheme: light) + :root:not([data-theme])
+   Rule: keep alias list identical to Section 4b. */
 @media (prefers-color-scheme: light) {
 	:root:not([data-theme]) {
 		color-scheme: light;
@@ -434,10 +381,10 @@
 	}
 }
 
-/* ===========================
-   MANUAL THEME OVERRIDES
-   =========================== */
-/* These take priority over system preferences */
+/* SECTION 4/5 — MANUAL OVERRIDES
+   (win over OS, keep last in source order)
+   4a data-theme='dark' (explicit, mirrors Section 2 aliases)
+   4b data-theme='light' (explicit, mirrors Section 3 aliases) */
 :root[data-theme='dark'] {
 	color-scheme: dark;
 	--surface-base: var(--dark-surface-base);
