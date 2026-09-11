@@ -133,21 +133,21 @@ in both themes. Re-check if you customize `--dark-accent-base-lightness` or
 
 All tokens are CSS custom properties available globally after import.
 
-| Category        | Variables                                                                                                                                           |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Surfaces        | `--surface-1` through `--surface-10`                                                                                                                |
-| Text            | `--text-primary`, `--text-secondary`, `--text-tertiary`, `--text-disabled`                                                                          |
-| Accent          | `--accent`, `--accent-hover`, `--accent-muted`, `--accent-alpha`, `--accent-alpha-hover`, `--accent-foreground`                                     |
-| Semantic states | `--success`, `--warning`, `--error`, `--info` (each with a `--*-bg` variant)                                                                        |
-| Borders         | `--border-subtle`, `--border-default`, `--border-strong`, `--border-interactive`, `--divider`                                                       |
-| Overlays        | `--overlay`, `--overlay-light`, `--overlay-strong`, `--surface-alpha`, `--surface-alpha-light`, `--surface-alpha-strong`                            |
-| Typography      | `--font-sans`, `--font-serif`, `--font-mono`, `--text-xs` through `--text-3xl`, `--font-light` through `--font-bold`, `--leading-*`, `--tracking-*` |
-| Spacing         | `--space-px`, `--space-xs` through `--space-4xl`                                                                                                    |
-| Border radius   | `--radius-none` through `--radius-full`                                                                                                             |
-| Shadows         | `--shadow-none`, `--shadow-xs` through `--shadow-2xl`, `--shadow-inner`                                                                             |
-| Transitions     | `--duration-instant` through `--duration-slower`, `--ease-*`, `--transition`, `--transition-colors`                                                 |
-| Z-index         | `--z-base` through `--z-toast`                                                                                                                      |
-| Containers      | `--container-s` through `--container-2xl`, `--container-fluid-s` through `--container-fluid-2xl`                                                    |
+| Category        | Variables                                                                                                                                                                                                                                                |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Surfaces        | `--surface-1` through `--surface-10`                                                                                                                                                                                                                     |
+| Text            | `--text-primary`, `--text-secondary`, `--text-tertiary`, `--text-disabled`                                                                                                                                                                               |
+| Accent          | `--accent`, `--accent-hover`, `--accent-muted`, `--accent-alpha`, `--accent-alpha-hover`, `--accent-foreground`                                                                                                                                          |
+| Semantic states | `--success-1` through `--success-10`, `--warning-1` through `--warning-10`, `--error-1` through `--error-10`, `--info-1` through `--info-10` (step 1 = background, step 10 = text/border; legacy `--success`, `--success-bg`, etc. available as aliases) |
+| Borders         | `--border-subtle`, `--border-default`, `--border-strong`, `--border-interactive`, `--divider`                                                                                                                                                            |
+| Overlays        | `--overlay`, `--overlay-light`, `--overlay-strong`, `--surface-alpha`, `--surface-alpha-light`, `--surface-alpha-strong`                                                                                                                                 |
+| Typography      | `--font-sans`, `--font-serif`, `--font-mono`, `--text-xs` through `--text-3xl`, `--font-light` through `--font-bold`, `--leading-*`, `--tracking-*`                                                                                                      |
+| Spacing         | `--space-px`, `--space-xs` through `--space-4xl`                                                                                                                                                                                                         |
+| Border radius   | `--radius-none` through `--radius-full`                                                                                                                                                                                                                  |
+| Shadows         | `--shadow-none`, `--shadow-xs` through `--shadow-2xl`, `--shadow-inner`                                                                                                                                                                                  |
+| Transitions     | `--duration-instant` through `--duration-slower`, `--ease-*`, `--transition`, `--transition-colors`                                                                                                                                                      |
+| Z-index         | `--z-base` through `--z-toast`                                                                                                                                                                                                                           |
+| Containers      | `--container-s` through `--container-2xl`, `--container-fluid-s` through `--container-fluid-2xl`                                                                                                                                                         |
 
 ## License
 

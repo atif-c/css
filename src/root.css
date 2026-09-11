@@ -43,6 +43,7 @@
 	/* Dark mode */
 	--dark-surface-step: 0.09;
 	--dark-text-step: 0.15;
+	--dark-state-step: 0.0444; /* (state-l - state-bg-l) / 9 = (0.62 - 0.22) / 9 */
 	--dark-divider-offset: 0.06;
 	--dark-border-subtle-offset: 0.08;
 	--dark-border-default-offset: 0.16;
@@ -53,6 +54,10 @@
 	--dark-state-bg-l: 0.22;
 
 	--dark-state-bg-chroma-mult: 0.3;
+	--dark-success-chroma: 0.17; /* hue 140, safe under max 0.195 */
+	--dark-warning-chroma: 0.12; /* hue 100, safe under max 0.128 */
+	--dark-error-chroma: 0.19; /* hue 25, safe under max 0.245 */
+	--dark-info-chroma: 0.095; /* hue 210, safe under max 0.104 */
 	--dark-success-chroma-max: 0.195; /* hue 140 */
 	--dark-warning-chroma-max: 0.128; /* hue 100 */
 	--dark-error-chroma-max: 0.245; /* hue 25 */
@@ -64,6 +69,7 @@
 	/* Light mode */
 	--light-surface-step: -0.075;
 	--light-text-step: -0.15;
+	--light-state-step: -0.0522; /* (state-l - state-bg-l) / 9 = (0.45 - 0.92) / 9 */
 	--light-divider-offset: -0.18;
 	--light-border-subtle-offset: -0.08;
 	--light-border-default-offset: -0.14;
@@ -74,6 +80,10 @@
 	--light-state-bg-l: 0.92;
 	--light-state-bg-chroma-mult: 0.25;
 
+	--light-success-chroma: 0.13; /* hue 140, near safe max 0.14 */
+	--light-warning-chroma: 0.088; /* hue 100, near safe max 0.093 */
+	--light-error-chroma: 0.17; /* hue 25, near safe max 0.178 */
+	--light-info-chroma: 0.07; /* hue 210, near safe max 0.075 */
 	--light-success-chroma-max: 0.14; /* hue 140 */
 	--light-warning-chroma-max: 0.093; /* hue 100 */
 	--light-error-chroma-max: 0.178; /* hue 25 */
@@ -101,6 +111,7 @@
 	--accent-base-l: var(--dark-accent-base-lightness);
 
 	/* Semantic hues and lightness */
+	--state-step: var(--dark-state-step);
 	--state-chroma: 0.104;
 	--state-l: var(--dark-state-l);
 	--state-bg-l: var(--dark-state-bg-l);
@@ -109,6 +120,10 @@
 	--warning-hue: 100;
 	--error-hue: 25;
 	--info-hue: 210;
+	--success-chroma: var(--dark-success-chroma);
+	--warning-chroma: var(--dark-warning-chroma);
+	--error-chroma: var(--dark-error-chroma);
+	--info-chroma: var(--dark-info-chroma);
 	--success-chroma-max: var(--dark-success-chroma-max);
 	--warning-chroma-max: var(--dark-warning-chroma-max);
 	--error-chroma-max: var(--dark-error-chroma-max);
@@ -140,7 +155,7 @@
 
 	/* Font weights */
 	--font-light: 300;
-	--font-normal: 400;
+	--font-normal: 401;
 	--font-medium: 500;
 	--font-semibold: 600;
 	--font-bold: 700;
@@ -249,32 +264,175 @@
 	--focus-ring-offset: var(--border-width-m);
 
 	/* ===========================
-	   SEMANTIC STATES
+	   SEMANTIC STATES (10-step ramps per state)
 	   =========================== */
-	/* Each state's chroma is clamped against its own hue-paired ceiling -
-	   see "CHROMA & GAMUT SAFETY" above. */
-	--success-chroma: clamp(0, var(--state-chroma), var(--success-chroma-max));
-	--warning-chroma: clamp(0, var(--state-chroma), var(--warning-chroma-max));
-	--error-chroma: clamp(0, var(--state-chroma), var(--error-chroma-max));
-	--info-chroma: clamp(0, var(--state-chroma), var(--info-chroma-max));
+	/* Success: 10-step lightness ramp from bg to text, full chroma */
+	--success-1: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 0), 1) var(--success-chroma)
+			var(--success-hue)
+	);
+	--success-2: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 1), 1) var(--success-chroma)
+			var(--success-hue)
+	);
+	--success-3: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 2), 1) var(--success-chroma)
+			var(--success-hue)
+	);
+	--success-4: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 3), 1) var(--success-chroma)
+			var(--success-hue)
+	);
+	--success-5: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 4), 1) var(--success-chroma)
+			var(--success-hue)
+	);
+	--success-6: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 5), 1) var(--success-chroma)
+			var(--success-hue)
+	);
+	--success-7: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 6), 1) var(--success-chroma)
+			var(--success-hue)
+	);
+	--success-8: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 7), 1) var(--success-chroma)
+			var(--success-hue)
+	);
+	--success-9: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 8), 1) var(--success-chroma)
+			var(--success-hue)
+	);
+	--success-10: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 9), 1) var(--success-chroma)
+			var(--success-hue)
+	);
 
-	--success: oklch(var(--state-l) var(--success-chroma) var(--success-hue));
-	--warning: oklch(var(--state-l) var(--warning-chroma) var(--warning-hue));
-	--error: oklch(var(--state-l) var(--error-chroma) var(--error-hue));
-	--info: oklch(var(--state-l) var(--info-chroma) var(--info-hue));
+	/* Warning: 10-step lightness ramp from bg to text, full chroma */
+	--warning-1: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 0), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
+	--warning-2: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 1), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
+	--warning-3: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 2), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
+	--warning-4: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 3), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
+	--warning-5: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 4), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
+	--warning-6: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 5), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
+	--warning-7: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 6), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
+	--warning-8: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 7), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
+	--warning-9: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 8), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
+	--warning-10: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 9), 1) var(--warning-chroma)
+			var(--warning-hue)
+	);
 
-	--success-bg: oklch(
-		var(--state-bg-l) calc(var(--success-chroma) * var(--state-bg-chroma-mult)) var(--success-hue)
+	/* Error: 10-step lightness ramp from bg to text, full chroma */
+	--error-1: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 0), 1) var(--error-chroma)
+			var(--error-hue)
 	);
-	--warning-bg: oklch(
-		var(--state-bg-l) calc(var(--warning-chroma) * var(--state-bg-chroma-mult)) var(--warning-hue)
+	--error-2: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 1), 1) var(--error-chroma)
+			var(--error-hue)
 	);
-	--error-bg: oklch(
-		var(--state-bg-l) calc(var(--error-chroma) * var(--state-bg-chroma-mult)) var(--error-hue)
+	--error-3: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 2), 1) var(--error-chroma)
+			var(--error-hue)
 	);
-	--info-bg: oklch(
-		var(--state-bg-l) calc(var(--info-chroma) * var(--state-bg-chroma-mult)) var(--info-hue)
+	--error-4: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 3), 1) var(--error-chroma)
+			var(--error-hue)
 	);
+	--error-5: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 4), 1) var(--error-chroma)
+			var(--error-hue)
+	);
+	--error-6: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 5), 1) var(--error-chroma)
+			var(--error-hue)
+	);
+	--error-7: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 6), 1) var(--error-chroma)
+			var(--error-hue)
+	);
+	--error-8: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 7), 1) var(--error-chroma)
+			var(--error-hue)
+	);
+	--error-9: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 8), 1) var(--error-chroma)
+			var(--error-hue)
+	);
+	--error-10: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 9), 1) var(--error-chroma)
+			var(--error-hue)
+	);
+
+	/* Info: 10-step lightness ramp from bg to text, full chroma */
+	--info-1: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 0), 1) var(--info-chroma) var(--info-hue)
+	);
+	--info-2: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 1), 1) var(--info-chroma) var(--info-hue)
+	);
+	--info-3: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 2), 1) var(--info-chroma) var(--info-hue)
+	);
+	--info-4: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 3), 1) var(--info-chroma) var(--info-hue)
+	);
+	--info-5: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 4), 1) var(--info-chroma) var(--info-hue)
+	);
+	--info-6: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 5), 1) var(--info-chroma) var(--info-hue)
+	);
+	--info-7: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 6), 1) var(--info-chroma) var(--info-hue)
+	);
+	--info-8: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 7), 1) var(--info-chroma) var(--info-hue)
+	);
+	--info-9: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 8), 1) var(--info-chroma) var(--info-hue)
+	);
+	--info-10: oklch(
+		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 9), 1) var(--info-chroma) var(--info-hue)
+	);
+
+	/* Backward compat: old API (success, success-bg, etc.) as aliases to key steps */
+	--success: var(--success-8);
+	--success-bg: var(--success-2);
+	--warning: var(--warning-8);
+	--warning-bg: var(--warning-2);
+	--error: var(--error-8);
+	--error-bg: var(--error-2);
+	--info: var(--info-8);
+	--info-bg: var(--info-2);
 
 	/* ===========================
 	   SHADOWS / ELEVATION
@@ -369,9 +527,14 @@
 		--border-strong-offset: var(--light-border-strong-offset);
 		--border-interactive-offset: var(--light-border-interactive-offset);
 
+		--state-step: var(--light-state-step);
 		--state-l: var(--light-state-l);
 		--state-bg-l: var(--light-state-bg-l);
 		--state-bg-chroma-mult: var(--light-state-bg-chroma-mult);
+		--success-chroma: var(--light-success-chroma);
+		--warning-chroma: var(--light-warning-chroma);
+		--error-chroma: var(--light-error-chroma);
+		--info-chroma: var(--light-info-chroma);
 		--success-chroma-max: var(--light-success-chroma-max);
 		--warning-chroma-max: var(--light-warning-chroma-max);
 		--error-chroma-max: var(--light-error-chroma-max);
@@ -402,9 +565,14 @@
 	--border-strong-offset: var(--dark-border-strong-offset);
 	--border-interactive-offset: var(--dark-border-interactive-offset);
 
+	--state-step: var(--dark-state-step);
 	--state-l: var(--dark-state-l);
 	--state-bg-l: var(--dark-state-bg-l);
 	--state-bg-chroma-mult: var(--dark-state-bg-chroma-mult);
+	--success-chroma: var(--dark-success-chroma);
+	--warning-chroma: var(--dark-warning-chroma);
+	--error-chroma: var(--dark-error-chroma);
+	--info-chroma: var(--dark-info-chroma);
 	--success-chroma-max: var(--dark-success-chroma-max);
 	--warning-chroma-max: var(--dark-warning-chroma-max);
 	--error-chroma-max: var(--dark-error-chroma-max);
@@ -430,9 +598,14 @@
 	--border-strong-offset: var(--light-border-strong-offset);
 	--border-interactive-offset: var(--light-border-interactive-offset);
 
+	--state-step: var(--light-state-step);
 	--state-l: var(--light-state-l);
 	--state-bg-l: var(--light-state-bg-l);
 	--state-bg-chroma-mult: var(--light-state-bg-chroma-mult);
+	--success-chroma: var(--light-success-chroma);
+	--warning-chroma: var(--light-warning-chroma);
+	--error-chroma: var(--light-error-chroma);
+	--info-chroma: var(--light-info-chroma);
 	--success-chroma-max: var(--light-success-chroma-max);
 	--warning-chroma-max: var(--light-warning-chroma-max);
 	--error-chroma-max: var(--light-error-chroma-max);
