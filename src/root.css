@@ -24,70 +24,69 @@
 	   (set once, dark+light pairs)
 	   Applies: always. Edit here to retune. Keep dark/light pairs in sync. */
 
-	/* Color */
-	--theme-accent-hue: 200;
-	--theme-accent-chroma: 0.11;
+	/* Color: single hue + chroma retune the whole accent system */
+	--theme-accent-hue: 200; /* blue-cyan default, legible on dark + light */
+	--theme-accent-chroma: 0.11; /* requested vibrancy, clamped to per-theme max below */
 
-	/* Dark Theme */
-	--dark-surface-base: 0.15;
-	--dark-text-base-lightness: 0.9;
-	--dark-accent-base-lightness: 0.65;
-	--dark-accent-chroma-max: 0.108;
+	/* Dark Theme: bases anchor every derived ramp */
+	--dark-surface-base: 0.15; /* near-black base, lifts to 0.96 across 10 steps */
+	--dark-text-base-lightness: 0.9; /* near-white primary, falls to 0.30 when disabled */
+	--dark-accent-base-lightness: 0.65; /* mid lightness holds chroma without clipping */
+	--dark-accent-chroma-max: 0.108; /* sRGB ceiling for hue 200 at L 0.65 */
 
-	/* Light Theme */
-	--light-surface-base: 0.97;
-	--light-text-base-lightness: 0.18;
-	--light-accent-base-lightness: 0.45;
-	--light-accent-chroma-max: 0.075;
+	/* Light Theme: mirrored bases for white backgrounds */
+	--light-surface-base: 0.97; /* near-white base, deepens to 0.295 across 10 steps */
+	--light-text-base-lightness: 0.18; /* near-black primary, softens to 0.78 when disabled */
+	--light-accent-base-lightness: 0.45; /* darker than dark theme to hold contrast on white */
+	--light-accent-chroma-max: 0.075; /* sRGB ceiling for hue 200 at L 0.45 */
 
-	/* Dark mode */
-	--dark-surface-step: 0.09;
-	--dark-text-step: 0.15;
+	/* Dark mode: positive offsets lift edges above the dark surface base */
+	--dark-surface-step: 0.09; /* 0.15 + 0.09 * 9 = 0.96, spans black to near-white */
+	--dark-text-step: 0.15; /* primary 0.90 -> tertiary 0.60, disabled skips to 0.30 */
 	--dark-state-step: 0.06; /* (state-l - state-bg-l) / 9 = (0.76 - 0.22) / 9 */
-	--dark-divider-offset: 0.06;
-	--dark-border-subtle-offset: 0.08;
-	--dark-border-default-offset: 0.16;
-	--dark-border-strong-offset: 0.24;
+	--dark-divider-offset: 0.06; /* faintest visible edge for hairline dividers */
+	--dark-border-subtle-offset: 0.08; /* decorative only, below perceivable text contrast */
+	--dark-border-default-offset: 0.16; /* default card and section edge */
+	--dark-border-strong-offset: 0.24; /* emphasized edge, still non-interactive */
+	--dark-border-interactive-offset: 0.35; /* 3:1 vs surface-base, use for controls */
+	--dark-state-l: 0.76; /* ramp endpoint (step 10), text and border lightness */
+	--dark-state-bg-l: 0.22; /* ramp start (step 1), tinted background lightness */
 
-	--dark-border-interactive-offset: 0.35;
-	--dark-state-l: 0.76;
-	--dark-state-bg-l: 0.22;
-
-	--dark-state-bg-chroma-mult: 0.3;
+	--dark-state-bg-chroma-mult: 0.3; /* reserved multiplier for a future muted-bg variant */
 	--dark-success-chroma: 0.17; /* hue 140, safe under max 0.195 */
 	--dark-warning-chroma: 0.12; /* hue 100, safe under max 0.128 */
 	--dark-error-chroma: 0.19; /* hue 25, safe under max 0.245 */
 	--dark-info-chroma: 0.095; /* hue 210, safe under max 0.104 */
-	--dark-success-chroma-max: 0.195; /* hue 140 */
-	--dark-warning-chroma-max: 0.128; /* hue 100 */
-	--dark-error-chroma-max: 0.245; /* hue 25 */
-	--dark-info-chroma-max: 0.104; /* hue 210 */
+	--dark-success-chroma-max: 0.195; /* sRGB ceiling for hue 140 across the dark ramp */
+	--dark-warning-chroma-max: 0.128; /* sRGB ceiling for hue 100 across the dark ramp */
+	--dark-error-chroma-max: 0.245; /* sRGB ceiling for hue 25 across the dark ramp */
+	--dark-info-chroma-max: 0.104; /* sRGB ceiling for hue 210 across the dark ramp */
 
-	--dark-shadow-color: oklch(0 0 0 / 0.55);
-	--light-shadow-color: oklch(0 0 0 / 0.12);
+	--dark-shadow-color: oklch(0 0 0 / 0.55); /* dense black, visible against dark surfaces */
+	--light-shadow-color: oklch(0 0 0 / 0.12); /* soft black, subtle against light surfaces */
 
-	/* Light mode */
-	--light-surface-step: -0.075;
-	--light-text-step: -0.15;
+	/* Light mode: negative offsets darken edges below the light surface base */
+	--light-surface-step: -0.075; /* 0.97 - 0.075 * 9 = 0.295, mirrors dark range */
+	--light-text-step: -0.15; /* primary 0.18 -> tertiary 0.48, disabled skips to 0.78 */
 	--light-state-step: -0.065; /* (state-l - state-bg-l) / 9 = (0.335 - 0.92) / 9 */
-	--light-divider-offset: -0.18;
-	--light-border-subtle-offset: -0.08;
-	--light-border-default-offset: -0.14;
-	--light-border-strong-offset: -0.22;
-	--light-border-interactive-offset: -0.34;
+	--light-divider-offset: -0.18; /* hairline divider, needs extra distance on white */
+	--light-border-subtle-offset: -0.08; /* decorative only, closest to surface */
+	--light-border-default-offset: -0.14; /* default card and section edge */
+	--light-border-strong-offset: -0.22; /* emphasized edge, still non-interactive */
+	--light-border-interactive-offset: -0.34; /* 3:1 vs surface-base, use for controls */
 
-	--light-state-l: 0.335;
-	--light-state-bg-l: 0.92;
-	--light-state-bg-chroma-mult: 0.25;
+	--light-state-l: 0.335; /* ramp endpoint (step 10), text and border lightness */
+	--light-state-bg-l: 0.92; /* ramp start (step 1), tinted background lightness */
+	--light-state-bg-chroma-mult: 0.25; /* reserved multiplier for a future muted-bg variant */
 
 	--light-success-chroma: 0.13; /* hue 140, near safe max 0.14 */
 	--light-warning-chroma: 0.088; /* hue 100, near safe max 0.093 */
 	--light-error-chroma: 0.17; /* hue 25, near safe max 0.178 */
 	--light-info-chroma: 0.07; /* hue 210, near safe max 0.075 */
-	--light-success-chroma-max: 0.14; /* hue 140 */
-	--light-warning-chroma-max: 0.093; /* hue 100 */
-	--light-error-chroma-max: 0.178; /* hue 25 */
-	--light-info-chroma-max: 0.075; /* hue 210 */
+	--light-success-chroma-max: 0.14; /* sRGB ceiling for hue 140 across the light ramp */
+	--light-warning-chroma-max: 0.093; /* sRGB ceiling for hue 100 across the light ramp */
+	--light-error-chroma-max: 0.178; /* sRGB ceiling for hue 25 across the light ramp */
+	--light-info-chroma-max: 0.075; /* sRGB ceiling for hue 210 across the light ramp */
 }
 
 :root {
@@ -96,30 +95,33 @@
 
 	/* SECTION 2/5 — DARK DEFAULT + SHARED TOKENS
 	   (fallback for no media support)
-	   Applies: always unless overridden below. Aliases -> dark; derived once. */
+	   Applies: always unless overridden below. Aliases -> dark; derived once.
+	   Rationale lives in Section 1; aliases below only switch theme inputs. */
 	--surface-base: var(--dark-surface-base);
 	--surface-step: var(--dark-surface-step);
 
-	/* Text system */
+	/* Text system: aliases track the active theme's base and step */
 	--text-base-l: var(--dark-text-base-lightness);
 	--text-step: var(--dark-text-step);
 
-	/* Accent */
+	/* Accent: hue is theme-independent, lightness and ceiling follow the theme.
+	   Chroma is clamped so custom hues stay inside the sRGB gamut. */
 	--accent-hue: var(--theme-accent-hue);
 	--accent-chroma-max: var(--dark-accent-chroma-max);
 	--accent-chroma: clamp(0, var(--theme-accent-chroma), var(--accent-chroma-max));
 	--accent-base-l: var(--dark-accent-base-lightness);
 
-	/* Semantic hues and lightness */
+	/* Semantic hues and lightness: aliases follow the active theme.
+	   Hues are fixed per state; chroma ceilings are retuned per hue in Section 1. */
 	--state-step: var(--dark-state-step);
-	--state-chroma: 0.104;
-	--state-l: var(--dark-state-l);
+	--state-chroma: 0.104; /* reserved generic chroma, per-state values below win */
+	--state-l: var(--dark-state-l); /* formula endpoint reference for --state-step */
 	--state-bg-l: var(--dark-state-bg-l);
-	--state-bg-chroma-mult: var(--dark-state-bg-chroma-mult);
-	--success-hue: 140;
-	--warning-hue: 100;
-	--error-hue: 25;
-	--info-hue: 210;
+	--state-bg-chroma-mult: var(--dark-state-bg-chroma-mult); /* reserved, see Section 1 */
+	--success-hue: 140; /* green, pairs with 0.195/0.14 ceilings */
+	--warning-hue: 100; /* yellow-green, pairs with 0.128/0.093 ceilings */
+	--error-hue: 25; /* orange-red, pairs with 0.245/0.178 ceilings */
+	--info-hue: 210; /* blue, pairs with 0.104/0.075 ceilings */
 	--success-chroma: var(--dark-success-chroma);
 	--warning-chroma: var(--dark-warning-chroma);
 	--error-chroma: var(--dark-error-chroma);
@@ -129,66 +131,72 @@
 	--error-chroma-max: var(--dark-error-chroma-max);
 	--info-chroma-max: var(--dark-info-chroma-max);
 
-	/* Border/divider offsets from surface-base */
+	/* Border/divider offsets from surface-base: aliases follow the active theme,
+	   contrast grows from subtle (decorative) to interactive (3:1 for controls) */
 	--divider-offset: var(--dark-divider-offset);
 	--border-subtle-offset: var(--dark-border-subtle-offset);
 	--border-default-offset: var(--dark-border-default-offset);
 	--border-strong-offset: var(--dark-border-strong-offset);
 	--border-interactive-offset: var(--dark-border-interactive-offset);
-	/* Typography */
+	/* Typography: system stacks avoid web-font dependency and match each OS */
 	/* Font families */
 	--font-sans:
 		system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-		sans-serif;
-	--font-serif: Georgia, Cambria, 'Times New Roman', Times, serif;
-	--font-mono: 'Fira Code', 'Cascadia Code', Consolas, Monaco, 'Courier New', monospace;
+		sans-serif; /* native UI stack, fastest load and OS-consistent rendering */
+	--font-serif: Georgia, Cambria, 'Times New Roman', Times, serif; /* editorial fallback */
+	--font-mono:
+		'Fira Code', 'Cascadia Code', Consolas, Monaco, 'Courier New', monospace; /* code with ligature-capable first picks */
 
-	/* Font sizes (modular scale with 1.25 ratio) */
-	--text-xs: 0.64rem;
-	--text-s: 0.8rem;
-	--text-base: 1rem;
-	--text-m: 1.25rem;
-	--text-l: 1.563rem;
-	--text-xl: 1.953rem;
-	--text-2xl: 2.441rem;
-	--text-3xl: 3.052rem;
+	/* Font sizes: modular scale with 1.25 ratio (1rem * 1.25^n).
+	   Two steps down (0.64, 0.80) for captions, five steps up for display. */
+	--text-xs: 0.64rem; /* 1 / 1.25^2, micro labels */
+	--text-s: 0.8rem; /* 1 / 1.25, secondary UI text */
+	--text-base: 1rem; /* body baseline, follows root font-size for a11y scaling */
+	--text-m: 1.25rem; /* 1 * 1.25, lead paragraph and card titles */
+	--text-l: 1.563rem; /* 1 * 1.25^2, section headings */
+	--text-xl: 1.953rem; /* 1 * 1.25^3, page headings */
+	--text-2xl: 2.441rem; /* 1 * 1.25^4, hero supporting */
+	--text-3xl: 3.052rem; /* 1 * 1.25^5, hero display, largest step */
 
-	/* Font weights */
-	--font-light: 300;
-	--font-normal: 400;
-	--font-medium: 500;
-	--font-semibold: 600;
-	--font-bold: 700;
+	/* Font weights: standard 100-step scale for predictable bold jumps */
+	--font-light: 300; /* large display text only, too thin for body */
+	--font-normal: 400; /* body default per CSS spec */
+	--font-medium: 500; /* subtle emphasis without bold color shift */
+	--font-semibold: 600; /* headings and strong emphasis */
+	--font-bold: 700; /* maximum emphasis, use sparingly */
 
-	/* Line heights */
-	--leading-tight: 1.25;
-	--leading-snug: 1.375;
-	--leading-normal: 1.5;
-	--leading-relaxed: 1.625;
-	--leading-loose: 2;
+	/* Line heights: tight for headings, loose for long-form readability */
+	--leading-tight: 1.25; /* headings with large size and short line length */
+	--leading-snug: 1.375; /* subheadings and compact UI rows */
+	--leading-normal: 1.5; /* body default, WCAG-friendly spacing */
+	--leading-relaxed: 1.625; /* long-form paragraphs */
+	--leading-loose: 2; /* sparse lists and CJK-friendly rhythm */
 
-	/* Letter spacing */
-	--tracking-tighter: -0.05em;
-	--tracking-tight: -0.025em;
-	--tracking-normal: 0;
-	--tracking-wide: 0.025em;
-	--tracking-wider: 0.05em;
-	--tracking-widest: 0.1em;
+	/* Letter spacing: negative tightens large type, positive opens small caps */
+	--tracking-tighter: -0.05em; /* display sizes only, cancels oversized gaps */
+	--tracking-tight: -0.025em; /* headings at text-m and above */
+	--tracking-normal: 0; /* body text default, no adjustment */
+	--tracking-wide: 0.025em; /* small labels and buttons, aids legibility */
+	--tracking-wider: 0.05em; /* uppercase eyebrows and overlines */
+	--tracking-widest: 0.1em; /* maximum spread for micro uppercase labels */
 
-	/* Spacing */
-	--space-unit: 0.25rem;
-	--space-px: 0.0625rem;
-	--space-0: 0;
-	--space-xs: calc(var(--space-unit) * 1);
-	--space-s: calc(var(--space-unit) * 2);
-	--space-m: calc(var(--space-unit) * 3);
-	--space-l: calc(var(--space-unit) * 4);
-	--space-xl: calc(var(--space-unit) * 6);
-	--space-2xl: calc(var(--space-unit) * 8);
-	--space-3xl: calc(var(--space-unit) * 12);
-	--space-4xl: calc(var(--space-unit) * 16);
+	/* Spacing: 0.25rem (4px) unit keeps every gap on a 4pt grid.
+	   Steps 1/2/3/4 cover components, 6/8/12/16 cover layout sections. */
+	--space-unit: 0.25rem; /* 4px at 16px root, single source for spacing + radius */
+	--space-px: 0.0625rem; /* 1px hairline, for borders and fine dividers */
+	--space-0: 0; /* reset escape hatch */
+	--space-xs: calc(var(--space-unit) * 1); /* 4px, icon gaps and dense padding */
+	--space-s: calc(var(--space-unit) * 2); /* 8px, button and input padding */
+	--space-m: calc(var(--space-unit) * 3); /* 12px, card gutters */
+	--space-l: calc(var(--space-unit) * 4); /* 16px, section padding */
+	--space-xl: calc(var(--space-unit) * 6); /* 24px, stacked blocks */
+	--space-2xl: calc(var(--space-unit) * 8); /* 32px, major section breaks */
+	--space-3xl: calc(var(--space-unit) * 12); /* 48px, page-level rhythm */
+	--space-4xl: calc(var(--space-unit) * 16); /* 64px, hero and footer spacing */
 
-	/* Surfaces */
+	/* Surfaces: 10-step achromatic ramp from surface-base.
+	   surface-1 is the page base, surface-10 the highest elevation.
+	   clamp() keeps custom bases inside OKLCH 0..1. */
 	--surface-1: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 0), 1) 0 0);
 	--surface-2: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 1), 1) 0 0);
 	--surface-3: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 2), 1) 0 0);
@@ -200,71 +208,93 @@
 	--surface-9: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 8), 1) 0 0);
 	--surface-10: oklch(clamp(0, calc(var(--surface-base) + var(--surface-step) * 9), 1) 0 0);
 
-	/* Text */
-	--text-primary: oklch(var(--text-base-l) 0 0);
-	--text-secondary: oklch(calc(var(--text-base-l) - var(--text-step)) 0 0);
-	--text-tertiary: oklch(calc(var(--text-base-l) - var(--text-step) * 2) 0 0);
-	--text-disabled: oklch(calc(var(--text-base-l) - var(--text-step) * 4) 0 0);
+	/* Text: 4-level achromatic hierarchy from text-base-l.
+	   Disabled skips a step (* 4) to guarantee a visibly muted state. */
+	--text-primary: oklch(var(--text-base-l) 0 0); /* body and headings */
+	--text-secondary: oklch(calc(var(--text-base-l) - var(--text-step)) 0 0); /* descriptions */
+	--text-tertiary: oklch(calc(var(--text-base-l) - var(--text-step) * 2) 0 0); /* hints, meta */
+	--text-disabled: oklch(calc(var(--text-base-l) - var(--text-step) * 4) 0 0); /* placeholders */
 
-	/* Border/Dividers */
-	--divider: oklch(calc(var(--surface-base) + var(--divider-offset)) 0 0);
-	--border-subtle: oklch(calc(var(--surface-base) + var(--border-subtle-offset)) 0 0);
-	--border-default: oklch(calc(var(--surface-base) + var(--border-default-offset)) 0 0);
-	--border-strong: oklch(calc(var(--surface-base) + var(--border-strong-offset)) 0 0);
-	--border-interactive: oklch(calc(var(--surface-base) + var(--border-interactive-offset)) 0 0);
+	/* Border/Dividers: achromatic edges offset from surface-base.
+	   Subtle/default/strong are decorative; interactive alone meets 3:1. */
+	--divider: oklch(calc(var(--surface-base) + var(--divider-offset)) 0 0); /* hairlines */
+	--border-subtle: oklch(
+		calc(var(--surface-base) + var(--border-subtle-offset)) 0 0
+	); /* card edges */
+	--border-default: oklch(
+		calc(var(--surface-base) + var(--border-default-offset)) 0 0
+	); /* inputs at rest */
+	--border-strong: oklch(
+		calc(var(--surface-base) + var(--border-strong-offset)) 0 0
+	); /* hover and emphasis */
+	--border-interactive: oklch(
+		calc(var(--surface-base) + var(--border-interactive-offset)) 0 0
+	); /* controls, 3:1 */
 
-	/* Border widths */
-	--border-width: var(--space-px);
-	--border-width-m: var(--space-unit);
-	--border-width-l: calc(var(--space-unit) * 2);
-
-	/* ===========================
-	   BORDER RADIUS
-	   =========================== */
-	--radius-none: 0;
-	--radius-s: var(--space-unit);
-	--radius-m: calc(var(--space-unit) * 2);
-	--radius-l: calc(var(--space-unit) * 4);
-	--radius-xl: calc(var(--space-unit) * 6);
-	--radius-2xl: calc(var(--space-unit) * 8);
-	--radius-3xl: calc(var(--space-unit) * 12);
-	--radius-full: 9999px;
+	/* Border widths: tied to spacing so hairlines survive root font-size scaling */
+	--border-width: var(--space-px); /* 1px default for dividers and inputs */
+	--border-width-m: var(--space-unit); /* 4px focus offsets and thick rules */
+	--border-width-l: calc(var(--space-unit) * 2); /* 8px statement dividers */
 
 	/* ===========================
-	   ACCENT
+	   BORDER RADIUS: derived from --space-unit so corners scale with spacing.
+	   Numeric steps mirror spacing; full is a pill overflow trick.
 	   =========================== */
-	--accent: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue));
-	--accent-hover: oklch(calc(var(--accent-base-l) + 0.05) var(--accent-chroma) var(--accent-hue));
+	--radius-none: 0; /* sharp, for hairline dividers and resets */
+	--radius-s: var(--space-unit); /* 4px, buttons and inputs */
+	--radius-m: calc(var(--space-unit) * 2); /* 8px, cards */
+	--radius-l: calc(var(--space-unit) * 4); /* 16px, dialogs and sheets */
+	--radius-xl: calc(var(--space-unit) * 6); /* 24px, large panels */
+	--radius-2xl: calc(var(--space-unit) * 8); /* 32px, hero media */
+	--radius-3xl: calc(var(--space-unit) * 12); /* 48px, oversized containers */
+	--radius-full: 9999px; /* pill and circle, overflows any realistic box */
+
+	/* ===========================
+	   ACCENT: interactive brand color.
+	   Hover lifts lightness; muted drops lightness and chroma for subtle fills.
+	   Foreground reuses surface-1 so text on accent passes contrast in both themes.
+	   =========================== */
+	--accent: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue)); /* base action */
+	--accent-hover: oklch(
+		calc(var(--accent-base-l) + 0.05) var(--accent-chroma) var(--accent-hue)
+	); /* +0.05 L lift on hover */
 	--accent-muted: oklch(
 		calc(var(--accent-base-l) - 0.08) calc(var(--accent-chroma) * 0.6) var(--accent-hue)
-	);
+	); /* -0.08 L and 60% chroma for quiet fills */
 
-	--accent-foreground: var(--surface-1);
-	--accent-alpha: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue) / 0.1);
-	--accent-alpha-hover: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue) / 0.15);
+	--accent-foreground: var(--surface-1); /* text on accent, safer than text-primary */
+	--accent-alpha: oklch(
+		var(--accent-base-l) var(--accent-chroma) var(--accent-hue) / 0.1
+	); /* 10% wash for selection rings */
+	--accent-alpha-hover: oklch(
+		var(--accent-base-l) var(--accent-chroma) var(--accent-hue) / 0.15
+	); /* 15% wash for hover fills */
 
 	/* ===========================
 	   ALPHA / OVERLAY VARIANTS
 	   =========================== */
-	/* Surface alpha for glass/frosted effects */
-	--surface-alpha: oklch(var(--surface-base) 0 0 / 0.8);
-	--surface-alpha-light: oklch(var(--surface-base) 0 0 / 0.5);
-	--surface-alpha-strong: oklch(var(--surface-base) 0 0 / 0.95);
+	/* Surface alpha for glass/frosted effects: same achromatic base, alpha sets blur legibility */
+	--surface-alpha: oklch(var(--surface-base) 0 0 / 0.8); /* sticky headers with backdrop blur */
+	--surface-alpha-light: oklch(var(--surface-base) 0 0 / 0.5); /* translucent panels */
+	--surface-alpha-strong: oklch(var(--surface-base) 0 0 / 0.95); /* near-opaque dropdowns */
 
-	/* Overlay for modals/dialogs */
-	--overlay: oklch(0 0 0 / 0.5);
-	--overlay-light: oklch(0 0 0 / 0.3);
-	--overlay-strong: oklch(0 0 0 / 0.7);
+	/* Overlay for modals/dialogs: pure black washes, theme-independent */
+	--overlay: oklch(0 0 0 / 0.5); /* default scrim behind modals */
+	--overlay-light: oklch(0 0 0 / 0.3); /* light scrim for popovers */
+	--overlay-strong: oklch(0 0 0 / 0.7); /* heavy scrim for blocking dialogs */
 
 	/* ===========================
-	   FOCUS
+	   FOCUS: single accent source keeps keyboard focus visible in both themes.
 	   =========================== */
-	--focus: var(--accent);
-	--focus-ring: var(--border-width) solid var(--accent);
-	--focus-ring-offset: var(--border-width-m);
+	--focus: var(--accent); /* focus color token, swap here to retheme all rings */
+	--focus-ring: var(--border-width) solid var(--accent); /* 1px ring, scales with spacing */
+	--focus-ring-offset: var(--border-width-m); /* 4px offset so ring never hugs content */
 
 	/* ===========================
 	   SEMANTIC STATES (10-step ramps per state)
+	   Each ramp runs state-bg-l + state-step * N at full per-state chroma:
+	   step 1 is the tinted background, step 10 the text/border end.
+	   Step 2 feeds *-bg aliases, step 8 feeds the main *-color aliases.
 	   =========================== */
 	/* Success: 10-step lightness ramp from bg to text, full chroma */
 	--success-1: oklch(
@@ -424,91 +454,97 @@
 		clamp(0, calc(var(--state-bg-l) + var(--state-step) * 9), 1) var(--info-chroma) var(--info-hue)
 	);
 
-	/* Backward compat: old API (success, success-bg, etc.) as aliases to key steps */
-	--success: var(--success-8);
-	--success-bg: var(--success-2);
-	--warning: var(--warning-8);
-	--warning-bg: var(--warning-2);
-	--error: var(--error-8);
-	--error-bg: var(--error-2);
-	--info: var(--info-8);
-	--info-bg: var(--info-2);
+	/* Backward compat: old API (success, success-bg, etc.) as aliases to key steps.
+	   Step 8 is the text-safe color, step 2 the matching tinted background. */
+	--success: var(--success-8); /* legacy alias for success-8 */
+	--success-bg: var(--success-2); /* legacy alias for success-2 */
+	--warning: var(--warning-8); /* legacy alias for warning-8 */
+	--warning-bg: var(--warning-2); /* legacy alias for warning-2 */
+	--error: var(--error-8); /* legacy alias for error-8 */
+	--error-bg: var(--error-2); /* legacy alias for error-2 */
+	--info: var(--info-8); /* legacy alias for info-8 */
+	--info-bg: var(--info-2); /* legacy alias for info-2 */
 
 	/* ===========================
-	   SHADOWS / ELEVATION
+	   SHADOWS / ELEVATION: y-offset only keeps shadows neutral for any layout.
+	   Theme-aware color swaps density (0.55 dark vs 0.12 light) below.
 	   =========================== */
 	/* Shadow color (theme-aware, overridden per theme below) */
-	--shadow-color: var(--dark-shadow-color);
+	--shadow-color: var(--dark-shadow-color); /* dark default, light override follows */
 
 	/* Shadow tokens: each step doubles both the y-offset and blur radius */
-	--shadow-xs: 0 var(--space-px) calc(var(--space-unit) * 0.5) var(--shadow-color);
-	--shadow-s: 0 calc(var(--space-px) * 2) var(--space-unit) var(--shadow-color);
-	--shadow-m: 0 var(--space-unit) calc(var(--space-unit) * 2) var(--shadow-color);
-	--shadow-l: 0 calc(var(--space-unit) * 2) calc(var(--space-unit) * 4) var(--shadow-color);
-	--shadow-xl: 0 calc(var(--space-unit) * 4) calc(var(--space-unit) * 8) var(--shadow-color);
-	--shadow-2xl: 0 calc(var(--space-unit) * 8) calc(var(--space-unit) * 16) var(--shadow-color);
-	--shadow-inner: inset 0 var(--space-unit) var(--space-unit) var(--shadow-color);
-	--shadow-none: none;
+	--shadow-xs: 0 var(--space-px) calc(var(--space-unit) * 0.5) var(--shadow-color); /* 1px hairline lift */
+	--shadow-s: 0 calc(var(--space-px) * 2) var(--space-unit) var(--shadow-color); /* raised buttons */
+	--shadow-m: 0 var(--space-unit) calc(var(--space-unit) * 2) var(--shadow-color); /* cards */
+	--shadow-l: 0 calc(var(--space-unit) * 2) calc(var(--space-unit) * 4) var(--shadow-color); /* dropdowns */
+	--shadow-xl: 0 calc(var(--space-unit) * 4) calc(var(--space-unit) * 8) var(--shadow-color); /* modals */
+	--shadow-2xl: 0 calc(var(--space-unit) * 8) calc(var(--space-unit) * 16) var(--shadow-color); /* full-screen overlays */
+	--shadow-inner: inset 0 var(--space-unit) var(--space-unit) var(--shadow-color); /* pressed and inset wells */
+	--shadow-none: none; /* reset for flat variants */
 
 	/* ===========================
-	   TRANSITIONS
+	   TRANSITIONS: fast for micro-feedback, slow for layout movement.
+	   Out-curve is the default because entering elements may be abrupt, exits never are.
 	   =========================== */
 	/* Durations */
-	--duration-instant: 0ms;
-	--duration-fast: 150ms;
-	--duration-normal: 250ms;
-	--duration-slow: 350ms;
-	--duration-slower: 500ms;
+	--duration-instant: 0ms; /* reduced-motion fallback and instant toggles */
+	--duration-fast: 150ms; /* hovers, fades, color shifts */
+	--duration-normal: 250ms; /* default open and close motion */
+	--duration-slow: 350ms; /* panels, drawers, large fades */
+	--duration-slower: 500ms; /* page transitions and hero reveals */
 
-	/* Easing functions */
-	--ease-linear: linear;
-	--ease-in: cubic-bezier(0.4, 0, 1, 1);
-	--ease-out: cubic-bezier(0, 0, 0.2, 1);
-	--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-	--ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	/* Easing functions: Material-inspired curves, bounce reserved for playfulness */
+	--ease-linear: linear; /* opacity and progress, no acceleration */
+	--ease-in: cubic-bezier(0.4, 0, 1, 1); /* exiting, accelerates away */
+	--ease-out: cubic-bezier(0, 0, 0.2, 1); /* entering, default for most motion */
+	--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); /* looping and symmetric moves */
+	--ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* overshoot, use sparingly */
 
 	/* Common transition shorthand */
-	--transition: all var(--duration-normal) var(--ease-out);
+	--transition: all var(--duration-normal) var(--ease-out); /* generic default */
 	--transition-colors:
 		color var(--duration-fast) var(--ease-out),
 		background-color var(--duration-fast) var(--ease-out),
-		border-color var(--duration-fast) var(--ease-out);
+		border-color var(--duration-fast) var(--ease-out); /* hover states without layout motion */
 
 	/* ===========================
-	   Z-INDEX LAYERS
+	   Z-INDEX LAYERS: base 0 plus 1000-block with 100 gaps.
+	   Gaps leave room for app layers without renumbering the system.
 	   =========================== */
-	--z-base: 0;
-	--z-dropdown: 1000;
-	--z-sticky: 1100;
-	--z-fixed: 1200;
-	--z-modal-backdrop: 1300;
-	--z-modal: 1400;
-	--z-popover: 1500;
-	--z-tooltip: 1600;
-	--z-toast: 1700;
+	--z-base: 0; /* normal flow */
+	--z-dropdown: 1000; /* menus above content */
+	--z-sticky: 1100; /* sticky headers above dropdowns */
+	--z-fixed: 1200; /* fixed nav above sticky */
+	--z-modal-backdrop: 1300; /* scrim below modal */
+	--z-modal: 1400; /* dialogs above their scrim */
+	--z-popover: 1500; /* popovers above modals */
+	--z-tooltip: 1600; /* tooltips above popovers */
+	--z-toast: 1700; /* toasts topmost for visibility */
 
 	/* ===========================
- 	   CONTAINER / BREAKPOINTS
- 	   =========================== */
-	/* Fixed containers (default) */
-	--container-s: 40rem;
-	--container-m: 48rem;
-	--container-l: 64rem;
-	--container-xl: 80rem;
-	--container-2xl: 96rem;
+  	   CONTAINER / BREAKPOINTS: fixed rem widths survive zoom and respect root scaling.
+  	   Fluid variants clamp to half-width minimum and 90vw so gutters never collapse.
+  	   =========================== */
+	/* Fixed containers (default): 640/768/1024/1280/1536px at 16px root */
+	--container-s: 40rem; /* narrow prose and small dialogs */
+	--container-m: 48rem; /* articles and forms */
+	--container-l: 64rem; /* standard page body */
+	--container-xl: 80rem; /* wide dashboards */
+	--container-2xl: 96rem; /* full-bleed app shells */
 
 	/* Fluid containers using clamp() - scales with viewport, constrained by min/max */
-	--container-fluid-s: clamp(20rem, 90vw, 40rem);
-	--container-fluid-m: clamp(24rem, 90vw, 48rem);
-	--container-fluid-l: clamp(32rem, 90vw, 64rem);
-	--container-fluid-xl: clamp(40rem, 90vw, 80rem);
-	--container-fluid-2xl: clamp(48rem, 90vw, 96rem);
+	--container-fluid-s: clamp(20rem, 90vw, 40rem); /* min is half the fixed cap */
+	--container-fluid-m: clamp(24rem, 90vw, 48rem); /* min is half the fixed cap */
+	--container-fluid-l: clamp(32rem, 90vw, 64rem); /* min is half the fixed cap */
+	--container-fluid-xl: clamp(40rem, 90vw, 80rem); /* min is half the fixed cap */
+	--container-fluid-2xl: clamp(48rem, 90vw, 96rem); /* min is half the fixed cap */
 }
 
 /* SECTION 3/5 — AUTO LIGHT
    (OS preference, only if no data-theme)
    Applies: @media (prefers-color-scheme: light) + :root:not([data-theme])
-   Rule: keep alias list identical to Section 4b. */
+   Rule: keep alias list identical to Section 4b.
+   Rationale lives in Section 1; aliases below only switch inputs to light. */
 @media (prefers-color-scheme: light) {
 	:root:not([data-theme]) {
 		color-scheme: light;
@@ -547,7 +583,8 @@
 /* SECTION 4/5 — MANUAL OVERRIDES
    (win over OS, keep last in source order)
    4a data-theme='dark' (explicit, mirrors Section 2 aliases)
-   4b data-theme='light' (explicit, mirrors Section 3 aliases) */
+   4b data-theme='light' (explicit, mirrors Section 3 aliases)
+   Rationale lives in Section 1; aliases below only pin the chosen theme. */
 :root[data-theme='dark'] {
 	color-scheme: dark;
 	--surface-base: var(--dark-surface-base);
