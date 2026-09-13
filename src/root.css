@@ -43,14 +43,14 @@
 	/* Dark mode */
 	--dark-surface-step: 0.09;
 	--dark-text-step: 0.15;
-	--dark-state-step: 0.0444; /* (state-l - state-bg-l) / 9 = (0.62 - 0.22) / 9 */
+	--dark-state-step: 0.06; /* (state-l - state-bg-l) / 9 = (0.76 - 0.22) / 9 */
 	--dark-divider-offset: 0.06;
 	--dark-border-subtle-offset: 0.08;
 	--dark-border-default-offset: 0.16;
 	--dark-border-strong-offset: 0.24;
 
 	--dark-border-interactive-offset: 0.35;
-	--dark-state-l: 0.62;
+	--dark-state-l: 0.76;
 	--dark-state-bg-l: 0.22;
 
 	--dark-state-bg-chroma-mult: 0.3;
@@ -69,14 +69,14 @@
 	/* Light mode */
 	--light-surface-step: -0.075;
 	--light-text-step: -0.15;
-	--light-state-step: -0.0522; /* (state-l - state-bg-l) / 9 = (0.45 - 0.92) / 9 */
+	--light-state-step: -0.065; /* (state-l - state-bg-l) / 9 = (0.335 - 0.92) / 9 */
 	--light-divider-offset: -0.18;
 	--light-border-subtle-offset: -0.08;
 	--light-border-default-offset: -0.14;
 	--light-border-strong-offset: -0.22;
 	--light-border-interactive-offset: -0.34;
 
-	--light-state-l: 0.45;
+	--light-state-l: 0.335;
 	--light-state-bg-l: 0.92;
 	--light-state-bg-chroma-mult: 0.25;
 
