@@ -1,48 +1,121 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Design Token System Demo</title>
+		<title>Token System Playground</title>
+		<meta
+			name="description"
+			content="Interactive playground for the parametric OKLCH design token system."
+		/>
 		<link rel="stylesheet" href="src/root.css" />
 		<style>
-			:root {
-				--demo-state-step: 8;
+			/* Demo shell — built only from the token system itself. */
+			* {
+				box-sizing: border-box;
+			}
+
+			html {
+				scroll-behavior: smooth;
 			}
 
 			body {
 				margin: 0;
 				background: var(--surface-1);
-				padding: 0;
+				color: var(--text-primary);
+				font-family: var(--font-sans);
+				font-size: var(--text-base);
+				line-height: var(--leading-normal);
+				-webkit-font-smoothing: antialiased;
 			}
 
-			/* Top Bar */
-			.top-bar {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				gap: var(--space-m);
+			::selection {
+				background: var(--accent);
+				color: var(--accent-foreground);
+			}
 
+			/* ---------- header ---------- */
+			.site-header {
 				position: sticky;
 				top: 0;
 				z-index: var(--z-sticky);
-				border-bottom: var(--border-width) solid var(--border-default);
-				background: var(--surface-2);
+				border-bottom: var(--border-width) solid var(--border-subtle);
+				background: var(--surface-alpha);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+			}
+
+			.site-header-inner {
+				display: flex;
+				align-items: center;
+				gap: var(--space-m);
+
+				max-width: var(--container-xl);
+				margin: 0 auto;
 				padding: var(--space-m) var(--space-l);
+			}
 
-				h1 {
-					color: var(--text-primary);
-					font-size: var(--text-l);
-					font-weight: var(--font-bold);
-				}
+			.brand {
+				display: flex;
+				align-items: center;
+				gap: var(--space-s);
 
-				.top-bar-controls {
-					display: flex;
-					gap: var(--space-s);
+				margin-right: auto;
+				font-size: var(--text-m);
+				font-weight: var(--font-bold);
+				letter-spacing: var(--tracking-tight);
+				white-space: nowrap;
+			}
+
+			.brand-dot {
+				flex-shrink: 0;
+
+				width: 22px;
+				height: 22px;
+				box-shadow: 0 0 0 4px var(--accent-alpha);
+				border-radius: var(--radius-full);
+				background: var(--accent);
+			}
+
+			.segmented {
+				display: flex;
+				gap: 2px;
+
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-full);
+				background: var(--surface-3);
+				padding: 3px;
+
+				button {
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+
+					cursor: pointer;
+					border: 0;
+					border-radius: var(--radius-full);
+					background: transparent;
+					padding: var(--space-xs) var(--space-m);
+					color: var(--text-secondary);
+					font: inherit;
+					font-size: var(--text-s);
+					font-weight: var(--font-medium);
+					line-height: 1;
+					white-space: nowrap;
+					transition: var(--transition-colors);
+
+					&[aria-pressed='true'] {
+						background: var(--accent);
+						color: var(--accent-foreground);
+					}
+
+					&:focus-visible {
+						outline: var(--focus-ring);
+						outline-offset: 2px;
+					}
 				}
 			}
 
-			/* Buttons */
 			.btn {
 				display: inline-flex;
 				align-items: center;
@@ -56,542 +129,913 @@
 				color: var(--text-primary);
 				font-size: var(--text-s);
 				font-weight: var(--font-medium);
+				white-space: nowrap;
+				font: inherit;
 				transition: var(--transition-colors);
 
 				&:hover {
+					border-color: var(--border-strong);
 					background: var(--surface-4);
 				}
 
-				&:focus {
+				&:focus-visible {
 					outline: var(--focus-ring);
-				}
-
-				&.btn-primary {
-					border-color: var(--accent);
-					background: var(--accent);
-					color: var(--accent-foreground);
-
-					&:hover {
-						background: var(--accent-hover);
-					}
+					outline-offset: var(--focus-ring-offset);
 				}
 			}
 
-			/* Layout */
-			.container {
+			.btn-sm {
+				padding: var(--space-xs) var(--space-s);
+				font-size: var(--text-xs);
+			}
+
+			.btn-primary {
+				border-color: var(--accent);
+				background: var(--accent);
+				color: var(--accent-foreground);
+
+				&:hover {
+					border-color: var(--accent-hover);
+					background: var(--accent-hover);
+				}
+			}
+
+			.btn-ghost {
+				border-color: transparent;
+				background: transparent;
+				color: var(--text-secondary);
+
+				&:hover {
+					background: var(--surface-3);
+					color: var(--text-primary);
+				}
+			}
+
+			.btn-danger {
+				border-color: var(--error);
+				background: var(--error-bg);
+				color: var(--error);
+			}
+
+			.top-strip {
 				display: flex;
+				flex-wrap: wrap;
+				justify-content: space-between;
+				gap: var(--space-m);
 
-				min-height: calc(100vh - 60px);
+				max-width: var(--container-xl);
+				margin: 0 auto;
+				padding: var(--space-s) var(--space-l);
+				color: var(--text-tertiary);
+				font-size: var(--text-s);
+
+				a {
+					color: var(--accent);
+				}
 			}
 
-			.sidebar {
-				flex-shrink: 0;
+			.token-name {
+				border-radius: var(--radius-s);
+				background: var(--surface-4);
+				padding: 1px 6px;
+				font-family: var(--font-mono);
+				font-size: 0.9em;
+			}
 
-				width: 320px;
-				height: calc(100vh - 60px);
-				position: sticky;
-				top: 60px;
-				border-right: var(--border-width) solid var(--border-default);
+			/* ---------- playground ---------- */
+			.playground-wrap {
+				max-width: var(--container-xl);
+				margin: 0 auto;
+				padding: 0 var(--space-l);
+			}
+
+			.playground {
+				box-shadow: var(--shadow-m);
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-l);
 				background: var(--surface-2);
 				padding: var(--space-l);
-				overflow-y: auto;
+			}
 
-				&.collapsed {
-					display: none;
-				}
+			.playground-head {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: var(--space-m);
+
+				margin-bottom: var(--space-m);
 
 				h2 {
-					color: var(--text-primary);
+					margin: 0;
 					font-size: var(--text-m);
-					font-weight: var(--font-semibold);
-				}
-
-				.control-group {
-					margin-top: var(--space-l);
-
-					h3 {
-						margin-bottom: var(--space-m);
-						color: var(--text-secondary);
-						font-size: var(--text-s);
-						font-weight: var(--font-semibold);
-						letter-spacing: var(--tracking-wide);
-						text-transform: uppercase;
-					}
-
-					.control {
-						margin-bottom: var(--space-m);
-
-						label {
-							display: block;
-
-							margin-bottom: var(--space-xs);
-							color: var(--text-secondary);
-							font-size: var(--text-s);
-						}
-
-						input[type='range'] {
-							width: 100%;
-						}
-
-						.control-value {
-							display: flex;
-							justify-content: space-between;
-							align-items: center;
-
-							margin-top: var(--space-xs);
-
-							span {
-								color: var(--text-tertiary);
-								font-family: var(--font-mono);
-								font-size: var(--text-xs);
-							}
-
-							.color-preview {
-								width: 24px;
-								height: 24px;
-								border: var(--border-width) solid var(--border-default);
-								border-radius: var(--radius-s);
-							}
-						}
-					}
-				}
-			}
-
-			.main-content {
-				flex: 1;
-
-				overflow-y: auto;
-				padding: var(--space-2xl);
-			}
-
-			/* Sections */
-			.section {
-				margin-bottom: var(--space-4xl);
-
-				h2 {
-					margin-bottom: var(--space-m);
-					color: var(--text-primary);
-					font-size: var(--text-xl);
-					font-weight: var(--font-bold);
-				}
-
-				h3 {
-					margin-bottom: var(--space-m);
-					color: var(--text-primary);
-					font-size: var(--text-l);
-					font-weight: var(--font-semibold);
 				}
 
 				p {
-					margin-bottom: var(--space-m);
-					font-size: var(--text-base);
-					line-height: var(--leading-relaxed);
+					margin: 0;
+					color: var(--text-tertiary);
+					font-family: var(--font-mono);
+					font-size: var(--text-s);
 				}
 			}
 
-			/* Grid Layouts */
-			.token-grid {
+			.meta-row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--space-s);
+
+				margin-bottom: var(--space-m);
+			}
+
+			.pill {
+				display: inline-flex;
+				align-items: center;
+				gap: var(--space-xs);
+
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-s);
+				background: var(--surface-1);
+				padding: var(--space-xs) var(--space-s);
+				color: var(--text-secondary);
+				font-family: var(--font-mono);
+				font-size: var(--text-xs);
+
+				.dot {
+					width: 8px;
+					height: 8px;
+					border-radius: var(--radius-full);
+					background: var(--success);
+				}
+			}
+
+			.meta-key {
+				color: var(--text-tertiary);
+			}
+
+			.slider-grid {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+				grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 				gap: var(--space-m);
 			}
 
-			.token-card {
+			.slider {
+				border: var(--border-width) solid var(--border-subtle);
+				border-radius: var(--radius-m);
+				background: var(--surface-1);
+				padding: var(--space-m);
+
+				label {
+					display: flex;
+					justify-content: space-between;
+					align-items: baseline;
+
+					margin-bottom: var(--space-s);
+					font-size: var(--text-s);
+					font-weight: var(--font-medium);
+
+					output {
+						border-radius: var(--radius-s);
+						background: var(--accent-alpha);
+						padding: 1px 6px;
+						color: var(--accent);
+						font-family: var(--font-mono);
+						font-size: var(--text-xs);
+					}
+				}
+
+				input[type='range'] {
+					cursor: pointer;
+					width: 100%;
+					accent-color: var(--accent);
+				}
+
+				&.hue input[type='range'] {
+					height: 10px;
+					border-radius: var(--radius-full);
+					background: linear-gradient(
+						in oklch longer hue to right,
+						oklch(0.65 0.15 0),
+						oklch(0.65 0.15 360)
+					);
+					outline-offset: 3px;
+					accent-color: unset;
+				}
+
+				.hue-preview {
+					height: 8px;
+					border: var(--border-width) solid var(--border-default);
+					border-radius: var(--radius-full);
+					margin-top: var(--space-s);
+				}
+
+				.hint {
+					margin: var(--space-xs) 0 0;
+					color: var(--text-tertiary);
+					font-size: var(--text-xs);
+				}
+			}
+
+			.presets {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--space-s);
+
+				margin-top: var(--space-l);
+			}
+
+			.preset {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				gap: var(--space-s);
+
 				cursor: pointer;
 				border: var(--border-width) solid var(--border-default);
-				border-radius: var(--radius-m);
+				border-radius: var(--radius-full);
 				background: var(--surface-2);
-				padding: var(--space-m);
+				padding: var(--space-xs) var(--space-m) var(--space-xs) var(--space-xs);
+				color: var(--text-secondary);
+				font: inherit;
+				font-size: var(--text-s);
+				font-weight: var(--font-medium);
+				line-height: 1;
+				white-space: nowrap;
 				transition: var(--transition-colors);
 
 				&:hover {
 					border-color: var(--accent);
-					background: var(--surface-3);
+					color: var(--text-primary);
 				}
 
-				&.surface-swatch {
-					.token-preview {
-						height: 80px;
-					}
-
-					.token-label,
-					.token-value {
-						overflow: hidden;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-					}
+				&:focus-visible {
+					outline: var(--focus-ring);
+					outline-offset: 2px;
 				}
 
-				&.color-swatch {
-					.token-preview {
-						height: 60px;
-					}
+				&[aria-pressed='true'] {
+					border-color: var(--accent);
+					background: var(--accent-alpha);
+					color: var(--text-primary);
 				}
 
-				.token-preview {
-					margin-bottom: var(--space-s);
+				i {
+					display: block;
+
+					width: 20px;
+					height: 20px;
 					border: var(--border-width) solid var(--border-default);
-					border-radius: var(--radius-s);
+					border-radius: var(--radius-full);
+				}
+			}
+
+			/* ---------- layout ---------- */
+			.layout {
+				display: grid;
+				grid-template-columns: 220px minmax(0, 1fr);
+				align-items: start;
+				gap: var(--space-xl);
+
+				max-width: var(--container-xl);
+				margin: 0 auto;
+				padding: var(--space-2xl) var(--space-l) var(--space-4xl);
+			}
+
+			.toc {
+				display: flex;
+				flex-direction: column;
+				gap: 2px;
+
+				position: sticky;
+				top: 76px;
+				border: var(--border-width) solid var(--border-subtle);
+				border-radius: var(--radius-l);
+				background: var(--surface-2);
+				padding: var(--space-s);
+
+				span {
+					padding: var(--space-xs) var(--space-s);
+					color: var(--text-secondary);
+					font-size: var(--text-s);
+					font-weight: var(--font-semibold);
 				}
 
-				.token-label {
-					margin-bottom: var(--space-s);
+				input {
+					margin: var(--space-s);
+					border: var(--border-width) solid var(--border-interactive);
+					border-radius: var(--radius-s);
+					background: var(--surface-1);
+					padding: var(--space-xs) var(--space-s);
+					color: var(--text-primary);
+					font-size: var(--text-s);
+					font: inherit;
+				}
+
+				a {
+					border-radius: var(--radius-s);
+					padding: var(--space-xs) var(--space-s);
+					color: var(--text-secondary);
+					font-size: var(--text-s);
+					text-decoration: none;
+					transition: var(--transition-colors);
+
+					&:hover {
+						background: var(--surface-3);
+						color: var(--text-primary);
+					}
+
+					&.active {
+						background: var(--accent-alpha);
+						color: var(--accent);
+					}
+				}
+			}
+
+			main {
+				display: flex;
+				flex-direction: column;
+				gap: var(--space-xl);
+
+				min-width: 0;
+			}
+
+			.section {
+				border: var(--border-width) solid var(--border-subtle);
+				border-radius: var(--radius-l);
+				background: var(--surface-2);
+				padding: var(--space-xl);
+				scroll-margin-top: 90px;
+
+				h2 {
+					margin: 0;
+					font-size: var(--text-l);
+					letter-spacing: var(--tracking-tight);
+				}
+			}
+
+			.section-head {
+				display: flex;
+				align-items: center;
+				gap: var(--space-m);
+
+				margin-bottom: var(--space-xs);
+			}
+
+			.section-num {
+				flex-shrink: 0;
+
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-s);
+				background: transparent;
+				padding: 2px 8px;
+				color: var(--text-tertiary);
+				font-family: var(--font-mono);
+				font-size: var(--text-xs);
+			}
+
+			.section-desc {
+				max-width: 70ch;
+				margin: 0 0 var(--space-l);
+				color: var(--text-secondary);
+				font-size: var(--text-s);
+
+				code {
+					border-radius: var(--radius-s);
+					background: var(--surface-4);
+					padding: 1px 6px;
+					font-family: var(--font-mono);
+					font-size: 0.9em;
+				}
+			}
+
+			/* ---------- swatches ---------- */
+			.elevation-strip {
+				display: grid;
+				grid-template-columns: repeat(10, 1fr);
+
+				border: var(--border-width) solid var(--border-subtle);
+				border-radius: var(--radius-m);
+				overflow: hidden;
+				margin-bottom: var(--space-m);
+
+				div {
+					height: 54px;
+				}
+			}
+
+			.swatch-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+				gap: var(--space-s);
+			}
+
+			.swatch {
+				cursor: pointer;
+				border: var(--border-width) solid var(--border-subtle);
+				border-radius: var(--radius-m);
+				background: var(--surface-1);
+				padding: 0;
+				overflow: hidden;
+				color: inherit;
+				text-align: left;
+				font: inherit;
+				transition: var(--transition-colors);
+
+				&:hover {
+					border-color: var(--accent);
+					transform: translateY(-1px);
+				}
+
+				&:focus-visible {
+					outline: var(--focus-ring);
+					outline-offset: 2px;
+				}
+			}
+
+			.swatch-chip {
+				height: 56px;
+			}
+
+			.swatch-body {
+				padding: var(--space-s);
+			}
+
+			.swatch-name {
+				display: block;
+
+				overflow: hidden;
+				color: var(--text-secondary);
+				font-family: var(--font-mono);
+				font-size: var(--text-xs);
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+
+			.swatch-val {
+				display: block;
+
+				overflow: hidden;
+				color: var(--text-tertiary);
+				font-family: var(--font-mono);
+				font-size: 11px;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+
+			.contrast-row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--space-s);
+
+				margin-top: var(--space-m);
+			}
+
+			.contrast-badge {
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-full);
+				background: var(--surface-1);
+				padding: var(--space-xs) var(--space-s);
+				color: var(--text-secondary);
+				font-family: var(--font-mono);
+				font-size: var(--text-xs);
+
+				&.pass {
+					border-color: var(--success);
+					color: var(--success);
+				}
+
+				&.warn {
+					border-color: var(--warning);
+					color: var(--warning);
+				}
+			}
+
+			/* ---------- state cards ---------- */
+			.state-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+				gap: var(--space-m);
+			}
+
+			.state-card {
+				border: var(--border-width) solid var(--border-subtle);
+				border-radius: var(--radius-m);
+				background: var(--surface-1);
+				padding: var(--space-m);
+
+				h3 {
+					display: flex;
+					align-items: center;
+					gap: var(--space-xs);
+
+					margin: 0 0 var(--space-s);
+					font-size: var(--text-s);
+					text-transform: capitalize;
+
+					i {
+						display: inline-block;
+
+						width: 10px;
+						height: 10px;
+						border-radius: var(--radius-full);
+					}
+				}
+			}
+
+			.ramp {
+				display: flex;
+
+				border: var(--border-width) solid var(--border-subtle);
+				border-radius: var(--radius-s);
+				overflow: hidden;
+				margin-bottom: var(--space-s);
+
+				button {
+					flex: 1;
+
+					cursor: pointer;
+					height: 34px;
+					border: 0;
+					padding: 0;
+
+					&:hover {
+						outline: 2px solid var(--text-primary);
+						outline-offset: -2px;
+					}
+				}
+			}
+
+			.alert {
+				display: flex;
+				align-items: center;
+				gap: var(--space-s);
+
+				min-height: calc(var(--space-s) * 2 + var(--text-s) * var(--leading-snug));
+				border: var(--border-width) solid;
+				border-radius: var(--radius-m);
+				padding: var(--space-s) var(--space-m);
+				margin-bottom: var(--space-s);
+				font-size: var(--text-s);
+				line-height: var(--leading-snug);
+			}
+
+			.mini-sliders {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+				gap: var(--space-s);
+
+				label {
+					display: flex;
+					flex-direction: column;
+					gap: 4px;
+
+					color: var(--text-tertiary);
+					font-size: var(--text-xs);
+
+					> span {
+						display: flex;
+						justify-content: space-between;
+						align-items: baseline;
+					}
+				}
+
+				output {
+					color: var(--text-secondary);
+					font-family: var(--font-mono);
+				}
+
+				input {
+					width: 100%;
+					accent-color: var(--accent);
+				}
+			}
+
+			/* ---------- type ---------- */
+			.type-tools {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--space-s);
+
+				margin-bottom: var(--space-m);
+
+				input {
+					flex: 1;
+
+					min-width: 200px;
+					border: var(--border-width) solid var(--border-interactive);
+					border-radius: var(--radius-m);
+					background: var(--surface-1);
+					padding: var(--space-s) var(--space-m);
+					color: var(--text-primary);
+					font-size: var(--text-s);
+					font: inherit;
+				}
+			}
+
+			.type-row {
+				display: grid;
+				grid-template-columns: 130px 1fr;
+				align-items: baseline;
+				gap: var(--space-m);
+
+				border-top: var(--border-width) solid var(--border-subtle);
+				padding: var(--space-s) 0;
+
+				code {
 					color: var(--text-tertiary);
 					font-family: var(--font-mono);
 					font-size: var(--text-xs);
 				}
 
-				.token-value {
-					color: var(--text-secondary);
-					font-family: var(--font-mono);
-					font-size: var(--text-xs);
+				.sample {
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
 				}
 			}
 
-			/* Text Samples */
-			.text-sample {
-				margin-bottom: var(--space-m);
-				border-radius: var(--radius-m);
-				background: var(--surface-2);
-				padding: var(--space-l);
+			/* ---------- misc grids ---------- */
+			.two-col {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: var(--space-m);
 			}
 
-			/* State Alerts */
-			.state-demo {
-				display: flex;
-				align-items: center;
-				gap: var(--space-m);
-
-				margin-bottom: var(--space-m);
-				border-radius: var(--radius-m);
-				padding: var(--space-m);
+			.sub h3 {
+				margin: 0 0 var(--space-s);
+				color: var(--text-secondary);
 				font-size: var(--text-s);
-
-				&.success {
-					border: var(--border-width) solid var(--success-text);
-					background: var(--success-bg-demo);
-					color: var(--success-text);
-				}
-
-				&.warning {
-					border: var(--border-width) solid var(--warning-text);
-					background: var(--warning-bg-demo);
-					color: var(--warning-text);
-				}
-
-				&.error {
-					border: var(--border-width) solid var(--error-text);
-					background: var(--error-bg-demo);
-					color: var(--error-text);
-				}
-
-				&.info {
-					border: var(--border-width) solid var(--info-text);
-					background: var(--info-bg-demo);
-					color: var(--info-text);
-				}
+				font-weight: var(--font-semibold);
 			}
 
-			/* Border Samples */
-			.border-sample {
-				border-radius: var(--radius-m);
-				background: var(--surface-2);
-				padding: var(--space-m);
-
-				.border-line {
-					margin: var(--space-m) 0;
-				}
-			}
-
-			/* Typography Samples */
-			.type-sample {
-				margin-bottom: var(--space-m);
-				border-radius: var(--radius-m);
-				background: var(--surface-2);
-				padding: var(--space-m);
-
-				P {
-					margin: 0;
-				}
-			}
-
-			/* Spacing Bars */
-			.spacing-demo {
+			.space-row {
 				display: flex;
 				align-items: center;
-				gap: var(--space-m);
+				gap: var(--space-s);
 
-				.spacing-bar {
-					height: 24px;
+				padding: 5px 0;
+				color: var(--text-secondary);
+				font-family: var(--font-mono);
+				font-size: var(--text-xs);
+
+				.bar {
+					min-width: 1px;
+					height: 14px;
+					border-radius: 2px;
 					background: var(--accent);
 				}
-
-				.spacing-label {
-					font-family: var(--font-mono);
-					font-size: var(--text-s);
-				}
 			}
 
-			/* Radius Boxes */
-			.radius-demo {
+			.radius-grid,
+			.shadow-grid {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-				gap: var(--space-m);
-
-				.radius-box {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-
-					height: 80px;
-					border: var(--border-width) solid var(--border-default);
-					background: var(--surface-3);
-					color: var(--text-secondary);
-					font-family: var(--font-mono);
-					font-size: var(--text-xs);
-				}
+				grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+				gap: var(--space-s);
 			}
 
-			/* Shadow Boxes */
-			.shadow-demo {
+			.radius-cell,
+			.shadow-cell {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				height: 76px;
+				border: var(--border-width) solid var(--border-default);
+				background: var(--surface-3);
+				color: var(--text-secondary);
+				font-family: var(--font-mono);
+				font-size: var(--text-xs);
+			}
+
+			.border-demo div {
+				border-bottom: var(--border-width) solid var(--border-subtle);
+				padding: var(--space-s) 0;
+				color: var(--text-secondary);
+				font-family: var(--font-mono);
+				font-size: var(--text-xs);
+			}
+
+			.motion-grid {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-				gap: var(--space-xl);
-
-				.shadow-box {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-
-					height: 120px;
-					border-radius: var(--radius-m);
-					background: var(--surface-3);
-					color: var(--text-secondary);
-					font-family: var(--font-mono);
-					font-size: var(--text-s);
-				}
+				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+				gap: var(--space-s);
 			}
 
-			/* Overlay Demo */
-			.overlay-demo {
-				height: 200px;
+			.motion-cell {
+				height: 92px;
 				position: relative;
+				border: var(--border-width) solid var(--border-subtle);
 				border-radius: var(--radius-m);
-				background: linear-gradient(135deg, var(--accent), var(--accent-muted));
+				background: var(--surface-1);
+				padding: var(--space-s);
+				overflow: hidden;
+				color: var(--text-tertiary);
+				font-family: var(--font-mono);
+				font-size: var(--text-xs);
 
-				.overlay-layer {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-
+				i {
+					width: 26px;
+					height: 26px;
 					position: absolute;
-					top: 0;
-					right: 0;
-					bottom: 0;
-					left: 0;
-					border-radius: var(--radius-m);
-					color: var(--text-primary);
-					font-size: var(--text-base);
-					font-weight: var(--font-semibold);
+					bottom: var(--space-s);
+					left: var(--space-s);
+					border-radius: var(--radius-s);
+					background: var(--accent);
+					transition-property: left;
+					transition-duration: var(--duration-slow);
+				}
+
+				&:hover i {
+					left: calc(100% - 26px - var(--space-s));
 				}
 			}
 
-			/* Focus Demo */
-			.focus-demo {
+			.field {
 				display: flex;
 				flex-direction: column;
-				gap: var(--space-m);
+				gap: var(--space-xs);
+
+				margin-bottom: var(--space-m);
+
+				label {
+					font-size: var(--text-s);
+					font-weight: var(--font-medium);
+				}
 
 				input,
 				textarea,
 				select {
-					width: 100%;
 					border: var(--border-width) solid var(--border-interactive);
 					border-radius: var(--radius-m);
-					background: var(--surface-2);
+					background: var(--surface-1);
 					padding: var(--space-s) var(--space-m);
 					color: var(--text-primary);
-					font-size: var(--text-base);
-
-					&:focus {
-						outline: var(--focus-ring);
-						outline-offset: var(--focus-ring-offset);
-					}
+					font-size: var(--text-s);
+					font: inherit;
 				}
 
-				textarea {
-					min-height: 100px;
-				}
-			}
-
-			/* Transition Demo */
-			.transition-demo {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-				gap: var(--space-l);
-
-				.transition-box {
-					height: 120px;
-					position: relative;
-					border: var(--border-width) solid var(--border-default);
-					border-radius: var(--radius-m);
-					background: var(--surface-2);
-					padding: var(--space-m);
-
-					.transition-label {
-						margin-bottom: var(--space-s);
-						color: var(--text-secondary);
-						font-family: var(--font-mono);
-						font-size: var(--text-s);
-					}
-
-					.moving-box {
-						width: 40px;
-						height: 40px;
-						position: absolute;
-						left: var(--space-m);
-						border-radius: var(--radius-s);
-						background: var(--accent);
-					}
-
-					&:hover .moving-box {
-						left: calc(100% - 40px - var(--space-m));
-					}
+				input:focus,
+				textarea:focus,
+				select:focus {
+					outline: var(--focus-ring);
+					outline-offset: var(--focus-ring-offset);
 				}
 			}
 
-			/* Z-Index Demo */
-			.zindex-demo {
-				height: 400px;
+			.glass-demo {
+				height: 150px;
 				position: relative;
+				border: var(--border-width) solid var(--border-subtle);
 				border-radius: var(--radius-m);
-				background: var(--surface-2);
-				padding: var(--space-l);
+				background: linear-gradient(135deg, var(--accent), var(--accent-muted));
+				overflow: hidden;
 
-				.layer {
+				div {
 					display: flex;
-					align-items: center;
 					justify-content: center;
+					align-items: center;
 
 					position: absolute;
-					border: var(--border-width) solid var(--border-default);
-					border-radius: var(--radius-m);
-					background: var(--surface-3);
-					padding: var(--space-m);
-					color: var(--text-secondary);
+					border-radius: var(--radius-s);
+					inset: var(--space-m);
 					font-family: var(--font-mono);
-					font-size: var(--text-s);
+					font-size: var(--text-xs);
 				}
 			}
 
-			/* Container Demo */
-			.container-demo {
-				margin-bottom: var(--space-l);
-
-				.container-box {
-					margin: 0 auto var(--space-s);
-					border: var(--border-width) solid var(--border-default);
-					border-radius: var(--radius-m);
-					background: var(--surface-3);
-					padding: var(--space-m);
-					color: var(--text-secondary);
-					font-size: var(--text-s);
-					text-align: center;
-				}
-			}
-
-			/* Component Gallery */
-			.component-grid {
+			/* ---------- components ---------- */
+			.comp-grid {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-				gap: var(--space-xl);
+				grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+				gap: var(--space-m);
 			}
 
-			.card {
-				border: var(--border-width) solid var(--border-default);
+			.comp-card {
+				box-shadow: var(--shadow-s);
+				border: var(--border-width) solid var(--border-subtle);
 				border-radius: var(--radius-l);
-				background: var(--surface-2);
+				background: var(--surface-1);
 				padding: var(--space-l);
 
-				.card-title {
-					margin-bottom: var(--space-s);
-					color: var(--text-primary);
+				h3 {
+					margin: 0 0 var(--space-xs);
 					font-size: var(--text-m);
-					font-weight: var(--font-semibold);
 				}
 
-				.card-body {
-					margin-bottom: var(--space-m);
+				p {
+					margin: 0 0 var(--space-m);
 					color: var(--text-secondary);
 					font-size: var(--text-s);
 					line-height: var(--leading-relaxed);
 				}
+			}
 
-				.card-footer {
-					display: flex;
-					gap: var(--space-s);
-				}
+			.row {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: var(--space-s);
 			}
 
 			.badge {
 				display: inline-flex;
 
-				border-radius: var(--radius-full);
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-s);
+				background: var(--surface-1);
 				padding: var(--space-xs) var(--space-s);
+				color: var(--text-secondary);
 				font-size: var(--text-xs);
 				font-weight: var(--font-medium);
+			}
 
-				&.badge-accent {
-					background: var(--accent-alpha);
-					color: var(--accent);
-				}
+			.badge-accent {
+				border-color: var(--accent);
+				background: transparent;
+				color: var(--accent);
+			}
 
-				&.badge-success {
-					background: var(--success-bg);
-					color: var(--success);
-				}
+			.badge-success {
+				border-color: var(--success);
+				background: var(--success-bg);
+				color: var(--success);
+			}
 
-				&.badge-warning {
-					background: var(--warning-bg);
-					color: var(--warning);
-				}
+			.badge-warning {
+				border-color: var(--warning);
+				background: var(--warning-bg);
+				color: var(--warning);
+			}
 
-				&.badge-error {
-					background: var(--error-bg);
-					color: var(--error);
+			.badge-error {
+				border-color: var(--error);
+				background: var(--error-bg);
+				color: var(--error);
+			}
+
+			.badge-info {
+				border-color: var(--info);
+				background: var(--info-bg);
+				color: var(--info);
+			}
+
+			.avatar-stack {
+				display: flex;
+
+				span {
+					display: inline-flex;
+					justify-content: center;
+					align-items: center;
+
+					width: 32px;
+					height: 32px;
+					border: 2px solid var(--surface-1);
+					border-radius: var(--radius-full);
+					margin-left: -8px;
+					font-size: var(--text-xs);
+					font-weight: var(--font-bold);
+
+					&:first-child {
+						margin-left: 0;
+					}
 				}
 			}
 
-			/* Range Input Styling */
-			input[type='range'] {
-				cursor: pointer;
-				height: 4px;
+			.progress {
+				height: 8px;
 				border-radius: var(--radius-full);
 				background: var(--surface-4);
+				overflow: hidden;
 
-				&::-webkit-slider-thumb {
-					cursor: pointer;
-					width: 16px;
-					height: 16px;
-					border: 2px solid var(--accent);
-					border-radius: var(--radius-full);
-					background: var(--surface-1);
-				}
+				i {
+					display: block;
 
-				&::-moz-range-thumb {
-					cursor: pointer;
-					width: 16px;
-					height: 16px;
-					border: 2px solid var(--accent);
+					width: 68%;
+					height: 100%;
 					border-radius: var(--radius-full);
-					background: var(--surface-1);
+					background: var(--accent);
 				}
 			}
 
-			/* Toast Notification */
-			.toast {
-				display: none;
+			/* ---------- export ---------- */
+			.code {
+				max-height: 260px;
+				margin: 0 0 var(--space-m);
+				border: var(--border-width) solid var(--border-subtle);
+				border-radius: var(--radius-m);
+				background: var(--surface-1);
+				padding: var(--space-m);
+				overflow: auto;
+				color: var(--text-secondary);
+				font-family: var(--font-mono);
+				font-size: var(--text-xs);
+				line-height: var(--leading-relaxed);
+				white-space: pre-wrap;
+				word-break: break-word;
+			}
 
+			/* ---------- toast / modal ---------- */
+			.toast {
+				pointer-events: none;
 				position: fixed;
 				right: var(--space-l);
 				bottom: var(--space-l);
@@ -600,1076 +1044,1012 @@
 				border: var(--border-width) solid var(--border-default);
 				border-radius: var(--radius-m);
 				background: var(--surface-3);
-				padding: var(--space-m) var(--space-l);
-				color: var(--text-primary);
+				padding: var(--space-s) var(--space-m);
 				font-size: var(--text-s);
+				transition:
+					opacity var(--duration-fast) var(--ease-out),
+					transform var(--duration-fast) var(--ease-out);
+				transform: translateY(8px);
+				opacity: 0;
 
 				&.show {
-					display: block;
-
-					animation: slideIn var(--duration-normal) var(--ease-out);
+					transform: none;
+					opacity: 1;
 				}
 			}
 
-			@keyframes slideIn {
-				from {
-					transform: translateY(var(--space-l));
-					opacity: 0;
+			.modal-backdrop {
+				display: none;
+				justify-content: center;
+				align-items: center;
+
+				position: fixed;
+				z-index: var(--z-modal-backdrop);
+				background: var(--overlay);
+				padding: var(--space-l);
+				inset: 0;
+
+				&.open {
+					display: flex;
+				}
+			}
+
+			.modal {
+				width: 100%;
+				max-width: 420px;
+				box-shadow: var(--shadow-2xl);
+				border: var(--border-width) solid var(--border-default);
+				border-radius: var(--radius-l);
+				background: var(--surface-2);
+				padding: var(--space-xl);
+
+				h3 {
+					margin: 0 0 var(--space-s);
 				}
 
-				to {
-					transform: translateY(0);
-					opacity: 1;
+				p {
+					margin: 0 0 var(--space-m);
+					color: var(--text-secondary);
+					font-size: var(--text-s);
+				}
+			}
+
+			@media (max-width: 960px) {
+				.site-header-inner {
+					flex-wrap: wrap;
+				}
+
+				.layout {
+					grid-template-columns: 1fr;
+				}
+
+				.toc {
+					flex-direction: row;
+					flex-wrap: wrap;
+					align-items: center;
+
+					position: static;
+
+					span {
+						width: 100%;
+					}
+
+					input {
+						flex: 1;
+
+						min-width: 140px;
+						margin: var(--space-xs);
+					}
+				}
+
+				.section {
+					padding: var(--space-l);
+				}
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				html {
+					scroll-behavior: auto;
+				}
+
+				* {
+					transition: none !important;
 				}
 			}
 		</style>
 	</head>
-
 	<body>
-		<!-- Top Bar -->
-		<header class="top-bar">
-			<h1>Design Token System Demo</h1>
-			<div class="top-bar-controls">
-				<button class="btn" id="toggleSidebar">Toggle Controls</button>
-				<button class="btn" id="toggleTheme">Switch Theme</button>
-				<button class="btn" id="resetDefaults">Reset Defaults</button>
+		<header class="site-header">
+			<div class="site-header-inner">
+				<div class="brand"><span class="brand-dot" aria-hidden="true"></span>@atifc/css</div>
+				<div class="segmented" role="group" aria-label="Theme">
+					<button data-mode="system" aria-pressed="false">System</button>
+					<button data-mode="dark" aria-pressed="true">Dark</button>
+					<button data-mode="light" aria-pressed="false">Light</button>
+				</div>
+				<button class="btn btn-sm" id="copyCssTop">Copy CSS</button>
+				<button class="btn btn-sm btn-primary" id="resetBtn">Reset</button>
 			</div>
 		</header>
 
-		<!-- Container -->
-		<div class="container">
-			<!-- Sidebar -->
-			<aside class="sidebar" id="sidebar">
-				<h2>Theme Controls</h2>
+		<div class="top-strip">
+			<span>Built only from <span class="token-name">src/root.css</span> tokens.</span>
+			<span>Tip: press <span class="token-name">1–8</span> or use the filter above.</span>
+		</div>
 
-				<!-- Color Controls -->
-				<div class="control-group">
-					<h3>Color</h3>
-					<div class="control">
-						<label for="accentHue">Accent Hue (0-360)</label>
-						<input type="range" id="accentHue" min="0" max="360" value="200" step="1" />
-						<div class="control-value">
-							<span id="accentHueValue">200</span>
-							<div class="color-preview" id="accentHuePreview"></div>
-						</div>
+		<div class="playground-wrap">
+			<div class="playground">
+				<div class="playground-head">
+					<h2>Playground</h2>
+					<p id="cssSummary">--theme-accent-hue: 200</p>
+				</div>
+				<div class="meta-row">
+					<span class="pill"
+						><span class="meta-key">os</span><span id="metaSystem">dark</span></span
+					>
+					<span class="pill"
+						><span class="dot"></span><span class="meta-key">theme</span
+						><span id="metaTheme">dark surface 0.15/text 0.90</span></span
+					>
+					<span class="pill"
+						><span class="meta-key">contrast</span><span id="metaContrast">12.4:1</span></span
+					>
+					<span class="pill"
+						><span class="meta-key">accent</span><span id="metaAccent"></span
+					></span>
+				</div>
+				<div class="slider-grid">
+					<div class="slider hue">
+						<label>Accent hue <output id="o-hue">200</output></label>
+						<input type="range" id="in-hue" min="0" max="360" step="1" value="200" />
+						<div class="hue-preview" id="huePreview"></div>
+						<p class="hint">Chroma ceilings set automatically.</p>
 					</div>
-					<div class="control">
-						<label for="accentChroma">Accent Chroma (0-1)</label>
-						<input type="range" id="accentChroma" min="0" max="1" value="0.11" step="0.01" />
-						<div class="control-value">
-							<span id="accentChromaValue">0.11</span>
-						</div>
+					<div class="slider">
+						<label>Accent chroma <output id="o-chroma">0.11</output></label>
+						<input type="range" id="in-chroma" min="0" max="0.3" step="0.005" value="0.11" />
+						<p class="hint">Clamped per theme.</p>
+					</div>
+					<div class="slider">
+						<label>Surface base <output id="o-surface">0.15</output></label>
+						<input type="range" id="in-surface" min="0.05" max="0.98" step="0.01" value="0.15" />
+						<p class="hint">Follows the active theme.</p>
+					</div>
+					<div class="slider">
+						<label>Text lightness <output id="o-text">0.90</output></label>
+						<input type="range" id="in-text" min="0.05" max="0.98" step="0.01" value="0.90" />
+						<p class="hint">Primary text. Hierarchy derives from it.</p>
+					</div>
+					<div class="slider">
+						<label>Accent lightness <output id="o-accentL">0.65</output></label>
+						<input type="range" id="in-accentL" min="0.2" max="0.85" step="0.01" value="0.65" />
+						<p class="hint">
+							Use <span class="token-name">--accent-foreground</span> on top of it.
+						</p>
 					</div>
 				</div>
+				<div class="presets" id="presets" aria-label="Accent presets"></div>
+			</div>
+		</div>
 
-				<!-- Dark Theme Controls -->
-				<div class="control-group">
-					<h3>Dark Theme</h3>
-					<div class="control">
-						<label for="darkSurface">Surface Base (0-1)</label>
-						<input type="range" id="darkSurface" min="0" max="1" value="0.15" step="0.01" />
-						<div class="control-value">
-							<span id="darkSurfaceValue">0.15</span>
-						</div>
-					</div>
-					<div class="control">
-						<label for="darkText">Text Lightness (0-1)</label>
-						<input type="range" id="darkText" min="0" max="1" value="0.9" step="0.01" />
-						<div class="control-value">
-							<span id="darkTextValue">0.9</span>
-						</div>
-					</div>
-					<div class="control">
-						<label for="darkAccent">Accent Lightness (0-1)</label>
-						<input type="range" id="darkAccent" min="0" max="1" value="0.65" step="0.01" />
-						<div class="control-value">
-							<span id="darkAccentValue">0.65</span>
-						</div>
-					</div>
-				</div>
+		<div class="layout">
+			<nav class="toc" aria-label="Sections">
+				<span>Contents</span>
+				<input type="search" id="filter" placeholder="Filter tokens" aria-label="Filter tokens" />
+				<a href="#foundations" class="active">Foundations</a>
+				<a href="#accent">Accent</a>
+				<a href="#states">Semantic states</a>
+				<a href="#type">Typography</a>
+				<a href="#space">Space & shape</a>
+				<a href="#depth">Depth & motion</a>
+				<a href="#components">Components</a>
+				<a href="#export">Export</a>
+			</nav>
 
-				<!-- Light Theme Controls -->
-				<div class="control-group">
-					<h3>Light Theme</h3>
-					<div class="control">
-						<label for="lightSurface">Surface Base (0-1)</label>
-						<input type="range" id="lightSurface" min="0" max="1" value="0.97" step="0.01" />
-						<div class="control-value">
-							<span id="lightSurfaceValue">0.97</span>
-						</div>
+			<main>
+				<section
+					class="section"
+					id="foundations"
+					data-keywords="surface text border divider contrast elevation"
+				>
+					<div class="section-head">
+						<span class="section-num">01</span>
+						<h2>Foundations</h2>
 					</div>
-					<div class="control">
-						<label for="lightText">Text Lightness (0-1)</label>
-						<input type="range" id="lightText" min="0" max="1" value="0.18" step="0.01" />
-						<div class="control-value">
-							<span id="lightTextValue">0.18</span>
-						</div>
+					<p class="section-desc">
+						10-step surface ramp and 4-level text hierarchy. Ratios computed live from the rendered
+						page.
+					</p>
+					<div class="elevation-strip" id="elevationStrip"></div>
+					<div class="swatch-grid" id="surfaceGrid"></div>
+					<div class="contrast-row">
+						<span class="contrast-badge" id="c-body">body</span>
+						<span class="contrast-badge" id="c-secondary">secondary</span>
+						<span class="contrast-badge" id="c-border">border-interactive</span>
 					</div>
-					<div class="control">
-						<label for="lightAccent">Accent Lightness (0-1)</label>
-						<input type="range" id="lightAccent" min="0" max="1" value="0.45" step="0.01" />
-						<div class="control-value">
-							<span id="lightAccentValue">0.45</span>
+					<div style="height: var(--space-m)"></div>
+					<div class="two-col">
+						<div class="sub">
+							<h3>Text</h3>
+							<div class="comp-card" style="box-shadow: none">
+								<div style="color: var(--text-primary); font-weight: var(--font-semibold)">
+									Primary text
+								</div>
+								<div style="color: var(--text-secondary)">Secondary text</div>
+								<div style="color: var(--text-tertiary); font-size: var(--text-s)">
+									Tertiary text
+								</div>
+								<div style="color: var(--text-disabled); font-size: var(--text-s)">
+									Disabled text
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>
-			</aside>
-
-			<!-- Main Content -->
-			<main class="main-content">
-				<!-- Surfaces Section -->
-				<section class="section">
-					<h2>Surfaces</h2>
-					<p>10-step elevation scale using OKLCH color space</p>
-					<div class="token-grid">
-						<div class="token-card surface-swatch" data-token="--surface-1">
-							<div class="token-preview" style="background: var(--surface-1)"></div>
-							<div class="token-label">--surface-1</div>
-							<div class="token-value" id="surface-1-value"></div>
-						</div>
-						<div class="token-card surface-swatch" data-token="--surface-2">
-							<div class="token-preview" style="background: var(--surface-2)"></div>
-							<div class="token-label">--surface-2</div>
-							<div class="token-value" id="surface-2-value"></div>
-						</div>
-						<div class="token-card surface-swatch" data-token="--surface-3">
-							<div class="token-preview" style="background: var(--surface-3)"></div>
-							<div class="token-label">--surface-3</div>
-							<div class="token-value" id="surface-3-value"></div>
-						</div>
-						<div class="token-card surface-swatch" data-token="--surface-4">
-							<div class="token-preview" style="background: var(--surface-4)"></div>
-							<div class="token-label">--surface-4</div>
-							<div class="token-value" id="surface-4-value"></div>
-						</div>
-						<div class="token-card surface-swatch" data-token="--surface-5">
-							<div class="token-preview" style="background: var(--surface-5)"></div>
-							<div class="token-label">--surface-5</div>
-							<div class="token-value" id="surface-5-value"></div>
-						</div>
-						<div class="token-card surface-swatch" data-token="--surface-6">
-							<div class="token-preview" style="background: var(--surface-6)"></div>
-							<div class="token-label">--surface-6</div>
-							<div class="token-value" id="surface-6-value"></div>
-						</div>
-						<div class="token-card surface-swatch" data-token="--surface-7">
-							<div class="token-preview" style="background: var(--surface-7)"></div>
-							<div class="token-label">--surface-7</div>
-							<div class="token-value" id="surface-7-value"></div>
-						</div>
-						<div class="token-card surface-swatch" data-token="--surface-8">
-							<div class="token-preview" style="background: var(--surface-8)"></div>
-							<div class="token-label">--surface-8</div>
-							<div class="token-value" id="surface-8-value"></div>
-						</div>
-						<div class="token-card surface-swatch" data-token="--surface-9">
-							<div class="token-preview" style="background: var(--surface-9)"></div>
-							<div class="token-label">--surface-9</div>
-							<div class="token-value" id="surface-9-value"></div>
-						</div>
-						<div class="token-card surface-swatch" data-token="--surface-10">
-							<div class="token-preview" style="background: var(--surface-10)"></div>
-							<div class="token-label">--surface-10</div>
-							<div class="token-value" id="surface-10-value"></div>
+						<div class="sub">
+							<h3>Borders</h3>
+							<div class="border-demo">
+								<div style="border-color: var(--divider)">--divider</div>
+								<div style="border-color: var(--border-subtle)">--border-subtle (decorative)</div>
+								<div style="border-color: var(--border-default)">--border-default</div>
+								<div style="border-color: var(--border-strong)">--border-strong</div>
+								<div style="border-color: var(--border-interactive)">
+									--border-interactive (inputs, 3:1+)
+								</div>
+							</div>
 						</div>
 					</div>
 				</section>
 
-				<!-- Text Hierarchy Section -->
-				<section class="section">
-					<h2>Text Hierarchy</h2>
-					<p>Four levels of text emphasis</p>
-					<div class="text-sample" style="color: var(--text-primary)">
-						<div class="sample-text">Primary text — main content and headings</div>
+				<section class="section" id="accent" data-keywords="accent hover muted alpha foreground">
+					<div class="section-head">
+						<span class="section-num">02</span>
+						<h2>Accent</h2>
 					</div>
-					<div class="text-sample" style="color: var(--text-secondary)">
-						<div class="sample-text">Secondary text — supporting information</div>
-					</div>
-					<div class="text-sample" style="color: var(--text-tertiary)">
-						<div class="sample-text">Tertiary text — labels and metadata</div>
-					</div>
-					<div class="text-sample" style="color: var(--text-disabled)">
-						<div class="sample-text">Disabled text — inactive UI elements</div>
+					<p class="section-desc">
+						One hue drives <span class="token-name">--accent</span>,
+						<span class="token-name">--accent-hover</span>,
+						<span class="token-name">--accent-muted</span> and translucent alphas. Text on accent
+						must use <span class="token-name">--accent-foreground</span>.
+					</p>
+					<div class="swatch-grid" id="accentGrid"></div>
+					<div class="contrast-row">
+						<span class="contrast-badge" id="c-accent">accent-fg</span>
 					</div>
 				</section>
 
-				<!-- Accent Colors Section -->
-				<section class="section">
-					<h2>Accent Colors</h2>
-					<p>Click any swatch to copy the token name to clipboard</p>
-					<div class="token-grid">
-						<div class="token-card color-swatch" data-token="--accent">
-							<div class="token-preview" style="background: var(--accent)"></div>
-							<div class="token-label">--accent</div>
-							<div class="token-value" id="accent-value"></div>
+				<section class="section" id="states" data-keywords="success warning error info state bg">
+					<div class="section-head">
+						<span class="section-num">03</span>
+						<h2>Semantic states</h2>
+					</div>
+					<p class="section-desc">
+						Each state is a 10-step ramp (<code>1</code> = bg end, <code>10</code> = text end). Pair
+						low bg steps (<code>1–3</code>) with high text/border steps (<code>7–10</code>) —
+						same-end pairs like <code>1/1</code> are the same color (~1:1) by design. Select a ramp
+						cell to copy it.
+					</p>
+					<div class="state-grid" id="stateGrid"></div>
+				</section>
+
+				<section
+					class="section"
+					id="type"
+					data-keywords="font text leading tracking serif mono sans weight"
+				>
+					<div class="section-head">
+						<span class="section-num">04</span>
+						<h2>Typography</h2>
+					</div>
+					<p class="section-desc">Modular scale (1.25 ratio). Type to preview your own copy.</p>
+					<div class="type-tools">
+						<input
+							id="typeInput"
+							value="The playground tunes surfaces and accent"
+							aria-label="Preview text"
+						/>
+						<button class="btn btn-sm" id="copyType">Copy scale</button>
+					</div>
+					<div id="typeScale"></div>
+					<div style="height: var(--space-m)"></div>
+					<div class="two-col">
+						<div class="sub">
+							<h3>Weights</h3>
+							<div id="weights"></div>
 						</div>
-						<div class="token-card color-swatch" data-token="--accent-hover">
-							<div class="token-preview" style="background: var(--accent-hover)"></div>
-							<div class="token-label">--accent-hover</div>
-							<div class="token-value" id="accent-hover-value"></div>
+						<div class="sub">
+							<h3>Leading & tracking</h3>
+							<div id="leading"></div>
 						</div>
-						<div class="token-card color-swatch" data-token="--accent-muted">
-							<div class="token-preview" style="background: var(--accent-muted)"></div>
-							<div class="token-label">--accent-muted</div>
-							<div class="token-value" id="accent-muted-value"></div>
+					</div>
+				</section>
+
+				<section class="section" id="space" data-keywords="space radius container width">
+					<div class="section-head">
+						<span class="section-num">05</span>
+						<h2>Space & shape</h2>
+					</div>
+					<p class="section-desc">4px base unit, radius scale, fixed containers.</p>
+					<div class="two-col">
+						<div class="sub">
+							<h3>Spacing</h3>
+							<div id="spaceList"></div>
 						</div>
-						<div class="token-card color-swatch" data-token="--accent-alpha">
-							<div class="token-preview" style="background: var(--accent-alpha)"></div>
-							<div class="token-label">--accent-alpha</div>
-							<div class="token-value" id="accent-alpha-value"></div>
+						<div class="sub">
+							<h3>Radius</h3>
+							<div class="radius-grid" id="radiusGrid"></div>
+							<h3 style="margin-top: var(--space-m)">Containers</h3>
+							<div class="space-row"><span class="token-name">--container-s 40rem</span></div>
+							<div class="space-row"><span class="token-name">--container-m 48rem</span></div>
+							<div class="space-row"><span class="token-name">--container-l 64rem</span></div>
+							<div class="space-row"><span class="token-name">--container-xl 80rem</span></div>
+							<div class="space-row"><span class="token-name">--container-2xl 96rem</span></div>
 						</div>
-						<div class="token-card color-swatch" data-token="--accent-alpha-hover">
-							<div class="token-preview" style="background: var(--accent-alpha-hover)"></div>
-							<div class="token-label">--accent-alpha-hover</div>
-							<div class="token-value" id="accent-alpha-hover-value"></div>
+					</div>
+				</section>
+
+				<section
+					class="section"
+					id="depth"
+					data-keywords="shadow overlay focus transition ease duration z-index modal"
+				>
+					<div class="section-head">
+						<span class="section-num">06</span>
+						<h2>Depth & motion</h2>
+					</div>
+					<p class="section-desc">Theme-aware shadows, frosted glass, easing. Hover the tiles.</p>
+					<div class="sub">
+						<h3>Shadows</h3>
+						<div class="shadow-grid" id="shadowGrid" style="margin-bottom: var(--space-l)"></div>
+					</div>
+					<div class="two-col">
+						<div class="sub">
+							<h3>Glass & overlay</h3>
+							<div class="glass-demo" style="margin-bottom: var(--space-s)">
+								<div style="background: var(--surface-alpha); backdrop-filter: blur(8px)">
+									--surface-alpha
+								</div>
+							</div>
+							<div class="glass-demo">
+								<div style="background: var(--overlay); color: #fff">--overlay</div>
+							</div>
 						</div>
-						<div class="token-card color-swatch" data-token="--accent-foreground">
+						<div class="sub">
+							<h3>Motion</h3>
+							<div class="motion-grid" id="motionGrid"></div>
+							<h3 style="margin-top: var(--space-m)">Focus</h3>
+							<div class="field" style="margin-bottom: 0">
+								<input placeholder="Tab here. Focus ring uses --accent" aria-label="Focus demo" />
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section
+					class="section"
+					id="components"
+					data-keywords="button badge card form avatar progress modal toast alert"
+				>
+					<div class="section-head">
+						<span class="section-num">07</span>
+						<h2>Components</h2>
+					</div>
+					<p class="section-desc">The tokens, composed. Every color below is a token.</p>
+					<div class="comp-grid">
+						<div class="comp-card">
+							<h3>Actions</h3>
+							<p>Buttons, badges and toasts inherit accent + states.</p>
+							<div class="row" style="margin-bottom: var(--space-m)">
+								<button class="btn btn-primary">Primary</button>
+								<button class="btn">Secondary</button>
+								<button class="btn btn-ghost">Ghost</button>
+								<button class="btn btn-danger btn-sm">Danger</button>
+							</div>
+							<div class="row" style="margin-bottom: var(--space-m)">
+								<span class="badge badge-accent">accent</span>
+								<span class="badge badge-success">success</span>
+								<span class="badge badge-warning">warning</span>
+								<span class="badge badge-error">error</span>
+								<span class="badge badge-info">info</span>
+							</div>
+							<div class="row">
+								<button class="btn btn-sm" id="toastBtn">Show toast</button>
+								<button class="btn btn-sm" id="modalBtn">Open modal</button>
+							</div>
+						</div>
+						<div class="comp-card">
+							<h3>Team</h3>
+							<p>Avatars, progress and metadata.</p>
+							<div class="avatar-stack" style="margin-bottom: var(--space-m)">
+								<span style="background: var(--accent); color: var(--accent-foreground)">AC</span>
+								<span style="background: var(--success-bg); color: var(--success)">+9</span>
+							</div>
+							<div class="progress" style="margin-bottom: var(--space-s)"><i></i></div>
 							<div
-								class="token-preview"
 								style="
-									background: var(--accent);
-									color: var(--accent-foreground);
-									display: flex;
-									align-items: center;
-									justify-content: center;
+									font-size: var(--text-xs);
+									color: var(--text-tertiary);
+									font-family: var(--font-mono);
 								"
 							>
-								Aa
-							</div>
-							<div class="token-label">--accent-foreground</div>
-							<div class="token-value" id="accent-foreground-value"></div>
-						</div>
-					</div>
-				</section>
-
-				<!-- Semantic States Section -->
-				<section class="section">
-					<h2>Semantic States</h2>
-					<p>
-						Adjust bg/text/border steps independently for each state (step 1 = lightest, step 10 =
-						darkest)
-					</p>
-
-					<!-- Success Controls -->
-					<div class="control-group">
-						<h3>Success</h3>
-						<div class="control">
-							<label for="successBg">Background Step (1-10)</label>
-							<input type="range" id="successBg" min="1" max="10" value="2" step="1" />
-							<div class="control-value">
-								<span id="successBgValue">2</span>
+								68% --accent on --surface-4
 							</div>
 						</div>
-						<div class="control">
-							<label for="successText">Text/Border Step (1-10)</label>
-							<input type="range" id="successText" min="1" max="10" value="8" step="1" />
-							<div class="control-value">
-								<span id="successTextValue">8</span>
+						<div class="comp-card">
+							<h3>Sign in</h3>
+							<p>Focus rings, borders and surfaces working together.</p>
+							<div class="field">
+								<label for="demoEmail">Email</label
+								><input id="demoEmail" type="email" placeholder="you@example.com" />
 							</div>
-						</div>
-					</div>
-
-					<!-- Warning Controls -->
-					<div class="control-group">
-						<h3>Warning</h3>
-						<div class="control">
-							<label for="warningBg">Background Step (1-10)</label>
-							<input type="range" id="warningBg" min="1" max="10" value="2" step="1" />
-							<div class="control-value">
-								<span id="warningBgValue">2</span>
+							<div class="field">
+								<label for="demoPass">Password</label
+								><input id="demoPass" type="password" placeholder="••••••••" />
 							</div>
-						</div>
-						<div class="control">
-							<label for="warningText">Text/Border Step (1-10)</label>
-							<input type="range" id="warningText" min="1" max="10" value="8" step="1" />
-							<div class="control-value">
-								<span id="warningTextValue">8</span>
-							</div>
-						</div>
-					</div>
-
-					<!-- Error Controls -->
-					<div class="control-group">
-						<h3>Error</h3>
-						<div class="control">
-							<label for="errorBg">Background Step (1-10)</label>
-							<input type="range" id="errorBg" min="1" max="10" value="2" step="1" />
-							<div class="control-value">
-								<span id="errorBgValue">2</span>
-							</div>
-						</div>
-						<div class="control">
-							<label for="errorText">Text/Border Step (1-10)</label>
-							<input type="range" id="errorText" min="1" max="10" value="8" step="1" />
-							<div class="control-value">
-								<span id="errorTextValue">8</span>
-							</div>
-						</div>
-					</div>
-
-					<!-- Info Controls -->
-					<div class="control-group">
-						<h3>Info</h3>
-						<div class="control">
-							<label for="infoBg">Background Step (1-10)</label>
-							<input type="range" id="infoBg" min="1" max="10" value="2" step="1" />
-							<div class="control-value">
-								<span id="infoBgValue">2</span>
-							</div>
-						</div>
-						<div class="control">
-							<label for="infoText">Text/Border Step (1-10)</label>
-							<input type="range" id="infoText" min="1" max="10" value="8" step="1" />
-							<div class="control-value">
-								<span id="infoTextValue">8</span>
-							</div>
-						</div>
-					</div>
-
-					<h3 style="margin-top: var(--space-2xl)">Preview</h3>
-					<div class="state-demo success">
-						<strong>Success:</strong> Operation completed successfully
-					</div>
-					<div class="state-demo warning"><strong>Warning:</strong> Proceed with caution</div>
-					<div class="state-demo error"><strong>Error:</strong> Something went wrong</div>
-					<div class="state-demo info"><strong>Info:</strong> Helpful information for users</div>
-				</section>
-
-				<!-- Borders & Dividers Section -->
-				<section class="section">
-					<h2>Borders & Dividers</h2>
-					<p>Five levels of border emphasis and three width variants</p>
-					<div class="border-sample">
-						<div class="border-line" style="border-top: var(--border-width) solid var(--divider)">
-							divider
-						</div>
-						<div
-							class="border-line"
-							style="border-top: var(--border-width) solid var(--border-subtle)"
-						>
-							border-subtle
-						</div>
-						<div
-							class="border-line"
-							style="border-top: var(--border-width) solid var(--border-default)"
-						>
-							border-default
-						</div>
-						<div
-							class="border-line"
-							style="border-top: var(--border-width) solid var(--border-strong)"
-						>
-							border-strong
-						</div>
-						<div
-							class="border-line"
-							style="border-top: var(--border-width) solid var(--border-interactive)"
-						>
-							border-interactive (WCAG 1.4.11, 3:1+)
-						</div>
-						<div
-							class="border-line"
-							style="border-top: var(--border-width) solid var(--border-default)"
-						>
-							border-width (1px)
-						</div>
-						<div
-							class="border-line"
-							style="border-top: var(--border-width-m) solid var(--border-default)"
-						>
-							border-width-m (4px)
-						</div>
-						<div
-							class="border-line"
-							style="border-top: var(--border-width-l) solid var(--border-default)"
-						>
-							border-width-l (8px)
+							<button class="btn btn-primary" style="width: 100%; justify-content: center">
+								Continue
+							</button>
 						</div>
 					</div>
 				</section>
 
-				<!-- Typography Scale Section -->
-				<section class="section">
-					<h2>Typography Scale</h2>
-					<p>Modular scale with 1.25 ratio</p>
-					<div class="type-sample" style="font-size: var(--text-xs)">
-						<p>--text-xs: The quick brown fox jumps over the lazy dog</p>
+				<section class="section" id="export" data-keywords="export css copy reset variable">
+					<div class="section-head">
+						<span class="section-num">08</span>
+						<h2>Export</h2>
 					</div>
-					<div class="type-sample" style="font-size: var(--text-s)">
-						<p>--text-s: The quick brown fox jumps over the lazy dog</p>
-					</div>
-					<div class="type-sample" style="font-size: var(--text-base)">
-						<p>--text-base: The quick brown fox jumps over the lazy dog</p>
-					</div>
-					<div class="type-sample" style="font-size: var(--text-m)">
-						<p>--text-m: The quick brown fox jumps over the lazy dog</p>
-					</div>
-					<div class="type-sample" style="font-size: var(--text-l)">
-						<p>--text-l: The quick brown fox jumps over the lazy dog</p>
-					</div>
-					<div class="type-sample" style="font-size: var(--text-xl)">
-						<p>--text-xl: The quick brown fox jumps over the lazy dog</p>
-					</div>
-					<div class="type-sample" style="font-size: var(--text-2xl)">
-						<p>--text-2xl: The quick brown fox</p>
-					</div>
-					<div class="type-sample" style="font-size: var(--text-3xl)">
-						<p>--text-3xl: Quick Fox</p>
-					</div>
-
-					<h3>Font Weights</h3>
-					<div class="type-sample" style="font-weight: var(--font-light)">--font-light (300)</div>
-					<div class="type-sample" style="font-weight: var(--font-normal)">--font-normal (400)</div>
-					<div class="type-sample" style="font-weight: var(--font-medium)">--font-medium (500)</div>
-					<div class="type-sample" style="font-weight: var(--font-semibold)">
-						--font-semibold (600)
-					</div>
-					<div class="type-sample" style="font-weight: var(--font-bold)">--font-bold (700)</div>
-
-					<h3>Line Heights</h3>
-					<div class="type-sample" style="line-height: var(--leading-tight)">
-						--leading-tight (1.25): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-						eiusmod tempor incididunt ut labore et dolore magna aliqua.
-					</div>
-					<div class="type-sample" style="line-height: var(--leading-snug)">
-						--leading-snug (1.375): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-						eiusmod tempor incididunt ut labore et dolore magna aliqua.
-					</div>
-					<div class="type-sample" style="line-height: var(--leading-normal)">
-						--leading-normal (1.5): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-						eiusmod tempor incididunt ut labore et dolore magna aliqua.
-					</div>
-					<div class="type-sample" style="line-height: var(--leading-relaxed)">
-						--leading-relaxed (1.625): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-						do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-					</div>
-					<div class="type-sample" style="line-height: var(--leading-loose)">
-						--leading-loose (2): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-						eiusmod tempor incididunt ut labore et dolore magna aliqua.
-					</div>
-
-					<h3>Letter Spacing</h3>
-					<div class="type-sample" style="letter-spacing: var(--tracking-tighter)">
-						--tracking-tighter: The quick brown fox
-					</div>
-					<div class="type-sample" style="letter-spacing: var(--tracking-tight)">
-						--tracking-tight: The quick brown fox
-					</div>
-					<div class="type-sample" style="letter-spacing: var(--tracking-normal)">
-						--tracking-normal: The quick brown fox
-					</div>
-					<div class="type-sample" style="letter-spacing: var(--tracking-wide)">
-						--tracking-wide: The quick brown fox
-					</div>
-					<div class="type-sample" style="letter-spacing: var(--tracking-wider)">
-						--tracking-wider: The quick brown fox
-					</div>
-					<div class="type-sample" style="letter-spacing: var(--tracking-widest)">
-						--tracking-widest: The quick brown fox
-					</div>
-				</section>
-
-				<!-- Font Families Section -->
-				<section class="section">
-					<h2>Font Families</h2>
-					<div class="type-sample" style="font-family: var(--font-sans)">
-						<strong>--font-sans:</strong> system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-						Roboto, 'Helvetica Neue', Arial, sans-serif
-					</div>
-					<div class="type-sample" style="font-family: var(--font-serif)">
-						<strong>--font-serif:</strong> Georgia, Cambria, 'Times New Roman', Times, serif
-					</div>
-					<div class="type-sample" style="font-family: var(--font-mono)">
-						<strong>--font-mono:</strong> 'Fira Code', 'Cascadia Code', Consolas, Monaco, 'Courier
-						New', monospace
-					</div>
-				</section>
-
-				<!-- Spacing Scale Section -->
-				<section class="section">
-					<h2>Spacing Scale</h2>
-					<p>Based on 0.25rem (4px) unit</p>
-					<div class="spacing-demo">
-						<div class="spacing-bar" style="width: var(--space-px)"></div>
-						<span class="spacing-label">--space-px (1px)</span>
-					</div>
-					<div class="spacing-demo">
-						<div class="spacing-bar" style="width: var(--space-xs)"></div>
-						<span class="spacing-label">--space-xs (4px)</span>
-					</div>
-					<div class="spacing-demo">
-						<div class="spacing-bar" style="width: var(--space-s)"></div>
-						<span class="spacing-label">--space-s (8px)</span>
-					</div>
-					<div class="spacing-demo">
-						<div class="spacing-bar" style="width: var(--space-m)"></div>
-						<span class="spacing-label">--space-m (12px)</span>
-					</div>
-					<div class="spacing-demo">
-						<div class="spacing-bar" style="width: var(--space-l)"></div>
-						<span class="spacing-label">--space-l (16px)</span>
-					</div>
-					<div class="spacing-demo">
-						<div class="spacing-bar" style="width: var(--space-xl)"></div>
-						<span class="spacing-label">--space-xl (24px)</span>
-					</div>
-					<div class="spacing-demo">
-						<div class="spacing-bar" style="width: var(--space-2xl)"></div>
-						<span class="spacing-label">--space-2xl (32px)</span>
-					</div>
-					<div class="spacing-demo">
-						<div class="spacing-bar" style="width: var(--space-3xl)"></div>
-						<span class="spacing-label">--space-3xl (48px)</span>
-					</div>
-					<div class="spacing-demo">
-						<div class="spacing-bar" style="width: var(--space-4xl)"></div>
-						<span class="spacing-label">--space-4xl (64px)</span>
-					</div>
-				</section>
-
-				<!-- Border Radius Section -->
-				<section class="section">
-					<h2>Border Radius</h2>
-					<div class="radius-demo">
-						<div class="radius-box" style="border-radius: var(--radius-none)">none</div>
-						<div class="radius-box" style="border-radius: var(--radius-s)">sm</div>
-						<div class="radius-box" style="border-radius: var(--radius-m)">md</div>
-						<div class="radius-box" style="border-radius: var(--radius-l)">lg</div>
-						<div class="radius-box" style="border-radius: var(--radius-xl)">xl</div>
-						<div class="radius-box" style="border-radius: var(--radius-2xl)">2xl</div>
-						<div class="radius-box" style="border-radius: var(--radius-3xl)">3xl</div>
-						<div class="radius-box" style="border-radius: var(--radius-full)">full</div>
-					</div>
-				</section>
-
-				<!-- Shadows Section -->
-				<section class="section">
-					<h2>Shadows & Elevation</h2>
-					<div class="shadow-demo">
-						<div class="shadow-box" style="box-shadow: var(--shadow-none)">none</div>
-						<div class="shadow-box" style="box-shadow: var(--shadow-xs)">xs</div>
-						<div class="shadow-box" style="box-shadow: var(--shadow-s)">sm</div>
-						<div class="shadow-box" style="box-shadow: var(--shadow-m)">md</div>
-						<div class="shadow-box" style="box-shadow: var(--shadow-l)">lg</div>
-						<div class="shadow-box" style="box-shadow: var(--shadow-xl)">xl</div>
-						<div class="shadow-box" style="box-shadow: var(--shadow-2xl)">2xl</div>
-						<div class="shadow-box" style="box-shadow: var(--shadow-inner)">inner</div>
-					</div>
-				</section>
-
-				<!-- Alpha & Overlays Section -->
-				<section class="section">
-					<h2>Alpha & Overlays</h2>
-					<p>Transparent surface and overlay variants</p>
-					<h3>Surface Alpha (Frosted Glass)</h3>
-					<div class="overlay-demo">
-						<div class="overlay-layer" style="background: var(--surface-alpha-light)">
-							surface-alpha-light
-						</div>
-					</div>
-					<div class="overlay-demo">
-						<div class="overlay-layer" style="background: var(--surface-alpha)">surface-alpha</div>
-					</div>
-					<div class="overlay-demo">
-						<div class="overlay-layer" style="background: var(--surface-alpha-strong)">
-							surface-alpha-strong
-						</div>
-					</div>
-
-					<h3>Overlays (Pure Black)</h3>
-					<div class="overlay-demo">
-						<div class="overlay-layer" style="background: var(--overlay-light)">overlay-light</div>
-					</div>
-					<div class="overlay-demo">
-						<div class="overlay-layer" style="background: var(--overlay)">overlay</div>
-					</div>
-					<div class="overlay-demo">
-						<div class="overlay-layer" style="background: var(--overlay-strong)">
-							overlay-strong
-						</div>
-					</div>
-				</section>
-
-				<!-- Focus States Section -->
-				<section class="section">
-					<h2>Focus States</h2>
-					<p>Interactive elements with focus ring styles</p>
-					<div class="focus-demo">
-						<input type="text" placeholder="Text input - click to focus" />
-						<textarea placeholder="Textarea - click to focus"></textarea>
-						<select>
-							<option>Select - click to focus</option>
-							<option>Option 1</option>
-							<option>Option 2</option>
-						</select>
-					</div>
-				</section>
-
-				<!-- Transitions Section -->
-				<section class="section">
-					<h2>Transitions & Easing</h2>
-					<p>Hover over boxes to see easing curves in action</p>
-					<div class="transition-demo">
-						<div class="transition-box">
-							<div class="transition-label">linear</div>
-							<div
-								class="moving-box"
-								style="transition: left var(--duration-slow) var(--ease-linear)"
-							></div>
-						</div>
-						<div class="transition-box">
-							<div class="transition-label">ease-in</div>
-							<div
-								class="moving-box"
-								style="transition: left var(--duration-slow) var(--ease-in)"
-							></div>
-						</div>
-						<div class="transition-box">
-							<div class="transition-label">ease-out</div>
-							<div
-								class="moving-box"
-								style="transition: left var(--duration-slow) var(--ease-out)"
-							></div>
-						</div>
-						<div class="transition-box">
-							<div class="transition-label">ease-in-out</div>
-							<div
-								class="moving-box"
-								style="transition: left var(--duration-slow) var(--ease-in-out)"
-							></div>
-						</div>
-						<div class="transition-box">
-							<div class="transition-label">bounce</div>
-							<div
-								class="moving-box"
-								style="transition: left var(--duration-slow) var(--ease-bounce)"
-							></div>
-						</div>
-					</div>
-				</section>
-
-				<!-- Z-Index Section -->
-				<section class="section">
-					<h2>Z-Index Layers</h2>
-					<p>Stacking order for UI elements</p>
-					<div class="zindex-demo">
-						<div
-							class="layer"
-							style="z-index: var(--z-base); top: 20px; left: 20px; width: 180px; height: 60px"
-						>
-							z-base (0)
-						</div>
-						<div
-							class="layer"
-							style="z-index: var(--z-dropdown); top: 40px; left: 40px; width: 180px; height: 60px"
-						>
-							z-dropdown (1000)
-						</div>
-						<div
-							class="layer"
-							style="z-index: var(--z-sticky); top: 60px; left: 60px; width: 180px; height: 60px"
-						>
-							z-sticky (1100)
-						</div>
-						<div
-							class="layer"
-							style="z-index: var(--z-fixed); top: 80px; left: 80px; width: 180px; height: 60px"
-						>
-							z-fixed (1200)
-						</div>
-						<div
-							class="layer"
-							style="
-								z-index: var(--z-modal-backdrop);
-								top: 100px;
-								left: 100px;
-								width: 180px;
-								height: 60px;
-							"
-						>
-							z-modal-backdrop (1300)
-						</div>
-						<div
-							class="layer"
-							style="z-index: var(--z-modal); top: 120px; left: 120px; width: 180px; height: 60px"
-						>
-							z-modal (1400)
-						</div>
-						<div
-							class="layer"
-							style="z-index: var(--z-popover); top: 140px; left: 140px; width: 180px; height: 60px"
-						>
-							z-popover (1500)
-						</div>
-						<div
-							class="layer"
-							style="z-index: var(--z-tooltip); top: 160px; left: 160px; width: 180px; height: 60px"
-						>
-							z-tooltip (1600)
-						</div>
-						<div
-							class="layer"
-							style="z-index: var(--z-toast); top: 180px; left: 180px; width: 180px; height: 60px"
-						>
-							z-toast (1700)
-						</div>
-					</div>
-				</section>
-
-				<!-- Container Widths Section -->
-				<section class="section">
-					<h2>Container Widths</h2>
-					<p>Fixed and fluid container sizes</p>
-					<h3>Fixed Containers</h3>
-					<div class="container-demo">
-						<div class="container-box" style="max-width: var(--container-s)">
-							container-s (40rem)
-						</div>
-						<div class="container-box" style="max-width: var(--container-m)">
-							container-m (48rem)
-						</div>
-						<div class="container-box" style="max-width: var(--container-l)">
-							container-l (64rem)
-						</div>
-						<div class="container-box" style="max-width: var(--container-xl)">
-							container-xl (80rem)
-						</div>
-						<div class="container-box" style="max-width: var(--container-2xl)">
-							container-2xl (96rem)
-						</div>
-					</div>
-
-					<h3>Fluid Containers (using clamp)</h3>
-					<div class="container-demo">
-						<div class="container-box" style="max-width: var(--container-fluid-s)">
-							container-fluid-s
-						</div>
-						<div class="container-box" style="max-width: var(--container-fluid-m)">
-							container-fluid-m
-						</div>
-						<div class="container-box" style="max-width: var(--container-fluid-l)">
-							container-fluid-l
-						</div>
-						<div class="container-box" style="max-width: var(--container-fluid-xl)">
-							container-fluid-xl
-						</div>
-						<div class="container-box" style="max-width: var(--container-fluid-2xl)">
-							container-fluid-2xl
-						</div>
+					<p class="section-desc">Drop this after the import to lock in your tuning.</p>
+					<pre class="code" id="exportCode"></pre>
+					<div class="row">
+						<button class="btn btn-primary btn-sm" id="copyCssMain">Copy CSS</button>
+						<button class="btn btn-sm" id="resetBtn2">Reset defaults</button>
+						<button class="btn btn-sm btn-ghost" id="shareBtn">Copy link</button>
 					</div>
 				</section>
 			</main>
 		</div>
 
-		<!-- Toast Notification -->
-		<div class="toast" id="toast">Copied to clipboard!</div>
+		<div class="toast" id="toast" role="status"></div>
+		<div class="modal-backdrop" id="modalBackdrop">
+			<div class="modal" role="dialog" aria-modal="true" aria-label="Demo modal">
+				<h3>Modal over overlay</h3>
+				<p>
+					<span class="token-name">--overlay</span> dims the page,
+					<span class="token-name">--shadow-2xl</span> lifts the card,
+					<span class="token-name">--z-modal</span> stacks it.
+				</p>
+				<div class="row"><button class="btn btn-primary btn-sm" id="modalClose">Done</button></div>
+			</div>
+		</div>
 
-		<!-- JavaScript -->
 		<script>
-			// ===========================
-			// STATE
-			// ===========================
-			const defaults = {
-				accentHue: 200,
-				accentChroma: 0.11,
+			// ============ state ============
+			const root = document.documentElement;
+			const DEFAULTS = {
+				hue: 200,
+				chroma: 0.11,
 				darkSurface: 0.15,
 				darkText: 0.9,
-				darkAccent: 0.65,
+				darkAccentL: 0.65,
 				lightSurface: 0.97,
 				lightText: 0.18,
-				lightAccent: 0.45
+				lightAccentL: 0.45
 			};
-
-			let currentTheme = 'dark';
-
-			// ===========================
-			// THEME CONTROLS
-			// ===========================
-			const controls = {
-				accentHue: document.getElementById('accentHue'),
-				accentChroma: document.getElementById('accentChroma'),
-				darkSurface: document.getElementById('darkSurface'),
-				darkText: document.getElementById('darkText'),
-				darkAccent: document.getElementById('darkAccent'),
-				lightSurface: document.getElementById('lightSurface'),
-				lightText: document.getElementById('lightText'),
-				lightAccent: document.getElementById('lightAccent')
+			// Gamut-safe chroma ceilings per hue (dark L .65 / light L .45).
+			const HUE_MAX = {
+				0: [0.26, 0.18],
+				10: [0.24, 0.18],
+				25: [0.245, 0.178],
+				40: [0.2, 0.14],
+				100: [0.128, 0.093],
+				140: [0.195, 0.14],
+				200: [0.108, 0.075],
+				210: [0.104, 0.075],
+				220: [0.12, 0.08]
 			};
+			const PRESETS = [
+				['Berry', 0],
+				['Ember', 25],
+				['Amber', 40],
+				['Lime', 100],
+				['Forest', 140],
+				['Ocean', 200],
+				['Royal', 220]
+			];
+			const stateDef = [
+				{ name: 'success', bg: 2, text: 8, border: 8 },
+				{ name: 'warning', bg: 2, text: 8, border: 8 },
+				{ name: 'error', bg: 2, text: 8, border: 8 },
+				{ name: 'info', bg: 2, text: 8, border: 8 }
+			];
+			let mode = localStorage.getItem('demo2-theme') || 'dark';
 
-			const valueDisplays = {
-				accentHue: document.getElementById('accentHueValue'),
-				accentChroma: document.getElementById('accentChromaValue'),
-				darkSurface: document.getElementById('darkSurfaceValue'),
-				darkText: document.getElementById('darkTextValue'),
-				darkAccent: document.getElementById('darkAccentValue'),
-				lightSurface: document.getElementById('lightSurfaceValue'),
-				lightText: document.getElementById('lightTextValue'),
-				lightAccent: document.getElementById('lightAccentValue')
-			};
+			const $ = id => document.getElementById(id);
+			const toastEl = $('toast');
+			let toastT;
+			function toast(msg) {
+				toastEl.textContent = msg;
+				toastEl.classList.add('show');
+				clearTimeout(toastT);
+				toastT = setTimeout(() => toastEl.classList.remove('show'), 1800);
+			}
+			function copy(text, msg) {
+				navigator.clipboard.writeText(text).then(() => toast(msg || 'Copied ' + text));
+			}
+			const setVar = (k, v) => root.style.setProperty(k, v);
+			const getVar = k => getComputedStyle(root).getPropertyValue(k).trim();
 
-			// ===========================
-			// UPDATE FUNCTIONS
-			// ===========================
-			function updateCSSVariable(name, value) {
-				document.documentElement.style.setProperty(name, value);
+			// ============ theme mode ============
+			const mq = matchMedia('(prefers-color-scheme: light)');
+			function applyMode() {
+				if (mode === 'system') root.removeAttribute('data-theme');
+				else root.setAttribute('data-theme', mode);
+				document
+					.querySelectorAll('.segmented button')
+					.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+				localStorage.setItem('demo2-theme', mode);
+				syncPlaygroundToTheme();
+				refresh();
+			}
+			document.querySelectorAll('.segmented button').forEach(b =>
+				b.addEventListener('click', () => {
+					mode = b.dataset.mode;
+					applyMode();
+				})
+			);
+			mq.addEventListener?.('change', () => {
+				refresh();
+			});
+
+			function activeIsLight() {
+				if (mode === 'light') return true;
+				if (mode === 'dark') return false;
+				return mq.matches;
+			}
+			function themeKeys() {
+				return activeIsLight()
+					? {
+							s: '--light-surface-base',
+							t: '--light-text-base-lightness',
+							a: '--light-accent-base-lightness',
+							tag: 'light'
+						}
+					: {
+							s: '--dark-surface-base',
+							t: '--dark-text-base-lightness',
+							a: '--dark-accent-base-lightness',
+							tag: 'dark'
+						};
 			}
 
-			function updateControl(controlName, variable, value) {
-				updateCSSVariable(variable, value);
-				if (valueDisplays[controlName]) {
-					valueDisplays[controlName].textContent = value;
+			// ============ playground ============
+			const inHue = $('in-hue'),
+				inChroma = $('in-chroma'),
+				inSurface = $('in-surface'),
+				inText = $('in-text'),
+				inAccentL = $('in-accentL');
+			function nearestMax(hue) {
+				const keys = Object.keys(HUE_MAX)
+					.map(Number)
+					.sort((a, b) => a - b);
+				let best = keys[0];
+				for (const k of keys) if (Math.abs(k - hue) < Math.abs(best - hue)) best = k;
+				return HUE_MAX[best];
+			}
+			function syncPlaygroundToTheme() {
+				const k = themeKeys();
+				const s =
+					parseFloat(getVar(k.s)) ||
+					(k.tag === 'light' ? DEFAULTS.lightSurface : DEFAULTS.darkSurface);
+				const t =
+					parseFloat(getVar(k.t)) || (k.tag === 'light' ? DEFAULTS.lightText : DEFAULTS.darkText);
+				const a =
+					parseFloat(getVar(k.a)) ||
+					(k.tag === 'light' ? DEFAULTS.lightAccentL : DEFAULTS.darkAccentL);
+				inSurface.value = s;
+				$('o-surface').textContent = s.toFixed(2);
+				inText.value = t;
+				$('o-text').textContent = t.toFixed(2);
+				inAccentL.value = a;
+				$('o-accentL').textContent = a.toFixed(2);
+			}
+			inHue.addEventListener('input', () => {
+				const h = +inHue.value;
+				$('o-hue').textContent = h;
+				setVar('--theme-accent-hue', h);
+				const [dMax, lMax] = nearestMax(h);
+				setVar('--dark-accent-chroma-max', dMax);
+				setVar('--light-accent-chroma-max', lMax);
+				markPreset(h);
+				refresh();
+			});
+			inChroma.addEventListener('input', () => {
+				$('o-chroma').textContent = (+inChroma.value).toFixed(3);
+				setVar('--theme-accent-chroma', inChroma.value);
+				refresh();
+			});
+			function bindThemeSlider(input, out, key) {
+				input.addEventListener('input', () => {
+					const k = themeKeys();
+					setVar(k[key], input.value);
+					$(out).textContent = (+input.value).toFixed(2);
+					refresh();
+				});
+			}
+			bindThemeSlider(inSurface, 'o-surface', 's');
+			bindThemeSlider(inText, 'o-text', 't');
+			bindThemeSlider(inAccentL, 'o-accentL', 'a');
+
+			// presets
+			const presetWrap = $('presets');
+			PRESETS.forEach(([label, hue]) => {
+				const b = document.createElement('button');
+				b.className = 'preset';
+				b.innerHTML = `<i style="background: oklch(0.65 0.15 ${hue})"></i>${label} ${hue}°`;
+				b.setAttribute('aria-pressed', String(hue === DEFAULTS.hue));
+				b.addEventListener('click', () => {
+					inHue.value = hue;
+					inHue.dispatchEvent(new Event('input'));
+				});
+				b.dataset.hue = hue;
+				presetWrap.appendChild(b);
+			});
+			function markPreset(h) {
+				presetWrap
+					.querySelectorAll('.preset')
+					.forEach(p => p.setAttribute('aria-pressed', String(+p.dataset.hue === +h)));
+			}
+
+			// ============ generated grids ============
+			function swatch(name, bg, fg) {
+				const b = document.createElement('button');
+				b.className = 'swatch';
+				b.dataset.name = name;
+				b.innerHTML = `<div class="swatch-chip" style="background: ${bg}${fg ? `; color: ${fg}; display:flex; align-items:center; justify-content:center; font-weight:700` : ''}">${fg ? 'Aa' : ''}</div>
+					<div class="swatch-body"><span class="swatch-name">${name}</span><span class="swatch-val" data-val="${name}"></span></div>`;
+				b.addEventListener('click', () => copy(name));
+				return b;
+			}
+			// surfaces
+			const surfaceGrid = $('surfaceGrid'),
+				strip = $('elevationStrip');
+			for (let i = 1; i <= 10; i++) {
+				surfaceGrid.appendChild(swatch(`--surface-${i}`, `var(--surface-${i})`));
+				const d = document.createElement('div');
+				d.style.background = `var(--surface-${i})`;
+				d.title = `--surface-${i}`;
+				strip.appendChild(d);
+			}
+			// accents
+			const accentGrid = $('accentGrid');
+			[
+				'--accent',
+				'--accent-hover',
+				'--accent-muted',
+				'--accent-alpha',
+				'--accent-alpha-hover'
+			].forEach(t => accentGrid.appendChild(swatch(t, `var(${t})`)));
+			accentGrid.appendChild(
+				swatch('--accent-foreground', 'var(--accent)', 'var(--accent-foreground)')
+			);
+
+			// states
+			const stateGrid = $('stateGrid');
+			const stateLive = {};
+			stateDef.forEach(s => {
+				const card = document.createElement('div');
+				card.className = 'state-card';
+				card.dataset.state = s.name;
+				card.innerHTML = `<h3><i style="background: var(--${s.name})"></i>${s.name}</h3>
+				<div class="ramp"></div>
+				<div class="alert">Demo ${s.name} alert</div>
+				<div class="mini-sliders" style="margin-top: var(--space-s)">
+					<label><span>bg <output>${s.bg}</output></span><input type="range" min="1" max="10" value="${s.bg}"></label>
+					<label><span>text <output>${s.text}</output></span><input type="range" min="1" max="10" value="${s.text}"></label>
+					<label><span>border <output>${s.border}</output></span><input type="range" min="1" max="10" value="${s.border}"></label>
+				</div>`;
+				const ramp = card.querySelector('.ramp');
+				for (let i = 1; i <= 10; i++) {
+					const c = document.createElement('button');
+					c.style.background = `var(--${s.name}-${i})`;
+					c.title = `--${s.name}-${i}`;
+					c.setAttribute('aria-label', `--${s.name}-${i}`);
+					c.addEventListener('click', () => copy(`--${s.name}-${i}`));
+					ramp.appendChild(c);
 				}
+				const [bgIn, textIn, borderIn] = card.querySelectorAll('input');
+				const [bgOut, textOut, borderOut] = card.querySelectorAll('output');
+				const alert = card.querySelector('.alert');
+				const paint = () => {
+					bgOut.textContent = bgIn.value;
+					textOut.textContent = textIn.value;
+					borderOut.textContent = borderIn.value;
+					alert.style.background = `var(--${s.name}-${bgIn.value})`;
+					alert.style.color = `var(--${s.name}-${textIn.value})`;
+					alert.style.borderColor = `var(--${s.name}-${borderIn.value})`;
+
+					setVar(`--${s.name}`, `var(--${s.name}-${textIn.value})`);
+					setVar(`--${s.name}-bg`, `var(--${s.name}-${bgIn.value})`);
+
+					document.querySelectorAll(`.badge-${s.name}`).forEach(el => {
+						el.style.background = `var(--${s.name}-${bgIn.value})`;
+						el.style.color = `var(--${s.name}-${textIn.value})`;
+						el.style.borderColor = `var(--${s.name}-${borderIn.value})`;
+					});
+				};
+				bgIn.addEventListener('input', paint);
+				textIn.addEventListener('input', paint);
+				borderIn.addEventListener('input', paint);
+				paint();
+				stateLive[s.name] = { bgIn, textIn, borderIn, paint };
+				stateGrid.appendChild(card);
+			});
+
+			// type
+			const typeInput = $('typeInput');
+			const SCALES = [
+				['--text-xs', '0.64rem'],
+				['--text-s', '0.8rem'],
+				['--text-base', '1rem'],
+				['--text-m', '1.25rem'],
+				['--text-l', '1.563rem'],
+				['--text-xl', '1.953rem'],
+				['--text-2xl', '2.441rem'],
+				['--text-3xl', '3.052rem']
+			];
+			const typeScale = $('typeScale');
+			function renderType() {
+				typeScale.innerHTML = '';
+				SCALES.forEach(([t, px]) => {
+					const row = document.createElement('div');
+					row.className = 'type-row';
+					row.innerHTML = `<code>${t} ${px}</code><div class="sample" style="font-size: var(${t})"></div>`;
+					row.querySelector('.sample').textContent = typeInput.value || 'Ag';
+					typeScale.appendChild(row);
+				});
+			}
+			typeInput.addEventListener('input', renderType);
+			renderType();
+			$('weights').innerHTML = [
+				'--font-light',
+				'--font-normal',
+				'--font-medium',
+				'--font-semibold',
+				'--font-bold'
+			]
+				.map(
+					w =>
+						`<div class="type-row"><code>${w}</code><div style="font-weight: var(${w})">${typeInput.value}</div></div>`
+				)
+				.join('');
+			$('leading').innerHTML = [
+				['--leading-tight', 1.25],
+				['--leading-normal', 1.5],
+				['--leading-loose', 2]
+			]
+				.map(
+					([l, v]) =>
+						`<div class="type-row"><code>${l}</code><div style="line-height: var(${l}); white-space: normal">Pack my box with five dozen liquor jugs. ${v}</div></div>`
+				)
+				.join('');
+			$('copyType').addEventListener('click', () =>
+				copy(SCALES.map(([t]) => t).join(' '), 'Copied type scale')
+			);
+
+			// space / radius / shadow / motion
+			const SPACES = [
+				'--space-px',
+				'--space-xs',
+				'--space-s',
+				'--space-m',
+				'--space-l',
+				'--space-xl',
+				'--space-2xl',
+				'--space-3xl',
+				'--space-4xl'
+			];
+			$('spaceList').innerHTML = SPACES.map(
+				s =>
+					`<div class="space-row"><div class="bar" style="width: var(${s}); min-width: 2px"></div><span>${s}</span></div>`
+			).join('');
+			[
+				['none', 'none'],
+				['s', 'sm'],
+				['m', 'md'],
+				['l', 'lg'],
+				['xl', 'xl'],
+				['2xl', '2xl'],
+				['3xl', '3xl'],
+				['full', 'full']
+			].forEach(([k, label]) => {
+				const d = document.createElement('div');
+				d.className = 'radius-cell';
+				d.style.borderRadius = `var(--radius-${k})`;
+				d.textContent = label;
+				d.title = `--radius-${k}`;
+				$('radiusGrid').appendChild(d);
+			});
+			['xs', 's', 'm', 'l', 'xl', '2xl', 'inner'].forEach(k => {
+				const d = document.createElement('div');
+				d.className = 'shadow-cell';
+				d.style.boxShadow = `var(--shadow-${k})`;
+				d.style.borderRadius = 'var(--radius-m)';
+				d.textContent = k;
+				d.title = `--shadow-${k}`;
+				$('shadowGrid').appendChild(d);
+			});
+			[
+				['linear', '--ease-linear'],
+				['in', '--ease-in'],
+				['out', '--ease-out'],
+				['in-out', '--ease-in-out'],
+				['bounce', '--ease-bounce']
+			].forEach(([label, ease]) => {
+				const d = document.createElement('div');
+				d.className = 'motion-cell';
+				d.innerHTML = `${label}<i style="transition-timing-function: var(${ease})"></i>`;
+				$('motionGrid').appendChild(d);
+			});
+
+			// ============ contrast ============
+			function toRgb(color) {
+				const ctx = document.createElement('canvas').getContext('2d');
+				ctx.fillStyle = '#000';
+				ctx.fillStyle = color;
+				const v = ctx.fillStyle;
+				const m = v.match(/rgba?\(([^)]+)\)/);
+				if (!m) return [0, 0, 0];
+				return m[1]
+					.split(',')
+					.slice(0, 3)
+					.map(x => parseFloat(x) / 255);
+			}
+			function lum([r, g, b]) {
+				const f = c => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+				return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+			}
+			function ratio(a, b) {
+				const [l1, l2] = [lum(toRgb(a)), lum(toRgb(b))].sort((x, y) => y - x);
+				return (l1 + 0.05) / (l2 + 0.05);
+			}
+			function badge(el, r, label) {
+				el.textContent = `${label} ${r.toFixed(1)} : 1`;
+				el.classList.toggle('pass', r >= 7);
+				el.classList.toggle('warn', r < 4.5);
 			}
 
-			function updateAccentPreview() {
-				const hue = controls.accentHue.value;
-				const chroma = controls.accentChroma.value;
-				const preview = document.getElementById('accentHuePreview');
-				preview.style.background = `oklch(0.6 ${chroma} ${hue})`;
-			}
-
-			function syncIntermediateVariables() {
-				// Sync intermediate variables to match current theme
-				if (currentTheme === 'dark') {
-					updateCSSVariable('--surface-base', controls.darkSurface.value);
-					updateCSSVariable('--text-base-l', controls.darkText.value);
-					updateCSSVariable('--accent-base-l', controls.darkAccent.value);
-				} else {
-					updateCSSVariable('--surface-base', controls.lightSurface.value);
-					updateCSSVariable('--text-base-l', controls.lightText.value);
-					updateCSSVariable('--accent-base-l', controls.lightAccent.value);
-				}
-			}
-
-			function updateComputedValues() {
-				// Use requestAnimationFrame to ensure CSS has been recalculated
+			// ============ refresh computed values ============
+			function refresh() {
 				requestAnimationFrame(() => {
-					const style = getComputedStyle(document.documentElement);
+					document.querySelectorAll('[data-val]').forEach(el => {
+						el.textContent = getVar(el.dataset.val);
+					});
+					$('huePreview').style.background = `oklch(0.65 ${inChroma.value} ${inHue.value})`;
+					const k = themeKeys();
+					$('cssSummary').textContent = `--theme-accent-hue: ${inHue.value} (${k.tag})`;
+					$('metaSystem').textContent = mq.matches ? 'light' : 'dark';
+					$('metaTheme').textContent =
+						`${k.tag} surface ${(+inSurface.value).toFixed(2)}/text ${(+inText.value).toFixed(2)}`;
+					$('metaContrast').textContent =
+						ratio(getVar('--text-primary'), getVar('--surface-1')).toFixed(1) + ':1';
+					$('metaAccent').textContent = getVar('--accent');
+					badge($('c-body'), ratio(getVar('--text-primary'), getVar('--surface-1')), 'body');
+					badge(
+						$('c-secondary'),
+						ratio(getVar('--text-secondary'), getVar('--surface-1')),
+						'secondary'
+					);
+					badge(
+						$('c-border'),
+						ratio(getVar('--border-interactive'), getVar('--surface-1')),
+						'interactive border'
+					);
+					badge(
+						$('c-accent'),
+						ratio(getVar('--accent-foreground'), getVar('--accent')),
+						'accent-fg on accent'
+					);
+					Object.values(stateLive).forEach(live => live.paint?.());
+					$('exportCode').textContent = exportCss();
+				});
+			}
+			function exportCss() {
+				const k = themeKeys();
+				return `:root {\n\t--theme-accent-hue: ${inHue.value};\n\t--theme-accent-chroma: ${inChroma.value};\n\t--dark-accent-chroma-max: ${getVar('--dark-accent-chroma-max')};\n\t--light-accent-chroma-max: ${getVar('--light-accent-chroma-max')};\n\t${k.s}: ${inSurface.value};\n\t${k.t}: ${inText.value};\n\t${k.a}: ${inAccentL.value};\n}`;
+			}
 
-					// Update surface values
-					for (let i = 1; i <= 10; i++) {
-						const el = document.getElementById(`surface-${i}-value`);
-						if (el) {
-							el.textContent = style.getPropertyValue(`--surface-${i}`).trim();
-						}
-					}
+			// ============ actions ============
+			function resetAll() {
+				inHue.value = DEFAULTS.hue;
+				$('o-hue').textContent = DEFAULTS.hue;
+				inChroma.value = DEFAULTS.chroma;
+				$('o-chroma').textContent = DEFAULTS.chroma;
+				setVar('--theme-accent-hue', DEFAULTS.hue);
+				setVar('--theme-accent-chroma', DEFAULTS.chroma);
+				const [dMax, lMax] = nearestMax(DEFAULTS.hue);
+				setVar('--dark-accent-chroma-max', dMax);
+				setVar('--light-accent-chroma-max', lMax);
+				setVar('--dark-surface-base', DEFAULTS.darkSurface);
+				setVar('--dark-text-base-lightness', DEFAULTS.darkText);
+				setVar('--dark-accent-base-lightness', DEFAULTS.darkAccentL);
+				setVar('--light-surface-base', DEFAULTS.lightSurface);
+				setVar('--light-text-base-lightness', DEFAULTS.lightText);
+				setVar('--light-accent-base-lightness', DEFAULTS.lightAccentL);
+				markPreset(DEFAULTS.hue);
+				syncPlaygroundToTheme();
 
-					// Update accent values
-					const accentTokens = [
-						'accent',
-						'accent-hover',
-						'accent-muted',
-						'accent-alpha',
-						'accent-alpha-hover',
-						'accent-foreground'
-					];
-					accentTokens.forEach(token => {
-						const el = document.getElementById(`${token}-value`);
-						if (el) {
-							el.textContent = style.getPropertyValue(`--${token}`).trim();
+				stateDef.forEach(s => {
+					const live = stateLive[s.name];
+					if (!live) return;
+					live.bgIn.value = s.bg;
+					live.textIn.value = s.text;
+					live.borderIn.value = s.border;
+					live.paint();
+				});
+				refresh();
+				toast('Defaults restored');
+			}
+			$('resetBtn').addEventListener('click', resetAll);
+			$('resetBtn2').addEventListener('click', resetAll);
+			$('copyCssTop').addEventListener('click', () => copy(exportCss(), 'Copied theme CSS'));
+			$('copyCssMain').addEventListener('click', () => copy(exportCss(), 'Copied theme CSS'));
+			$('shareBtn').addEventListener('click', () => {
+				const u = new URL(location.href);
+				u.searchParams.set('hue', inHue.value);
+				u.searchParams.set('chroma', inChroma.value);
+				u.searchParams.set('theme', mode);
+				copy(u.toString(), 'Copied share link');
+			});
+			$('toastBtn').addEventListener('click', () => toast('Hello from --surface-3 + --shadow-l'));
+			const backdrop = $('modalBackdrop');
+			$('modalBtn').addEventListener('click', () => backdrop.classList.add('open'));
+			$('modalClose').addEventListener('click', () => backdrop.classList.remove('open'));
+			backdrop.addEventListener('click', e => {
+				if (e.target === backdrop) backdrop.classList.remove('open');
+			});
+			addEventListener('keydown', e => {
+				if (e.key === 'Escape') backdrop.classList.remove('open');
+				const n = parseInt(e.key, 10);
+				if (n >= 1 && n <= 8 && document.activeElement.tagName !== 'INPUT') {
+					document.querySelectorAll('main .section')[n - 1]?.scrollIntoView({ behavior: 'smooth' });
+				}
+			});
+
+			// filter
+			$('filter').addEventListener('input', e => {
+				const q = e.target.value.toLowerCase();
+				document.querySelectorAll('main .section').forEach(sec => {
+					const hit = (sec.dataset.keywords + sec.textContent).toLowerCase().includes(q);
+					sec.style.display = hit ? '' : 'none';
+				});
+				document.querySelectorAll('.toc a').forEach(a => {
+					const sec = document.querySelector(a.getAttribute('href'));
+					a.style.display = sec && sec.style.display === 'none' ? 'none' : '';
+				});
+			});
+
+			// scrollspy
+			const links = [...document.querySelectorAll('.toc a')];
+			const spy = new IntersectionObserver(
+				entries => {
+					entries.forEach(en => {
+						if (en.isIntersecting) {
+							links.forEach(a =>
+								a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id)
+							);
 						}
 					});
-
-					// Update semantic state values (success, warning, error, info 1-10)
-					const states = ['success', 'warning', 'error', 'info'];
-					states.forEach(state => {
-						for (let i = 1; i <= 10; i++) {
-							const el = document.getElementById(`${state}-${i}-value`);
-							if (el) {
-								el.textContent = style.getPropertyValue(`--${state}-${i}`).trim();
-							}
-						}
-					});
-				});
-			}
-
-			// ===========================
-			// EVENT LISTENERS
-			// ===========================
-			controls.accentHue.addEventListener('input', e => {
-				updateControl('accentHue', '--theme-accent-hue', e.target.value);
-				updateAccentPreview();
-				updateComputedValues();
-			});
-
-			controls.accentChroma.addEventListener('input', e => {
-				updateControl('accentChroma', '--theme-accent-chroma', e.target.value);
-				updateAccentPreview();
-				updateComputedValues();
-			});
-
-			controls.darkSurface.addEventListener('input', e => {
-				updateControl('darkSurface', '--dark-surface-base', e.target.value);
-				if (currentTheme === 'dark') {
-					updateCSSVariable('--surface-base', e.target.value);
-				}
-				updateComputedValues();
-			});
-
-			controls.darkText.addEventListener('input', e => {
-				updateControl('darkText', '--dark-text-base-lightness', e.target.value);
-				if (currentTheme === 'dark') {
-					updateCSSVariable('--text-base-l', e.target.value);
-				}
-				updateComputedValues();
-			});
-
-			controls.darkAccent.addEventListener('input', e => {
-				updateControl('darkAccent', '--dark-accent-base-lightness', e.target.value);
-				if (currentTheme === 'dark') {
-					updateCSSVariable('--accent-base-l', e.target.value);
-				}
-				updateComputedValues();
-			});
-
-			controls.lightSurface.addEventListener('input', e => {
-				updateControl('lightSurface', '--light-surface-base', e.target.value);
-				if (currentTheme === 'light') {
-					updateCSSVariable('--surface-base', e.target.value);
-				}
-				updateComputedValues();
-			});
-
-			controls.lightText.addEventListener('input', e => {
-				updateControl('lightText', '--light-text-base-lightness', e.target.value);
-				if (currentTheme === 'light') {
-					updateCSSVariable('--text-base-l', e.target.value);
-				}
-				updateComputedValues();
-			});
-
-			controls.lightAccent.addEventListener('input', e => {
-				updateControl('lightAccent', '--light-accent-base-lightness', e.target.value);
-				if (currentTheme === 'light') {
-					updateCSSVariable('--accent-base-l', e.target.value);
-				}
-				updateComputedValues();
-			});
-
-			// ===========================
-			// STATE STEP SELECTORS (independent controls)
-			// ===========================
-			const stateControls = {
-				success: {
-					bg: document.getElementById('successBg'),
-					text: document.getElementById('successText'),
-					bgValue: document.getElementById('successBgValue'),
-					textValue: document.getElementById('successTextValue')
 				},
-				warning: {
-					bg: document.getElementById('warningBg'),
-					text: document.getElementById('warningText'),
-					bgValue: document.getElementById('warningBgValue'),
-					textValue: document.getElementById('warningTextValue')
-				},
-				error: {
-					bg: document.getElementById('errorBg'),
-					text: document.getElementById('errorText'),
-					bgValue: document.getElementById('errorBgValue'),
-					textValue: document.getElementById('errorTextValue')
-				},
-				info: {
-					bg: document.getElementById('infoBg'),
-					text: document.getElementById('infoText'),
-					bgValue: document.getElementById('infoBgValue'),
-					textValue: document.getElementById('infoTextValue')
+				{ rootMargin: '-40% 0px -55% 0px' }
+			);
+			document.querySelectorAll('main .section').forEach(s => spy.observe(s));
+
+			// ============ init from URL ============
+			(function init() {
+				const q = new URLSearchParams(location.search);
+				if (q.get('theme') && ['system', 'dark', 'light'].includes(q.get('theme')))
+					mode = q.get('theme');
+				if (q.get('hue')) {
+					inHue.value = q.get('hue');
+					$('o-hue').textContent = q.get('hue');
 				}
-			};
-
-			function updateStateDemo() {
-				Object.keys(stateControls).forEach(state => {
-					const bgStep = stateControls[state].bg.value;
-					const textStep = stateControls[state].text.value;
-
-					// Update display values
-					stateControls[state].bgValue.textContent = bgStep;
-					stateControls[state].textValue.textContent = textStep;
-
-					// Set CSS variables for demo
-					document.documentElement.style.setProperty(
-						`--${state}-text`,
-						`var(--${state}-${textStep})`
-					);
-					document.documentElement.style.setProperty(
-						`--${state}-bg-demo`,
-						`var(--${state}-${bgStep})`
-					);
-				});
-			}
-
-			// Add event listeners to all controls
-			Object.keys(stateControls).forEach(state => {
-				stateControls[state].bg.addEventListener('input', updateStateDemo);
-				stateControls[state].text.addEventListener('input', updateStateDemo);
-			});
-
-			// ===========================
-			// BUTTON ACTIONS
-			// ===========================
-			document.getElementById('toggleSidebar').addEventListener('click', () => {
-				document.getElementById('sidebar').classList.toggle('collapsed');
-			});
-
-			document.getElementById('toggleTheme').addEventListener('click', () => {
-				const html = document.documentElement;
-				if (currentTheme === 'dark') {
-					html.setAttribute('data-theme', 'light');
-					currentTheme = 'light';
-				} else {
-					html.setAttribute('data-theme', 'dark');
-					currentTheme = 'dark';
+				if (q.get('chroma')) {
+					inChroma.value = q.get('chroma');
+					$('o-chroma').textContent = (+q.get('chroma')).toFixed(3);
 				}
-				syncIntermediateVariables();
-				updateComputedValues();
-			});
-
-			document.getElementById('resetDefaults').addEventListener('click', () => {
-				Object.keys(defaults).forEach(key => {
-					controls[key].value = defaults[key];
-					const varName = `--theme-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
-					updateCSSVariable(varName, defaults[key]);
-					if (valueDisplays[key]) {
-						valueDisplays[key].textContent = defaults[key];
-					}
-				});
-				syncIntermediateVariables();
-				updateAccentPreview();
-				updateComputedValues();
-			});
-
-			// ===========================
-			// COPY TO CLIPBOARD
-			// ===========================
-			document.querySelectorAll('.token-card').forEach(card => {
-				card.addEventListener('click', () => {
-					const token = card.getAttribute('data-token');
-					if (token) {
-						navigator.clipboard.writeText(token).then(() => {
-							showToast();
-						});
-					}
-				});
-			});
-
-			function showToast() {
-				const toast = document.getElementById('toast');
-				toast.classList.add('show');
-				setTimeout(() => {
-					toast.classList.remove('show');
-				}, 2000);
-			}
-
-			// ===========================
-			// INITIALIZATION
-			// ===========================
-			function init() {
-				syncIntermediateVariables();
-				updateAccentPreview();
-				updateComputedValues();
-				updateStateDemo();
-			}
-
-			init();
+				setVar('--theme-accent-hue', inHue.value);
+				setVar('--theme-accent-chroma', inChroma.value);
+				const [dMax, lMax] = nearestMax(+inHue.value);
+				setVar('--dark-accent-chroma-max', dMax);
+				setVar('--light-accent-chroma-max', lMax);
+				markPreset(+inHue.value);
+				// apply mode without overwriting stored sliders, then sync
+				if (mode === 'system') root.removeAttribute('data-theme');
+				else root.setAttribute('data-theme', mode);
+				document
+					.querySelectorAll('.segmented button')
+					.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+				syncPlaygroundToTheme();
+				refresh();
+			})();
 		</script>
 	</body>
 </html>
