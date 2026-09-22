@@ -24,21 +24,34 @@
 	   (set once, dark+light pairs)
 	   Applies: always. Edit here to retune. Keep dark/light pairs in sync. */
 
-	/* Color: single hue + chroma retune the whole accent system */
-	--theme-accent-hue: 200; /* blue-cyan default, legible on dark + light */
+	/* Brand colors: three independent hues + chromas retune the whole brand system.
+	   Primary takes the previous accent values; secondary and accent are new. */
+	--theme-primary-hue: 200; /* blue-cyan default, legible on dark + light */
+	--theme-primary-chroma: 0.11; /* requested vibrancy, clamped to per-theme max below */
+	--theme-secondary-hue: 280; /* violet default, maximal separation from primary */
+	--theme-secondary-chroma: 0.11; /* requested vibrancy, clamped to per-theme max below */
+	--theme-accent-hue: 40; /* amber default, warm contrast to primary + secondary */
 	--theme-accent-chroma: 0.11; /* requested vibrancy, clamped to per-theme max below */
 
 	/* Dark Theme: bases anchor every derived ramp */
 	--dark-surface-base: 0.15; /* near-black base, lifts to 0.96 across 10 steps */
 	--dark-text-base-lightness: 0.9; /* near-white primary, falls to 0.30 when disabled */
+	--dark-primary-base-lightness: 0.65; /* mid lightness holds chroma without clipping */
+	--dark-primary-chroma-max: 0.108; /* sRGB ceiling for hue 200 at L 0.65 */
+	--dark-secondary-base-lightness: 0.65; /* mid lightness holds chroma without clipping */
+	--dark-secondary-chroma-max: 0.15; /* sRGB ceiling for hue 280 at L 0.65 */
 	--dark-accent-base-lightness: 0.65; /* mid lightness holds chroma without clipping */
-	--dark-accent-chroma-max: 0.108; /* sRGB ceiling for hue 200 at L 0.65 */
+	--dark-accent-chroma-max: 0.2; /* sRGB ceiling for hue 40 at L 0.65 */
 
 	/* Light Theme: mirrored bases for white backgrounds */
 	--light-surface-base: 0.97; /* near-white base, deepens to 0.295 across 10 steps */
 	--light-text-base-lightness: 0.18; /* near-black primary, softens to 0.78 when disabled */
+	--light-primary-base-lightness: 0.45; /* darker than dark theme to hold contrast on white */
+	--light-primary-chroma-max: 0.075; /* sRGB ceiling for hue 200 at L 0.45 */
+	--light-secondary-base-lightness: 0.45; /* darker than dark theme to hold contrast on white */
+	--light-secondary-chroma-max: 0.1; /* sRGB ceiling for hue 280 at L 0.45 */
 	--light-accent-base-lightness: 0.45; /* darker than dark theme to hold contrast on white */
-	--light-accent-chroma-max: 0.075; /* sRGB ceiling for hue 200 at L 0.45 */
+	--light-accent-chroma-max: 0.14; /* sRGB ceiling for hue 40 at L 0.45 */
 
 	/* Dark mode: positive offsets lift edges above the dark surface base */
 	--dark-surface-step: 0.09; /* 0.15 + 0.09 * 9 = 0.96, spans black to near-white */
@@ -104,8 +117,16 @@
 	--text-base-l: var(--dark-text-base-lightness);
 	--text-step: var(--dark-text-step);
 
-	/* Accent: hue is theme-independent, lightness and ceiling follow the theme.
+	/* Brand colors: hues are theme-independent, lightness and ceiling follow the theme.
 	   Chroma is clamped so custom hues stay inside the sRGB gamut. */
+	--primary-hue: var(--theme-primary-hue);
+	--primary-chroma-max: var(--dark-primary-chroma-max);
+	--primary-chroma: clamp(0, var(--theme-primary-chroma), var(--primary-chroma-max));
+	--primary-base-l: var(--dark-primary-base-lightness);
+	--secondary-hue: var(--theme-secondary-hue);
+	--secondary-chroma-max: var(--dark-secondary-chroma-max);
+	--secondary-chroma: clamp(0, var(--theme-secondary-chroma), var(--secondary-chroma-max));
+	--secondary-base-l: var(--dark-secondary-base-lightness);
 	--accent-hue: var(--theme-accent-hue);
 	--accent-chroma-max: var(--dark-accent-chroma-max);
 	--accent-chroma: clamp(0, var(--theme-accent-chroma), var(--accent-chroma-max));
@@ -250,10 +271,47 @@
 	--radius-full: 9999px; /* pill and circle, overflows any realistic box */
 
 	/* ===========================
-	   ACCENT: interactive brand color.
+	   BRAND COLORS: primary, secondary and accent.
+	   Each is an independent interactive brand color with the same shape:
 	   Hover lifts lightness; muted drops lightness and chroma for subtle fills.
-	   Foreground reuses surface-1 so text on accent passes contrast in both themes.
+	   Foreground reuses surface-1 so text on brand passes contrast in both themes.
 	   =========================== */
+	--primary: oklch(
+		var(--primary-base-l) var(--primary-chroma) var(--primary-hue)
+	); /* base action */
+	--primary-hover: oklch(
+		calc(var(--primary-base-l) + 0.05) var(--primary-chroma) var(--primary-hue)
+	); /* +0.05 L lift on hover */
+	--primary-muted: oklch(
+		calc(var(--primary-base-l) - 0.08) calc(var(--primary-chroma) * 0.6) var(--primary-hue)
+	); /* -0.08 L and 60% chroma for quiet fills */
+
+	--primary-foreground: var(--surface-1); /* text on primary, safer than text-primary */
+	--primary-alpha: oklch(
+		var(--primary-base-l) var(--primary-chroma) var(--primary-hue) / 0.1
+	); /* 10% wash for selection rings */
+	--primary-alpha-hover: oklch(
+		var(--primary-base-l) var(--primary-chroma) var(--primary-hue) / 0.15
+	); /* 15% wash for hover fills */
+
+	--secondary: oklch(
+		var(--secondary-base-l) var(--secondary-chroma) var(--secondary-hue)
+	); /* base action */
+	--secondary-hover: oklch(
+		calc(var(--secondary-base-l) + 0.05) var(--secondary-chroma) var(--secondary-hue)
+	); /* +0.05 L lift on hover */
+	--secondary-muted: oklch(
+		calc(var(--secondary-base-l) - 0.08) calc(var(--secondary-chroma) * 0.6) var(--secondary-hue)
+	); /* -0.08 L and 60% chroma for quiet fills */
+
+	--secondary-foreground: var(--surface-1); /* text on secondary, safer than text-primary */
+	--secondary-alpha: oklch(
+		var(--secondary-base-l) var(--secondary-chroma) var(--secondary-hue) / 0.1
+	); /* 10% wash for selection rings */
+	--secondary-alpha-hover: oklch(
+		var(--secondary-base-l) var(--secondary-chroma) var(--secondary-hue) / 0.15
+	); /* 15% wash for hover fills */
+
 	--accent: oklch(var(--accent-base-l) var(--accent-chroma) var(--accent-hue)); /* base action */
 	--accent-hover: oklch(
 		calc(var(--accent-base-l) + 0.05) var(--accent-chroma) var(--accent-hue)
@@ -284,10 +342,10 @@
 	--overlay-strong: oklch(0 0 0 / 0.7); /* heavy scrim for blocking dialogs */
 
 	/* ===========================
-	   FOCUS: single accent source keeps keyboard focus visible in both themes.
+	   FOCUS: single primary source keeps keyboard focus visible in both themes.
 	   =========================== */
-	--focus: var(--accent); /* focus color token, swap here to retheme all rings */
-	--focus-ring: var(--border-width) solid var(--accent); /* 1px ring, scales with spacing */
+	--focus: var(--primary); /* focus color token, swap here to retheme all rings */
+	--focus-ring: var(--border-width) solid var(--primary); /* 1px ring, scales with spacing */
 	--focus-ring-offset: var(--border-width-m); /* 4px offset so ring never hugs content */
 
 	/* ===========================
@@ -554,6 +612,10 @@
 		--text-base-l: var(--light-text-base-lightness);
 		--text-step: var(--light-text-step);
 
+		--primary-base-l: var(--light-primary-base-lightness);
+		--primary-chroma-max: var(--light-primary-chroma-max);
+		--secondary-base-l: var(--light-secondary-base-lightness);
+		--secondary-chroma-max: var(--light-secondary-chroma-max);
 		--accent-base-l: var(--light-accent-base-lightness);
 		--accent-chroma-max: var(--light-accent-chroma-max);
 
@@ -593,6 +655,10 @@
 	--text-base-l: var(--dark-text-base-lightness);
 	--text-step: var(--dark-text-step);
 
+	--primary-base-l: var(--dark-primary-base-lightness);
+	--primary-chroma-max: var(--dark-primary-chroma-max);
+	--secondary-base-l: var(--dark-secondary-base-lightness);
+	--secondary-chroma-max: var(--dark-secondary-chroma-max);
 	--accent-base-l: var(--dark-accent-base-lightness);
 	--accent-chroma-max: var(--dark-accent-chroma-max);
 
@@ -626,6 +692,10 @@
 	--text-base-l: var(--light-text-base-lightness);
 	--text-step: var(--light-text-step);
 
+	--primary-base-l: var(--light-primary-base-lightness);
+	--primary-chroma-max: var(--light-primary-chroma-max);
+	--secondary-base-l: var(--light-secondary-base-lightness);
+	--secondary-chroma-max: var(--light-secondary-chroma-max);
 	--accent-base-l: var(--light-accent-base-lightness);
 	--accent-chroma-max: var(--light-accent-chroma-max);
 

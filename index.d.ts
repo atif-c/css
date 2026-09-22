@@ -2,7 +2,7 @@
  * @atifc/css - Parametric CSS design token system
  *
  * This module provides CSS custom properties for:
- * - OKLCH-based color system
+ * - OKLCH-based color system (primary + secondary + accent brand colors)
  * - Dark/light theme with automatic detection
  * - Typography, spacing, shadows, and layout tokens
  *
